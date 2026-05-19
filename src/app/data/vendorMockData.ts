@@ -1,0 +1,167 @@
+export const vendorStats = {
+  todayOrders: 23,
+  todayRevenue: 45600,
+  pendingOrders: 3,
+  avgPrepTime: 15,
+};
+
+export const vendorOrders = [
+  {
+    id: 'ORD-1045',
+    customerName: 'Tolu',
+    items: [
+      { name: 'Jollof Rice with Chicken', quantity: 2, price: 1200 },
+      { name: 'Zobo (Chilled)', quantity: 1, price: 300 },
+    ],
+    total: 2700,
+    status: 'pending',
+    timestamp: new Date(Date.now() - 5 * 60 * 1000),
+    location: 'Eni-Jokun Hostel',
+    specialInstructions: 'Extra pepper please',
+  },
+  {
+    id: 'ORD-1044',
+    customerName: 'Chioma',
+    items: [
+      { name: 'Fried Rice Special', quantity: 1, price: 1500 },
+    ],
+    total: 1500,
+    status: 'preparing',
+    timestamp: new Date(Date.now() - 12 * 60 * 1000),
+    location: 'Jaja Hostel',
+    specialInstructions: null,
+  },
+  {
+    id: 'ORD-1043',
+    customerName: 'Ahmed',
+    items: [
+      { name: 'Beef Shawarma', quantity: 3, price: 1000 },
+      { name: 'Zobo (Chilled)', quantity: 2, price: 300 },
+    ],
+    total: 3600,
+    status: 'ready',
+    timestamp: new Date(Date.now() - 20 * 60 * 1000),
+    location: 'Engineering Faculty',
+    riderName: 'Emeka',
+    specialInstructions: null,
+  },
+  {
+    id: 'ORD-1042',
+    customerName: 'Blessing',
+    items: [
+      { name: 'Jollof Rice with Chicken', quantity: 1, price: 1200 },
+      { name: 'Puff Puff (6pcs)', quantity: 1, price: 200 },
+    ],
+    total: 1400,
+    status: 'completed',
+    timestamp: new Date(Date.now() - 45 * 60 * 1000),
+    location: 'Kofo Ademola Hostel',
+    specialInstructions: null,
+  },
+  {
+    id: 'ORD-1041',
+    customerName: 'David',
+    items: [
+      { name: 'Eba & Egusi Soup', quantity: 2, price: 800 },
+    ],
+    total: 1600,
+    status: 'completed',
+    timestamp: new Date(Date.now() - 60 * 60 * 1000),
+    location: 'Sciences Faculty',
+    specialInstructions: null,
+  },
+];
+
+export const vendorMenuItems = [
+  {
+    id: 'r1',
+    name: 'Jollof Rice with Chicken',
+    description: 'Smoky jollof with grilled chicken',
+    price: 1200,
+    category: 'Rice',
+    image: 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=200&h=200&fit=crop',
+    available: true,
+    prepTime: '15 mins',
+  },
+  {
+    id: 'r2',
+    name: 'Fried Rice Special',
+    description: 'Mixed veggies, chicken & shrimp',
+    price: 1500,
+    category: 'Rice',
+    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=200&h=200&fit=crop',
+    available: true,
+    prepTime: '20 mins',
+  },
+  {
+    id: 'r3',
+    name: 'Eba & Egusi Soup',
+    description: 'Fresh eba with rich egusi',
+    price: 800,
+    category: 'Swallow',
+    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=200&fit=crop',
+    available: true,
+    prepTime: '15 mins',
+  },
+  {
+    id: 'r4',
+    name: 'Zobo (Chilled)',
+    description: 'Fresh hibiscus drink',
+    price: 300,
+    category: 'Drinks',
+    image: 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=200&h=200&fit=crop',
+    available: false,
+    prepTime: '5 mins',
+  },
+  {
+    id: 'p1',
+    name: 'Beef Shawarma',
+    description: 'Juicy beef with fresh veggies',
+    price: 1000,
+    category: 'Snacks',
+    image: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=200&h=200&fit=crop',
+    available: true,
+    prepTime: '10 mins',
+  },
+  {
+    id: 'p2',
+    name: 'Puff Puff (6pcs)',
+    description: 'Sweet fried dough balls',
+    price: 200,
+    category: 'Pastries',
+    image: 'https://images.unsplash.com/photo-1587314168485-3236d6710814?w=200&h=200&fit=crop',
+    available: true,
+    prepTime: '10 mins',
+  },
+];
+
+export const earningsData = {
+  thisMonth: 856400,
+  thisWeek: 198200,
+  pendingSettlement: 45600,
+  dailyEarnings: [
+    { day: 'Mon', amount: 28400 },
+    { day: 'Tue', amount: 32100 },
+    { day: 'Wed', amount: 29800 },
+    { day: 'Thu', amount: 35200 },
+    { day: 'Fri', amount: 41500 },
+    { day: 'Sat', amount: 18600 },
+    { day: 'Sun', amount: 12600 },
+  ],
+  transactions: [
+    { date: '2026-05-17', orders: 28, amount: 45600 },
+    { date: '2026-05-16', orders: 32, amount: 52800 },
+    { date: '2026-05-15', orders: 24, amount: 38400 },
+    { date: '2026-05-14', orders: 30, amount: 48200 },
+    { date: '2026-05-13', orders: 26, amount: 42100 },
+  ],
+};
+
+export const vendorProfile = {
+  name: 'Mavise Grill',
+  category: 'Nigerian · Fast Food',
+  location: 'Near Eni-Jokun Hostel',
+  image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=300&fit=crop',
+  contact: '+234 801 234 5678',
+  bankAccount: '0123456789 - GTBank',
+};
