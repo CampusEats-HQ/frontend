@@ -1,6 +1,20 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
+export interface Rider {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  rating: number;
+  totalDeliveries: number;
+  bankName: string;
+  accountNumber: string;
+}
+
 interface RiderContextType {
+  rider: Rider | null;
+  login: (rider: Rider) => void;
+  logout: () => void;
   isOnline: boolean;
   toggleOnline: () => void;
   hasIncomingOrder: boolean;
@@ -12,9 +26,19 @@ interface RiderContextType {
 const RiderContext = createContext<RiderContextType | undefined>(undefined);
 
 export function RiderProvider({ children }: { children: ReactNode }) {
+  const [rider, setRider] = useState<Rider | null>(null);
   const [isOnline, setIsOnline] = useState(false);
   const [hasIncomingOrder, setHasIncomingOrder] = useState(false);
   const [activeDelivery, setActiveDelivery] = useState<any | null>(null);
+
+  const login = (riderData: Rider) => setRider(riderData);
+
+  const logout = () => {
+    setRider(null);
+    setIsOnline(false);
+    setActiveDelivery(null);
+    setHasIncomingOrder(false);
+  };
 
   const toggleOnline = () => {
     setIsOnline((prev) => !prev);
@@ -23,6 +47,9 @@ export function RiderProvider({ children }: { children: ReactNode }) {
   return (
     <RiderContext.Provider
       value={{
+        rider,
+        login,
+        logout,
         isOnline,
         toggleOnline,
         hasIncomingOrder,

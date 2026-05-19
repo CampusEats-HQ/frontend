@@ -28,47 +28,47 @@ export default function AdminOrders() {
         {/* Top Bar */}
         <div className="px-6 py-4 flex items-center justify-between border-b border-gray-200">
           <div className="flex items-center gap-6">
-            <h1 className="text-xl font-bold" style={{ color: '#1F2937' }}>
+            <h1 className="text-xl font-bold text-gray-800">
               CampusEats Admin
             </h1>
             <nav className="hidden lg:flex gap-4">
               <Link to="/admin/dashboard" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <LayoutDashboard size={18} style={{ color: '#6B7280' }} />
-                <span className="text-sm" style={{ color: '#6B7280' }}>Dashboard</span>
+                <LayoutDashboard size={18} className="text-gray-500" />
+                <span className="text-sm text-gray-500">Dashboard</span>
               </Link>
-              <Link to="/admin/orders" className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ backgroundColor: '#DBEAFE', color: '#6366F1' }}>
+              <Link to="/admin/orders" className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-100 text-indigo-500">
                 <ClipboardList size={18} />
                 <span className="text-sm font-medium">Orders</span>
               </Link>
               <Link to="/admin/people" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <Users size={18} style={{ color: '#6B7280' }} />
-                <span className="text-sm" style={{ color: '#6B7280' }}>People</span>
+                <Users size={18} className="text-gray-500" />
+                <span className="text-sm text-gray-500">People</span>
               </Link>
               <Link to="/admin/analytics" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <span className="text-sm" style={{ color: '#6B7280' }}>Analytics</span>
+                <span className="text-sm text-gray-500">Analytics</span>
               </Link>
               <Link to="/admin/finance" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <DollarSign size={18} style={{ color: '#6B7280' }} />
-                <span className="text-sm" style={{ color: '#6B7280' }}>Finance</span>
+                <DollarSign size={18} className="text-gray-500" />
+                <span className="text-sm text-gray-500">Finance</span>
               </Link>
             </nav>
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative">
-              <Bell size={20} style={{ color: '#6B7280' }} />
+            <button type="button" className="relative" aria-label="Notifications">
+              <Bell size={20} className="text-gray-500" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#6366F1' }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-indigo-500">
                 <User size={16} color="white" />
               </div>
-              <span className="text-sm font-medium" style={{ color: '#1F2937' }}>Admin</span>
+              <span className="text-sm font-medium text-gray-800">Admin</span>
             </div>
           </div>
         </div>
 
         <div className="px-6 py-6">
           {/* Header */}
-          <h2 className="text-2xl font-bold mb-6" style={{ color: '#1F2937' }}>
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">
             Order Management
           </h2>
 
@@ -76,20 +76,14 @@ export default function AdminOrders() {
         <div className="flex gap-4 border-b border-gray-200 mb-6">
           {(['all', 'unassigned', 'active', 'completed'] as const).map((tab) => (
             <button
+              type="button"
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className="px-4 py-3 text-sm font-medium capitalize"
-              style={{
-                color: activeTab === tab ? '#6366F1' : '#6B7280',
-                borderBottom: activeTab === tab ? '2px solid #6366F1' : 'none',
-              }}
+              className={`px-4 py-3 text-sm font-medium capitalize ${activeTab === tab ? 'text-indigo-500 border-b-2 border-indigo-500' : 'text-gray-500'}`}
             >
               {tab}
               {tab === 'unassigned' && (
-                <span
-                  className="ml-2 px-2 py-0.5 rounded text-xs"
-                  style={{ backgroundColor: '#FEF3C7', color: '#F59E0B' }}
-                >
+                <span className="ml-2 px-2 py-0.5 rounded text-xs bg-amber-100 text-amber-500">
                   {unassignedOrders.length}
                 </span>
               )}
@@ -103,41 +97,40 @@ export default function AdminOrders() {
             {unassignedOrders.map((order) => (
               <div
                 key={order.id}
-                className="rounded-lg p-4 md:p-5 border-2"
-                style={{ borderColor: '#F59E0B', backgroundColor: '#FFFBEB' }}
+                className="rounded-lg p-4 md:p-5 border-2 border-amber-500 bg-amber-50"
               >
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-3 mb-3">
                   <div className="min-w-0 flex-1">
-                    <p className="font-bold text-base mb-1" style={{ color: '#1F2937' }}>
+                    <p className="font-bold text-base mb-1 text-gray-800">
                       {order.id}
                     </p>
-                    <p className="text-sm mb-1 break-words" style={{ color: '#6B7280' }}>
+                    <p className="text-sm mb-1 break-words text-gray-500">
                       {order.customerName} · {order.restaurant}
                     </p>
                     <div className="mt-2">
                       {order.items.map((item, idx) => (
-                        <p key={idx} className="text-xs break-words" style={{ color: '#6B7280' }}>
+                        <p key={idx} className="text-xs break-words text-gray-500">
                           • {item}
                         </p>
                       ))}
                     </div>
                   </div>
                   <div className="text-left md:text-right">
-                    <p className="text-base md:text-lg font-bold mb-1" style={{ color: '#F59E0B' }}>
+                    <p className="text-base md:text-lg font-bold mb-1 text-amber-500">
                       Waiting {formatWaitingTime(order.timestamp)}
                     </p>
-                    <p className="text-sm" style={{ color: '#6B7280' }}>
+                    <p className="text-sm text-gray-500">
                       ₦{order.total}
                     </p>
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={() => {
                     setSelectedOrder(order);
                     setShowAssignModal(true);
                   }}
-                  className="w-full h-11 rounded-lg font-semibold text-sm md:text-base"
-                  style={{ backgroundColor: '#F59E0B', color: 'white' }}
+                  className="w-full h-11 rounded-lg font-semibold text-sm md:text-base bg-amber-500 text-white"
                 >
                   Assign Rider
                 </button>
@@ -149,23 +142,20 @@ export default function AdminOrders() {
         {activeTab === 'active' && (
           <div className="space-y-4">
             {liveOrders.filter(o => o.status !== 'delivered' && !o.needsRider).map((order) => (
-              <div key={order.id} className="rounded-lg p-4 md:p-5 border" style={{ borderColor: '#E0E0E0' }}>
+              <div key={order.id} className="rounded-lg p-4 md:p-5 border border-gray-300">
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <p className="font-bold text-base mb-1" style={{ color: '#1F2937' }}>
+                    <p className="font-bold text-base mb-1 text-gray-800">
                       {order.id}
                     </p>
-                    <p className="text-sm mb-1 break-words" style={{ color: '#6B7280' }}>
+                    <p className="text-sm mb-1 break-words text-gray-500">
                       {order.customerName} · {order.restaurant}
                     </p>
-                    <p className="text-sm truncate" style={{ color: '#6366F1' }}>
+                    <p className="text-sm truncate text-indigo-500">
                       Rider: {order.riderName}
                     </p>
                   </div>
-                  <span
-                    className="px-3 py-1 rounded text-sm font-medium self-start whitespace-nowrap"
-                    style={{ backgroundColor: '#DBEAFE', color: '#6366F1' }}
-                  >
+                  <span className="px-3 py-1 rounded text-sm font-medium self-start whitespace-nowrap bg-blue-100 text-indigo-500">
                     {order.status}
                   </span>
                 </div>
@@ -177,20 +167,20 @@ export default function AdminOrders() {
         {activeTab === 'completed' && (
           <div className="space-y-4">
             {completedOrders.map((order) => (
-              <div key={order.id} className="rounded-lg p-4 md:p-5 border" style={{ borderColor: '#E0E0E0' }}>
+              <div key={order.id} className="rounded-lg p-4 md:p-5 border border-gray-300">
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <p className="font-bold text-base mb-1" style={{ color: '#1F2937' }}>
+                    <p className="font-bold text-base mb-1 text-gray-800">
                       {order.id}
                     </p>
-                    <p className="text-sm mb-1 break-words" style={{ color: '#6B7280' }}>
+                    <p className="text-sm mb-1 break-words text-gray-500">
                       {order.customerName} · {order.restaurant} · Rider: {order.riderName}
                     </p>
-                    <p className="text-xs break-words" style={{ color: '#6B7280' }}>
+                    <p className="text-xs break-words text-gray-500">
                       {order.completedAt} · Duration: {order.duration}
                     </p>
                   </div>
-                  <p className="font-bold text-left md:text-right whitespace-nowrap" style={{ color: '#1F2937' }}>
+                  <p className="font-bold text-left md:text-right whitespace-nowrap text-gray-800">
                     ₦{order.total}
                   </p>
                 </div>
@@ -202,8 +192,8 @@ export default function AdminOrders() {
         {activeTab === 'all' && (
           <div className="space-y-4">
             {[...unassignedOrders, ...liveOrders].map((order: any) => (
-              <div key={order.id} className="rounded-lg p-4 md:p-5 border" style={{ borderColor: '#E0E0E0' }}>
-                <p className="font-bold break-words" style={{ color: '#1F2937' }}>{order.id}</p>
+              <div key={order.id} className="rounded-lg p-4 md:p-5 border border-gray-300">
+                <p className="font-bold break-words text-gray-800">{order.id}</p>
               </div>
             ))}
           </div>
@@ -216,32 +206,32 @@ export default function AdminOrders() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl max-w-md w-full mx-5 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold" style={{ color: '#1F2937' }}>
+              <h2 className="text-lg font-bold text-gray-800">
                 Assign Rider to {selectedOrder?.id}
               </h2>
-              <button onClick={() => setShowAssignModal(false)}>
-                <X size={24} style={{ color: '#6B7280' }} />
+              <button type="button" onClick={() => setShowAssignModal(false)} aria-label="Close modal">
+                <X size={24} className="text-gray-500" />
               </button>
             </div>
 
-            <p className="text-sm mb-4" style={{ color: '#6B7280' }}>
+            <p className="text-sm mb-4 text-gray-500">
               Select an available rider to assign this order
             </p>
 
             <div className="space-y-2">
               {onlineRiders.filter(r => r.status === 'available').map((rider) => (
                 <button
+                  type="button"
                   key={rider.id}
                   onClick={() => handleAssignRider(rider.id, rider.name)}
-                  className="w-full p-4 rounded-lg border text-left hover:border-blue-500 transition-colors"
-                  style={{ borderColor: '#E0E0E0' }}
+                  className="w-full p-4 rounded-lg border border-gray-300 text-left hover:border-blue-500 transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-semibold text-sm" style={{ color: '#1F2937' }}>
+                      <p className="font-semibold text-sm text-gray-800">
                         {rider.name}
                       </p>
-                      <p className="text-xs" style={{ color: '#6B7280' }}>
+                      <p className="text-xs text-gray-500">
                         ⭐ {rider.rating} · {rider.deliveriesToday} deliveries today
                       </p>
                     </div>

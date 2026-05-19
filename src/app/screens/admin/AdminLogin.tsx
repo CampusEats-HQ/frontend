@@ -13,11 +13,11 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-white flex items-center justify-center px-5">
       <div className="max-w-[400px] w-full">
         <div className="text-center mb-8">
-          <Shield size={48} style={{ color: '#6366F1', margin: '0 auto 16px' }} />
-          <h1 className="text-2xl font-bold mb-2" style={{ color: '#1F2937' }}>
+          <Shield size={48} className="text-indigo-500 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold mb-2 text-gray-800">
             CampusEats Admin
           </h1>
-          <p className="text-sm" style={{ color: '#6B7280' }}>
+          <p className="text-sm text-gray-500">
             Internal Portal
           </p>
         </div>
@@ -27,29 +27,26 @@ export default function AdminLogin() {
             <input
               type="email"
               placeholder="Email"
-              className="w-full h-[52px] px-4 rounded-lg border"
-              style={{ borderColor: '#E0E0E0' }}
+              className="w-full h-[52px] px-4 rounded-lg border border-gray-300"
               required
             />
             <input
               type="password"
               placeholder="Password"
-              className="w-full h-[52px] px-4 rounded-lg border"
-              style={{ borderColor: '#E0E0E0' }}
+              className="w-full h-[52px] px-4 rounded-lg border border-gray-300"
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full h-[52px] rounded-lg font-semibold mb-6"
-            style={{ backgroundColor: '#6366F1', color: 'white' }}
+            className="w-full h-[52px] rounded-lg font-semibold mb-6 bg-indigo-500 text-white"
           >
             Log In
           </button>
         </form>
 
-        <p className="text-xs text-center" style={{ color: '#6B7280' }}>
+        <p className="text-xs text-center text-gray-500">
           CampusEats Internal — Unauthorized access is prohibited
         </p>
       </div>

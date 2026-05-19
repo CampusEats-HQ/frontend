@@ -35,10 +35,10 @@ export default function RiderActiveDelivery() {
       <div className="max-w-[390px] mx-auto">
         {/* Top Bar */}
         <div className="px-5 py-4 flex items-center justify-between border-b border-gray-100">
-          <p className="font-semibold" style={{ color: '#1F2937' }}>
+          <p className="font-semibold text-gray-800">
             {activeDelivery.id}
           </p>
-          <a href="#" className="text-sm font-medium" style={{ color: '#6366F1' }}>
+          <a href="#" className="text-sm font-medium text-indigo-500">
             Need Help?
           </a>
         </div>
@@ -50,42 +50,36 @@ export default function RiderActiveDelivery() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center"
-                  style={{
-                    backgroundColor: currentStep >= 1 ? '#10B981' : '#F8F9FA',
-                  }}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 1 ? 'bg-emerald-500' : 'bg-gray-50'}`}
                 >
                   {currentStep > 1 ? (
                     <CheckCircle size={16} color="white" />
                   ) : (
-                    <span className="text-sm font-bold" style={{ color: currentStep === 1 ? 'white' : '#6B7280' }}>
+                    <span className={`text-sm font-bold ${currentStep === 1 ? 'text-white' : 'text-gray-500'}`}>
                       1
                     </span>
                   )}
                 </div>
-                <p className="text-xs font-medium" style={{ color: currentStep === 1 ? '#1F2937' : '#6B7280' }}>
+                <p className={`text-xs font-medium ${currentStep === 1 ? 'text-gray-800' : 'text-gray-500'}`}>
                   Pick up from restaurant
                 </p>
               </div>
             </div>
 
             {/* Connector Line */}
-            <div className="w-12 h-0.5" style={{ backgroundColor: currentStep >= 2 ? '#10B981' : '#E0E0E0' }} />
+            <div className={`w-12 h-0.5 ${currentStep >= 2 ? 'bg-emerald-500' : 'bg-gray-300'}`} />
 
             {/* Step 2 */}
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center"
-                  style={{
-                    backgroundColor: currentStep >= 2 ? '#6366F1' : '#F8F9FA',
-                  }}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 2 ? 'bg-indigo-500' : 'bg-gray-50'}`}
                 >
-                  <span className="text-sm font-bold" style={{ color: currentStep >= 2 ? 'white' : '#6B7280' }}>
+                  <span className={`text-sm font-bold ${currentStep >= 2 ? 'text-white' : 'text-gray-500'}`}>
                     2
                   </span>
                 </div>
-                <p className="text-xs font-medium" style={{ color: currentStep === 2 ? '#1F2937' : '#6B7280' }}>
+                <p className={`text-xs font-medium ${currentStep === 2 ? 'text-gray-800' : 'text-gray-500'}`}>
                   Deliver to customer
                 </p>
               </div>
@@ -96,26 +90,26 @@ export default function RiderActiveDelivery() {
         {/* Directions - Bold Text */}
         <div className="px-5 mb-6">
           {currentStep === 1 ? (
-            <div className="rounded-xl p-5" style={{ backgroundColor: '#FEF3C7' }}>
-              <p className="text-xs font-semibold mb-2" style={{ color: '#92400E' }}>
+            <div className="rounded-xl p-5 bg-amber-100">
+              <p className="text-xs font-semibold mb-2 text-amber-800">
                 PICK UP FROM
               </p>
-              <p className="text-xl font-bold" style={{ color: '#1F2937' }}>
+              <p className="text-xl font-bold text-gray-800">
                 {activeDelivery.restaurant.name}
               </p>
-              <p className="text-sm mt-1" style={{ color: '#6B7280' }}>
+              <p className="text-sm mt-1 text-gray-500">
                 {activeDelivery.restaurant.location}
               </p>
             </div>
           ) : (
-            <div className="rounded-xl p-5" style={{ backgroundColor: '#DBEAFE' }}>
-              <p className="text-xs font-semibold mb-2" style={{ color: '#1E3A8A' }}>
+            <div className="rounded-xl p-5 bg-blue-100">
+              <p className="text-xs font-semibold mb-2 text-blue-900">
                 DELIVER TO
               </p>
-              <p className="text-xl font-bold" style={{ color: '#1F2937' }}>
+              <p className="text-xl font-bold text-gray-800">
                 {activeDelivery.customer.location}
               </p>
-              <p className="text-sm mt-1" style={{ color: '#6B7280' }}>
+              <p className="text-sm mt-1 text-gray-500">
                 Customer: {activeDelivery.customer.name}
               </p>
             </div>
@@ -126,64 +120,63 @@ export default function RiderActiveDelivery() {
         <div className="px-5">
           {currentStep === 1 ? (
             // Going to Restaurant
-            <div className="rounded-xl p-5" style={{ backgroundColor: '#F8F9FA' }}>
-              <p className="text-lg font-bold mb-3" style={{ color: '#1F2937' }}>
+            <div className="rounded-xl p-5 bg-gray-50">
+              <p className="text-lg font-bold mb-3 text-gray-800">
                 {activeDelivery.restaurant.name}
               </p>
-              <p className="text-sm mb-4" style={{ color: '#6B7280' }}>
+              <p className="text-sm mb-4 text-gray-500">
                 {activeDelivery.restaurant.location}
               </p>
 
               <div className="mb-6">
-                <p className="text-xs font-semibold mb-2" style={{ color: '#6B7280' }}>
+                <p className="text-xs font-semibold mb-2 text-gray-500">
                   Items to collect:
                 </p>
                 {activeDelivery.items.map((item: string, idx: number) => (
-                  <p key={idx} className="text-sm mb-1" style={{ color: '#1F2937' }}>
+                  <p key={idx} className="text-sm mb-1 text-gray-800">
                     • {item}
                   </p>
                 ))}
               </div>
 
               <button
+                type="button"
                 onClick={handleConfirmPickup}
-                className="w-full h-[52px] rounded-lg font-semibold"
-                style={{ backgroundColor: '#10B981', color: 'white' }}
+                className="w-full h-[52px] rounded-lg font-semibold bg-emerald-500 text-white"
               >
                 Confirm Pickup
               </button>
             </div>
           ) : (
             // Going to Customer
-            <div className="rounded-xl p-5" style={{ backgroundColor: '#F8F9FA' }}>
-              <p className="text-sm mb-2" style={{ color: '#6B7280' }}>
+            <div className="rounded-xl p-5 bg-gray-50">
+              <p className="text-sm mb-2 text-gray-500">
                 Delivering to
               </p>
-              <p className="text-lg font-bold mb-4" style={{ color: '#1F2937' }}>
+              <p className="text-lg font-bold mb-4 text-gray-800">
                 {activeDelivery.customer.name}
               </p>
 
               <div className="mb-4">
-                <p className="font-semibold text-sm mb-1" style={{ color: '#1F2937' }}>
+                <p className="font-semibold text-sm mb-1 text-gray-800">
                   {activeDelivery.customer.location}
                 </p>
               </div>
 
               <a
                 href={`tel:${activeDelivery.customer.phone}`}
-                className="flex items-center justify-center gap-2 w-full h-12 rounded-lg mb-4 border"
-                style={{ borderColor: '#E0E0E0' }}
+                className="flex items-center justify-center gap-2 w-full h-12 rounded-lg mb-4 border border-gray-300"
               >
-                <Phone size={18} style={{ color: '#6366F1' }} />
-                <span className="font-medium" style={{ color: '#6366F1' }}>
+                <Phone size={18} className="text-indigo-500" />
+                <span className="font-medium text-indigo-500">
                   Call {activeDelivery.customer.name}
                 </span>
               </a>
 
               <button
+                type="button"
                 onClick={handleConfirmDelivery}
-                className="w-full h-[52px] rounded-lg font-semibold"
-                style={{ backgroundColor: '#6366F1', color: 'white' }}
+                className="w-full h-[52px] rounded-lg font-semibold bg-indigo-500 text-white"
               >
                 Confirm Delivery
               </button>

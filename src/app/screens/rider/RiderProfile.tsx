@@ -41,51 +41,48 @@ export default function RiderProfile() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="px-6 py-4 flex items-center border-b border-gray-200">
-        <button onClick={() => navigate('/rider/home')} className="mr-4">
-          <ArrowLeft size={24} style={{ color: '#1F2937' }} />
+        <button type="button" onClick={() => navigate('/rider/home')} className="mr-4" aria-label="Go back">
+          <ArrowLeft size={24} className="text-gray-800" />
         </button>
-        <h1 className="text-xl font-bold" style={{ color: '#1F2937' }}>
-          Profile & Settings
+        <h1 className="text-xl font-bold text-gray-800">
+          Profile &amp; Settings
         </h1>
       </div>
 
       <div className="px-6 py-6 space-y-6 max-w-4xl mx-auto">
         {/* Profile Info */}
-        <div className="rounded-lg p-5 border" style={{ borderColor: '#E0E0E0' }}>
+        <div className="rounded-lg p-5 border border-gray-300">
           <div className="flex items-center gap-4 mb-4">
-            <div
-              className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold"
-              style={{ backgroundColor: '#6366F1', color: 'white' }}
-            >
+            <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold bg-indigo-500 text-white">
               {rider.name.split(' ').map(n => n[0]).join('')}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-bold text-lg mb-1 truncate" style={{ color: '#1F2937' }}>
+              <p className="font-bold text-lg mb-1 truncate text-gray-800">
                 {rider.name}
               </p>
-              <p className="text-sm truncate" style={{ color: '#6B7280' }}>
+              <p className="text-sm truncate text-gray-500">
                 {rider.email}
               </p>
-              <p className="text-sm" style={{ color: '#6B7280' }}>
+              <p className="text-sm text-gray-500">
                 {rider.phone}
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 p-4 rounded-lg" style={{ backgroundColor: '#F8F9FA' }}>
+          <div className="grid grid-cols-2 gap-4 p-4 rounded-lg bg-gray-50">
             <div className="text-center">
-              <p className="text-xs mb-1" style={{ color: '#6B7280' }}>
+              <p className="text-xs mb-1 text-gray-500">
                 Rating
               </p>
-              <p className="text-2xl font-bold" style={{ color: '#1F2937' }}>
+              <p className="text-2xl font-bold text-gray-800">
                 ⭐ {rider.rating}
               </p>
             </div>
             <div className="text-center">
-              <p className="text-xs mb-1" style={{ color: '#6B7280' }}>
+              <p className="text-xs mb-1 text-gray-500">
                 Total Deliveries
               </p>
-              <p className="text-2xl font-bold" style={{ color: '#1F2937' }}>
+              <p className="text-2xl font-bold text-gray-800">
                 {rider.totalDeliveries}
               </p>
             </div>
@@ -93,15 +90,15 @@ export default function RiderProfile() {
         </div>
 
         {/* Bank Details */}
-        <div className="rounded-lg p-5 border" style={{ borderColor: '#E0E0E0' }}>
+        <div className="rounded-lg p-5 border border-gray-300">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-base" style={{ color: '#1F2937' }}>
+            <h3 className="font-bold text-base text-gray-800">
               Bank Account Details
             </h3>
             <button
+              type="button"
               onClick={() => setShowEditBank(true)}
-              className="flex items-center gap-1 text-sm font-medium"
-              style={{ color: '#6366F1' }}
+              className="flex items-center gap-1 text-sm font-medium text-indigo-500"
             >
               <Edit2 size={14} />
               Edit
@@ -109,57 +106,57 @@ export default function RiderProfile() {
           </div>
           <div className="space-y-3">
             <div>
-              <p className="text-xs mb-1" style={{ color: '#6B7280' }}>
+              <p className="text-xs mb-1 text-gray-500">
                 Bank Name
               </p>
-              <p className="text-sm font-semibold" style={{ color: '#1F2937' }}>
+              <p className="text-sm font-semibold text-gray-800">
                 {bankDetails.bankName}
               </p>
             </div>
             <div>
-              <p className="text-xs mb-1" style={{ color: '#6B7280' }}>
+              <p className="text-xs mb-1 text-gray-500">
                 Account Number
               </p>
-              <p className="text-sm font-semibold" style={{ color: '#1F2937' }}>
+              <p className="text-sm font-semibold text-gray-800">
                 {bankDetails.accountNumber}
               </p>
             </div>
           </div>
-          <div className="mt-4 p-3 rounded-lg" style={{ backgroundColor: '#FFFBEB' }}>
-            <p className="text-xs" style={{ color: '#F59E0B' }}>
+          <div className="mt-4 p-3 rounded-lg bg-amber-50">
+            <p className="text-xs text-amber-500">
               💡 Earnings are sent to this account every 48 hours
             </p>
           </div>
         </div>
 
         {/* Settings */}
-        <div className="rounded-lg border overflow-hidden" style={{ borderColor: '#E0E0E0' }}>
-          <h3 className="font-bold text-base p-5 border-b" style={{ color: '#1F2937', borderColor: '#F8F9FA' }}>
+        <div className="rounded-lg border border-gray-300 overflow-hidden">
+          <h3 className="font-bold text-base p-5 border-b border-gray-50 text-gray-800">
             Settings
           </h3>
-          <button className="w-full text-left px-5 py-4 border-b flex items-center justify-between hover:bg-gray-50" style={{ borderColor: '#F8F9FA' }}>
-            <span style={{ color: '#1F2937' }}>Notification Preferences</span>
-            <span style={{ color: '#6B7280' }}>›</span>
+          <button type="button" className="w-full text-left px-5 py-4 border-b border-gray-50 flex items-center justify-between hover:bg-gray-50">
+            <span className="text-gray-800">Notification Preferences</span>
+            <span className="text-gray-500">›</span>
           </button>
-          <button className="w-full text-left px-5 py-4 border-b flex items-center justify-between hover:bg-gray-50" style={{ borderColor: '#F8F9FA' }}>
-            <span style={{ color: '#1F2937' }}>Availability Schedule</span>
-            <span style={{ color: '#6B7280' }}>›</span>
+          <button type="button" className="w-full text-left px-5 py-4 border-b border-gray-50 flex items-center justify-between hover:bg-gray-50">
+            <span className="text-gray-800">Availability Schedule</span>
+            <span className="text-gray-500">›</span>
           </button>
-          <button className="w-full text-left px-5 py-4 border-b flex items-center justify-between hover:bg-gray-50" style={{ borderColor: '#F8F9FA' }}>
-            <span style={{ color: '#1F2937' }}>Help & Support</span>
-            <span style={{ color: '#6B7280' }}>›</span>
+          <button type="button" className="w-full text-left px-5 py-4 border-b border-gray-50 flex items-center justify-between hover:bg-gray-50">
+            <span className="text-gray-800">Help &amp; Support</span>
+            <span className="text-gray-500">›</span>
           </button>
-          <button className="w-full text-left px-5 py-4 flex items-center justify-between hover:bg-gray-50">
-            <span style={{ color: '#1F2937' }}>About CampusEats</span>
-            <span style={{ color: '#6B7280' }}>›</span>
+          <button type="button" className="w-full text-left px-5 py-4 flex items-center justify-between hover:bg-gray-50">
+            <span className="text-gray-800">About CampusEats</span>
+            <span className="text-gray-500">›</span>
           </button>
         </div>
 
         {/* Logout */}
         <button
+          type="button"
           onClick={handleLogout}
-          className="w-full h-12 rounded-lg font-semibold"
-          style={{ backgroundColor: '#F8F9FA', color: '#EF4444' }}
+          className="w-full h-12 rounded-lg font-semibold bg-gray-50 text-red-500"
         >
           Log Out
         </button>
@@ -170,24 +167,24 @@ export default function RiderProfile() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
           <div className="bg-white rounded-xl max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold" style={{ color: '#1F2937' }}>
+              <h2 className="text-lg font-bold text-gray-800">
                 Update Bank Details
               </h2>
-              <button onClick={() => setShowEditBank(false)}>
-                <X size={24} style={{ color: '#6B7280' }} />
+              <button type="button" onClick={() => setShowEditBank(false)} aria-label="Close modal">
+                <X size={24} className="text-gray-500" />
               </button>
             </div>
 
             <form onSubmit={handleUpdateBank} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: '#1F2937' }}>
+                <label htmlFor="bank-name" className="block text-sm font-medium mb-2 text-gray-800">
                   Bank Name
                 </label>
                 <select
+                  id="bank-name"
                   value={bankDetails.bankName}
                   onChange={(e) => setBankDetails({ ...bankDetails, bankName: e.target.value })}
-                  className="w-full h-12 px-4 rounded-lg border"
-                  style={{ borderColor: '#E0E0E0' }}
+                  className="w-full h-12 px-4 rounded-lg border border-gray-300"
                   required
                 >
                   {banks.map((bank) => (
@@ -199,7 +196,7 @@ export default function RiderProfile() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: '#1F2937' }}>
+                <label className="block text-sm font-medium mb-2 text-gray-800">
                   Account Number
                 </label>
                 <input
@@ -207,16 +204,14 @@ export default function RiderProfile() {
                   value={bankDetails.accountNumber}
                   onChange={(e) => setBankDetails({ ...bankDetails, accountNumber: e.target.value })}
                   placeholder="0123456789"
-                  className="w-full h-12 px-4 rounded-lg border"
-                  style={{ borderColor: '#E0E0E0' }}
+                  className="w-full h-12 px-4 rounded-lg border border-gray-300"
                   required
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full h-12 rounded-lg font-semibold"
-                style={{ backgroundColor: '#6366F1', color: 'white' }}
+                className="w-full h-12 rounded-lg font-semibold bg-indigo-500 text-white"
               >
                 Update Bank Details
               </button>

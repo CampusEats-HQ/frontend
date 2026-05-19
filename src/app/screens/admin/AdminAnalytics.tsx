@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { LayoutDashboard, ClipboardList, Users, DollarSign, Bell, User, TrendingUp, BarChart3 } from 'lucide-react';
-import { BarChart, Bar, LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { LayoutDashboard, ClipboardList, Users, DollarSign, Bell, User, BarChart3 } from 'lucide-react';
+import { BarChart, Bar, LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const revenueData = [
   { month: 'Jan', revenue: 1245000, orders: 1042 },
@@ -58,41 +58,41 @@ export default function AdminAnalytics() {
         {/* Top Bar */}
         <div className="px-6 py-4 flex items-center justify-between border-b border-gray-200">
           <div className="flex items-center gap-6">
-            <h1 className="text-xl font-bold" style={{ color: '#1F2937' }}>
+            <h1 className="text-xl font-bold text-gray-800">
               CampusEats Admin
             </h1>
             <nav className="flex gap-4">
               <Link to="/admin/dashboard" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <LayoutDashboard size={18} style={{ color: '#6B7280' }} />
-                <span className="text-sm" style={{ color: '#6B7280' }}>Dashboard</span>
+                <LayoutDashboard size={18} className="text-gray-500" />
+                <span className="text-sm text-gray-500">Dashboard</span>
               </Link>
               <Link to="/admin/orders" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <ClipboardList size={18} style={{ color: '#6B7280' }} />
-                <span className="text-sm" style={{ color: '#6B7280' }}>Orders</span>
+                <ClipboardList size={18} className="text-gray-500" />
+                <span className="text-sm text-gray-500">Orders</span>
               </Link>
               <Link to="/admin/people" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <Users size={18} style={{ color: '#6B7280' }} />
-                <span className="text-sm" style={{ color: '#6B7280' }}>People</span>
+                <Users size={18} className="text-gray-500" />
+                <span className="text-sm text-gray-500">People</span>
               </Link>
-              <Link to="/admin/analytics" className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ backgroundColor: '#DBEAFE', color: '#6366F1' }}>
+              <Link to="/admin/analytics" className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-100 text-indigo-500">
                 <BarChart3 size={18} />
                 <span className="text-sm font-medium">Analytics</span>
               </Link>
               <Link to="/admin/finance" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <DollarSign size={18} style={{ color: '#6B7280' }} />
-                <span className="text-sm" style={{ color: '#6B7280' }}>Finance</span>
+                <DollarSign size={18} className="text-gray-500" />
+                <span className="text-sm text-gray-500">Finance</span>
               </Link>
             </nav>
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative">
-              <Bell size={20} style={{ color: '#6B7280' }} />
+            <button type="button" className="relative" aria-label="Notifications">
+              <Bell size={20} className="text-gray-500" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#6366F1' }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-indigo-500">
                 <User size={16} color="white" />
               </div>
-              <span className="text-sm font-medium" style={{ color: '#1F2937' }}>Admin</span>
+              <span className="text-sm font-medium text-gray-800">Admin</span>
             </div>
           </div>
         </div>
@@ -100,7 +100,7 @@ export default function AdminAnalytics() {
         <div className="px-6 py-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold" style={{ color: '#1F2937' }}>
+            <h2 className="text-2xl font-bold text-gray-800">
               Platform Analytics
             </h2>
 
@@ -108,14 +108,10 @@ export default function AdminAnalytics() {
             <div className="flex gap-2">
               {(['week', 'month', 'year'] as const).map((range) => (
                 <button
+                  type="button"
                   key={range}
                   onClick={() => setTimeRange(range)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium capitalize whitespace-nowrap"
-                  style={
-                    timeRange === range
-                      ? { backgroundColor: '#6366F1', color: 'white' }
-                      : { backgroundColor: '#F8F9FA', color: '#6B7280' }
-                  }
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize whitespace-nowrap ${timeRange === range ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-500'}`}
                 >
                   This {range}
                 </button>
@@ -125,38 +121,38 @@ export default function AdminAnalytics() {
 
           {/* Key Metrics */}
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-            <div className="rounded-lg p-4 border" style={{ borderColor: '#E0E0E0' }}>
-              <p className="text-xs mb-2" style={{ color: '#6B7280' }}>Total Revenue</p>
-              <p className="text-2xl font-bold break-words" style={{ color: '#1F2937' }}>₦1.92M</p>
-              <p className="text-xs" style={{ color: '#10B981' }}>+14% this month</p>
+            <div className="rounded-lg p-4 border border-gray-300">
+              <p className="text-xs mb-2 text-gray-500">Total Revenue</p>
+              <p className="text-2xl font-bold break-words text-gray-800">₦1.92M</p>
+              <p className="text-xs text-emerald-500">+14% this month</p>
             </div>
-            <div className="rounded-lg p-4 border" style={{ borderColor: '#E0E0E0' }}>
-              <p className="text-xs mb-2" style={{ color: '#6B7280' }}>Total Orders</p>
-              <p className="text-2xl font-bold" style={{ color: '#1F2937' }}>1,602</p>
-              <p className="text-xs" style={{ color: '#10B981' }}>+8% this month</p>
+            <div className="rounded-lg p-4 border border-gray-300">
+              <p className="text-xs mb-2 text-gray-500">Total Orders</p>
+              <p className="text-2xl font-bold text-gray-800">1,602</p>
+              <p className="text-xs text-emerald-500">+8% this month</p>
             </div>
-            <div className="rounded-lg p-4 border" style={{ borderColor: '#E0E0E0' }}>
-              <p className="text-xs mb-2" style={{ color: '#6B7280' }}>Active Users</p>
-              <p className="text-2xl font-bold" style={{ color: '#1F2937' }}>2,048</p>
-              <p className="text-xs" style={{ color: '#10B981' }}>+234 this week</p>
+            <div className="rounded-lg p-4 border border-gray-300">
+              <p className="text-xs mb-2 text-gray-500">Active Users</p>
+              <p className="text-2xl font-bold text-gray-800">2,048</p>
+              <p className="text-xs text-emerald-500">+234 this week</p>
             </div>
-            <div className="rounded-lg p-4 border" style={{ borderColor: '#E0E0E0' }}>
-              <p className="text-xs mb-2" style={{ color: '#6B7280' }}>Avg Order Value</p>
-              <p className="text-2xl font-bold" style={{ color: '#1F2937' }}>₦1,200</p>
-              <p className="text-xs" style={{ color: '#10B981' }}>+3% this month</p>
+            <div className="rounded-lg p-4 border border-gray-300">
+              <p className="text-xs mb-2 text-gray-500">Avg Order Value</p>
+              <p className="text-2xl font-bold text-gray-800">₦1,200</p>
+              <p className="text-xs text-emerald-500">+3% this month</p>
             </div>
-            <div className="rounded-lg p-4 border" style={{ borderColor: '#E0E0E0' }}>
-              <p className="text-xs mb-2" style={{ color: '#6B7280' }}>Success Rate</p>
-              <p className="text-2xl font-bold" style={{ color: '#1F2937' }}>95.2%</p>
-              <p className="text-xs" style={{ color: '#EF4444' }}>-1% this month</p>
+            <div className="rounded-lg p-4 border border-gray-300">
+              <p className="text-xs mb-2 text-gray-500">Success Rate</p>
+              <p className="text-2xl font-bold text-gray-800">95.2%</p>
+              <p className="text-xs text-red-500">-1% this month</p>
             </div>
           </div>
 
           {/* Charts Row 1 */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Revenue Growth */}
-            <div className="rounded-lg p-5 border" style={{ borderColor: '#E0E0E0' }}>
-              <h3 className="font-bold text-base mb-4" style={{ color: '#1F2937' }}>
+            <div className="rounded-lg p-5 border border-gray-300">
+              <h3 className="font-bold text-base mb-4 text-gray-800">
                 Revenue Growth (Last 5 Months)
               </h3>
               <ResponsiveContainer width="100%" height={250}>
@@ -177,8 +173,8 @@ export default function AdminAnalytics() {
             </div>
 
             {/* Orders by Time */}
-            <div className="rounded-lg p-5 border" style={{ borderColor: '#E0E0E0' }}>
-              <h3 className="font-bold text-base mb-4" style={{ color: '#1F2937' }}>
+            <div className="rounded-lg p-5 border border-gray-300">
+              <h3 className="font-bold text-base mb-4 text-gray-800">
                 Orders by Time of Day
               </h3>
               <ResponsiveContainer width="100%" height={250}>
@@ -196,8 +192,8 @@ export default function AdminAnalytics() {
           {/* Charts Row 2 */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Vendor Performance */}
-            <div className="rounded-lg p-5 border" style={{ borderColor: '#E0E0E0' }}>
-              <h3 className="font-bold text-base mb-4" style={{ color: '#1F2937' }}>
+            <div className="rounded-lg p-5 border border-gray-300">
+              <h3 className="font-bold text-base mb-4 text-gray-800">
                 Top Vendors
               </h3>
               <ResponsiveContainer width="100%" height={250}>
@@ -212,8 +208,8 @@ export default function AdminAnalytics() {
             </div>
 
             {/* Order Status Distribution */}
-            <div className="rounded-lg p-5 border" style={{ borderColor: '#E0E0E0' }}>
-              <h3 className="font-bold text-base mb-4" style={{ color: '#1F2937' }}>
+            <div className="rounded-lg p-5 border border-gray-300">
+              <h3 className="font-bold text-base mb-4 text-gray-800">
                 Order Status Distribution
               </h3>
               <ResponsiveContainer width="100%" height={250}>
@@ -241,26 +237,23 @@ export default function AdminAnalytics() {
           {/* Tables Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Rider Performance */}
-            <div className="rounded-lg border" style={{ borderColor: '#E0E0E0' }}>
-              <h3 className="font-bold text-base p-5 border-b" style={{ color: '#1F2937', borderColor: '#F8F9FA' }}>
+            <div className="rounded-lg border border-gray-300">
+              <h3 className="font-bold text-base p-5 border-b border-gray-100 text-gray-800">
                 Top Riders
               </h3>
-              <div className="divide-y" style={{ borderColor: '#F8F9FA' }}>
+              <div className="divide-y divide-gray-100">
                 {riderPerformanceData.map((rider, index) => (
                   <div key={index} className="p-4 flex items-center justify-between">
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm mb-1 truncate" style={{ color: '#1F2937' }}>
+                      <p className="font-semibold text-sm mb-1 truncate text-gray-800">
                         {rider.name}
                       </p>
-                      <p className="text-xs" style={{ color: '#6B7280' }}>
+                      <p className="text-xs text-gray-500">
                         {rider.deliveries} deliveries · ⭐ {rider.rating} · {rider.avgTime} min avg
                       </p>
                     </div>
                     <div className="flex-shrink-0 ml-3">
-                      <div
-                        className="px-3 py-1 rounded text-xs font-medium"
-                        style={{ backgroundColor: '#D1FAE5', color: '#10B981' }}
-                      >
+                      <div className="px-3 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-500">
                         Top Performer
                       </div>
                     </div>
@@ -270,8 +263,8 @@ export default function AdminAnalytics() {
             </div>
 
             {/* Customer Growth */}
-            <div className="rounded-lg p-5 border" style={{ borderColor: '#E0E0E0' }}>
-              <h3 className="font-bold text-base mb-4" style={{ color: '#1F2937' }}>
+            <div className="rounded-lg p-5 border border-gray-300">
+              <h3 className="font-bold text-base mb-4 text-gray-800">
                 Customer Growth
               </h3>
               <ResponsiveContainer width="100%" height={200}>

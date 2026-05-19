@@ -10,30 +10,30 @@ export default function RiderEarnings() {
       <div className="max-w-[390px] mx-auto">
         {/* Header */}
         <div className="px-5 py-4 flex items-center gap-4 border-b border-gray-100">
-          <button onClick={() => navigate(-1)}>
-            <ArrowLeft size={24} style={{ color: '#6366F1' }} />
+          <button type="button" onClick={() => navigate(-1)} aria-label="Go back">
+            <ArrowLeft size={24} className="text-indigo-500" />
           </button>
-          <h1 className="text-lg font-bold" style={{ color: '#1F2937' }}>
+          <h1 className="text-lg font-bold text-gray-800">
             Earnings
           </h1>
         </div>
 
         <div className="px-5 py-6">
           {/* This Week Summary */}
-          <div className="rounded-xl p-6 mb-6" style={{ backgroundColor: '#6366F1' }}>
-            <p className="text-sm mb-2" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+          <div className="rounded-xl p-6 mb-6 bg-indigo-500">
+            <p className="text-sm mb-2 text-white/80">
               This Week
             </p>
             <p className="text-3xl font-bold text-white mb-1">
               ₦{riderStats.earningsThisWeek.toLocaleString()}
             </p>
-            <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+            <p className="text-sm text-white/80">
               From {riderStats.deliveriesToday} deliveries
             </p>
           </div>
 
           {/* History */}
-          <h2 className="text-sm font-semibold mb-4" style={{ color: '#1F2937' }}>
+          <h2 className="text-sm font-semibold mb-4 text-gray-800">
             Recent Earnings
           </h2>
 
@@ -41,22 +41,21 @@ export default function RiderEarnings() {
             {earningsHistory.map((entry, idx) => (
               <div
                 key={idx}
-                className="flex items-center justify-between p-4 rounded-lg"
-                style={{ backgroundColor: '#F8F9FA' }}
+                className="flex items-center justify-between p-4 rounded-lg bg-gray-50"
               >
                 <div>
-                  <p className="font-medium text-sm mb-1" style={{ color: '#1F2937' }}>
+                  <p className="font-medium text-sm mb-1 text-gray-800">
                     {new Date(entry.date).toLocaleDateString('en-US', {
                       month: 'short',
                       day: 'numeric',
                       year: 'numeric',
                     })}
                   </p>
-                  <p className="text-xs" style={{ color: '#6B7280' }}>
+                  <p className="text-xs text-gray-500">
                     {entry.deliveries} deliveries
                   </p>
                 </div>
-                <p className="font-bold" style={{ color: '#10B981' }}>
+                <p className="font-bold text-emerald-500">
                   ₦{entry.amount.toLocaleString()}
                 </p>
               </div>
@@ -64,8 +63,8 @@ export default function RiderEarnings() {
           </div>
 
           {/* Payout Info */}
-          <div className="mt-8 p-4 rounded-lg" style={{ backgroundColor: '#FEF3C7' }}>
-            <p className="text-xs" style={{ color: '#92400E' }}>
+          <div className="mt-8 p-4 rounded-lg bg-amber-100">
+            <p className="text-xs text-amber-800">
               💰 Earnings are paid out every Friday to your registered bank account.
             </p>
           </div>

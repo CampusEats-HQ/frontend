@@ -39,10 +39,10 @@ export default function RiderLogin() {
     <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
       <div className="px-6 py-4 flex items-center border-b border-gray-200">
-        <button onClick={() => navigate('/')} className="mr-4">
-          <ArrowLeft size={24} style={{ color: '#1F2937' }} />
+        <button type="button" onClick={() => navigate('/')} className="mr-4" aria-label="Go back">
+          <ArrowLeft size={24} className="text-gray-800" />
         </button>
-        <h1 className="text-xl font-bold" style={{ color: '#1F2937' }}>
+        <h1 className="text-xl font-bold text-gray-800">
           Rider Login
         </h1>
       </div>
@@ -51,20 +51,20 @@ export default function RiderLogin() {
       <div className="flex-1 flex items-center justify-center px-6 py-8">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <div className="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ backgroundColor: '#6366F1' }}>
+            <div className="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center bg-indigo-500">
               <span className="text-4xl">🏍️</span>
             </div>
-            <h2 className="text-2xl font-bold mb-2" style={{ color: '#1F2937' }}>
+            <h2 className="text-2xl font-bold mb-2 text-gray-800">
               Welcome Back, Rider!
             </h2>
-            <p className="text-sm" style={{ color: '#6B7280' }}>
+            <p className="text-sm text-gray-500">
               Login to start accepting deliveries
             </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: '#1F2937' }}>
+              <label className="block text-sm font-medium mb-2 text-gray-800">
                 Email Address
               </label>
               <input
@@ -72,14 +72,13 @@ export default function RiderLogin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your.email@students.unilag.edu.ng"
-                className="w-full h-12 px-4 rounded-lg border"
-                style={{ borderColor: '#E0E0E0' }}
+                className="w-full h-12 px-4 rounded-lg border border-gray-300"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: '#1F2937' }}>
+              <label className="block text-sm font-medium mb-2 text-gray-800">
                 Password
               </label>
               <input
@@ -87,36 +86,34 @@ export default function RiderLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className="w-full h-12 px-4 rounded-lg border"
-                style={{ borderColor: '#E0E0E0' }}
+                className="w-full h-12 px-4 rounded-lg border border-gray-300"
                 required
               />
             </div>
 
             <button
               type="submit"
-              className="w-full h-12 rounded-lg font-semibold"
-              style={{ backgroundColor: '#6366F1', color: 'white' }}
+              className="w-full h-12 rounded-lg font-semibold bg-indigo-500 text-white"
             >
               Login
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm" style={{ color: '#6B7280' }}>
+            <p className="text-sm text-gray-500">
               Don't have an account?{' '}
               <button
+                type="button"
                 onClick={() => navigate('/rider/signup')}
-                className="font-semibold"
-                style={{ color: '#6366F1' }}
+                className="font-semibold text-indigo-500"
               >
                 Sign up as a rider
               </button>
             </p>
           </div>
 
-          <div className="mt-8 p-4 rounded-lg" style={{ backgroundColor: '#F8F9FA' }}>
-            <p className="text-xs text-center" style={{ color: '#6B7280' }}>
+          <div className="mt-8 p-4 rounded-lg bg-gray-50">
+            <p className="text-xs text-center text-gray-500">
               Only approved riders can login. Check your email for approval status.
             </p>
           </div>

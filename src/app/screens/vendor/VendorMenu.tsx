@@ -20,18 +20,15 @@ export default function VendorMenu() {
       <div className="max-w-[1024px] mx-auto">
         {/* Header */}
         <div className="px-5 py-4 border-b border-gray-100">
-          <h1 className="text-lg font-bold" style={{ color: '#1F2937' }}>
+          <h1 className="text-lg font-bold text-gray-800">
             Menu Management
           </h1>
         </div>
 
         {/* Search */}
         <div className="px-5 py-4">
-          <div
-            className="flex items-center gap-3 px-4 h-12 rounded-lg"
-            style={{ backgroundColor: '#F8F9FA' }}
-          >
-            <Search size={18} style={{ color: '#6B7280' }} />
+          <div className="flex items-center gap-3 px-4 h-12 rounded-lg bg-gray-50">
+            <Search size={18} className="text-gray-500" />
             <input
               type="text"
               placeholder="Search menu items..."
@@ -48,17 +45,13 @@ export default function VendorMenu() {
             {categories.map((cat) => (
               <button
                 key={cat}
+                type="button"
                 onClick={() => setActiveCategory(cat)}
-                className="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap"
-                style={
+                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
                   activeCategory === cat
-                    ? { backgroundColor: '#6366F1', color: 'white' }
-                    : {
-                        backgroundColor: 'white',
-                        border: '1px solid #E0E0E0',
-                        color: '#1F2937',
-                      }
-                }
+                    ? 'bg-indigo-500 text-white'
+                    : 'bg-white border border-gray-300 text-gray-800'
+                }`}
               >
                 {cat}
               </button>
@@ -71,25 +64,28 @@ export default function VendorMenu() {
           <div className="space-y-3">
             {filteredItems.map((item) => (
               <div key={item.id} className="flex items-center gap-3 p-3 rounded-lg border border-gray-200">
-                <div
-                  className="w-16 h-16 rounded-lg bg-cover bg-center flex-shrink-0"
-                  style={{ backgroundImage: `url(${item.image})` }}
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
                 />
                 <div className="flex-1">
-                  <h3 className="font-semibold text-sm mb-0.5" style={{ color: '#1F2937' }}>
+                  <h3 className="font-semibold text-sm mb-0.5 text-gray-800">
                     {item.name}
                   </h3>
-                  <p className="text-sm font-semibold mb-1" style={{ color: '#F59E0B' }}>
+                  <p className="text-sm font-semibold mb-1 text-amber-500">
                     ₦{item.price}
                   </p>
-                  <p className="text-xs" style={{ color: '#6B7280' }}>
+                  <p className="text-xs text-gray-500">
                     {item.prepTime} prep time
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <button
+                    type="button"
+                    aria-label={`Toggle availability for ${item.name}`}
                     className={`w-12 h-6 rounded-full relative transition-colors ${
-                      item.available ? 'bg-[#10B981]' : 'bg-[#D1D5DB]'
+                      item.available ? 'bg-emerald-500' : 'bg-gray-300'
                     }`}
                     onClick={() => alert(`Toggle availability for ${item.name}`)}
                   >
@@ -99,8 +95,8 @@ export default function VendorMenu() {
                       }`}
                     />
                   </button>
-                  <Link to={`/vendor/menu/${item.id}`}>
-                    <Edit size={18} style={{ color: '#6B7280' }} />
+                  <Link to={`/vendor/menu/${item.id}`} aria-label={`Edit ${item.name}`}>
+                    <Edit size={18} className="text-gray-500" />
                   </Link>
                 </div>
               </div>
@@ -111,8 +107,8 @@ export default function VendorMenu() {
         {/* Floating Add Button */}
         <Link
           to="/vendor/menu/add"
-          className="fixed bottom-24 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-lg"
-          style={{ backgroundColor: '#6366F1' }}
+          aria-label="Add new menu item"
+          className="fixed bottom-24 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-lg bg-indigo-500"
         >
           <Plus size={24} color="white" />
         </Link>
@@ -121,26 +117,26 @@ export default function VendorMenu() {
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100">
           <div className="max-w-[1024px] mx-auto flex justify-around py-3">
             <Link to="/vendor/dashboard" className="flex flex-col items-center gap-1">
-              <LayoutDashboard size={20} style={{ color: '#6B7280' }} />
-              <span className="text-xs" style={{ color: '#6B7280' }}>
+              <LayoutDashboard size={20} className="text-gray-500" />
+              <span className="text-xs text-gray-500">
                 Dashboard
               </span>
             </Link>
             <Link to="/vendor/orders" className="flex flex-col items-center gap-1">
-              <ClipboardList size={20} style={{ color: '#6B7280' }} />
-              <span className="text-xs" style={{ color: '#6B7280' }}>
+              <ClipboardList size={20} className="text-gray-500" />
+              <span className="text-xs text-gray-500">
                 Orders
               </span>
             </Link>
             <Link to="/vendor/menu" className="flex flex-col items-center gap-1">
-              <UtensilsCrossed size={20} style={{ color: '#6366F1' }} />
-              <span className="text-xs font-medium" style={{ color: '#6366F1' }}>
+              <UtensilsCrossed size={20} className="text-indigo-500" />
+              <span className="text-xs font-medium text-indigo-500">
                 Menu
               </span>
             </Link>
             <Link to="/vendor/earnings" className="flex flex-col items-center gap-1">
-              <DollarSign size={20} style={{ color: '#6B7280' }} />
-              <span className="text-xs" style={{ color: '#6B7280' }}>
+              <DollarSign size={20} className="text-gray-500" />
+              <span className="text-xs text-gray-500">
                 Earnings
               </span>
             </Link>

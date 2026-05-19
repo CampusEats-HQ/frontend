@@ -13,29 +13,29 @@ export default function OrderSuccess() {
       <div className="max-w-[390px] w-full md:max-w-md text-center">
         {/* Success Icon */}
         <div className="flex justify-center mb-6">
-          <CheckCircle size={64} style={{ color: '#10B981' }} />
+          <CheckCircle size={64} className="text-emerald-500" />
         </div>
 
         {/* Title */}
-        <h1 className="text-[22px] font-bold mb-2" style={{ color: '#1F2937' }}>
+        <h1 className="text-[22px] font-bold mb-2 text-gray-800">
           Order placed! 🎉
         </h1>
-        <p className="text-sm mb-8" style={{ color: '#6B7280' }}>
+        <p className="text-sm mb-8 text-gray-500">
           Emeka will pick up your food in ~5 mins
         </p>
 
         {/* Order Summary */}
-        <div className="rounded-lg p-4 mb-8" style={{ backgroundColor: '#F8F9FA' }}>
+        <div className="rounded-lg p-4 mb-8 bg-gray-50">
           <div className="flex justify-between items-center">
             <div className="text-left">
-              <p className="font-semibold text-sm mb-1" style={{ color: '#1F2937' }}>
+              <p className="font-semibold text-sm mb-1 text-gray-800">
                 Order #{orderId}
               </p>
-              <p className="text-xs" style={{ color: '#6B7280' }}>
+              <p className="text-xs text-gray-500">
                 Mavise Grill
               </p>
             </div>
-            <p className="font-bold" style={{ color: '#6366F1' }}>
+            <p className="font-bold text-indigo-500">
               ₦{total}
             </p>
           </div>
@@ -44,21 +44,21 @@ export default function OrderSuccess() {
         {/* Action Buttons */}
         <div className="space-y-3">
           <button
+            type="button"
             onClick={() => {
               navigate(`/tracking/${orderId}`);
             }}
-            className="w-full h-[52px] rounded-lg font-semibold"
-            style={{ backgroundColor: '#6366F1', color: 'white' }}
+            className="w-full h-[52px] rounded-lg font-semibold bg-indigo-500 text-white"
           >
             Track my order
           </button>
           <button
+            type="button"
             onClick={() => {
               clearCart();
               navigate('/home');
             }}
-            className="w-full h-[52px] rounded-lg font-medium border"
-            style={{ borderColor: '#E0E0E0', color: '#1F2937' }}
+            className="w-full h-[52px] rounded-lg font-medium border border-gray-200 text-gray-800"
           >
             Back to Home
           </button>

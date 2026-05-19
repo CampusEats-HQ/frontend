@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { ArrowLeft, Plus, MapPin, X, Home, Book, Building2 } from 'lucide-react';
+import { ArrowLeft, Plus, MapPin, X, Home, Book } from 'lucide-react';
 import { toast } from 'sonner';
 
 const defaultAddresses = [
@@ -68,17 +68,18 @@ export default function SavedAddresses() {
       {/* Header */}
       <div className="px-6 py-4 flex items-center justify-between border-b border-gray-200">
         <div className="flex items-center">
-          <button onClick={() => navigate('/profile')} className="mr-4">
-            <ArrowLeft size={24} style={{ color: '#1F2937' }} />
+          <button type="button" onClick={() => navigate('/profile')} className="mr-4" aria-label="Go back to profile">
+            <ArrowLeft size={24} className="text-gray-800" />
           </button>
-          <h1 className="text-xl font-bold" style={{ color: '#1F2937' }}>
+          <h1 className="text-xl font-bold text-gray-800">
             Saved Addresses
           </h1>
         </div>
         <button
+          type="button"
           onClick={() => setShowAddModal(true)}
-          className="p-2 rounded-lg"
-          style={{ backgroundColor: '#6366F1' }}
+          className="p-2 rounded-lg bg-indigo-500"
+          aria-label="Add new address"
         >
           <Plus size={20} color="white" />
         </button>
@@ -91,52 +92,48 @@ export default function SavedAddresses() {
           return (
             <div
               key={address.id}
-              className="rounded-lg p-4 border"
-              style={{
-                borderColor: address.isDefault ? '#6366F1' : '#E0E0E0',
-                backgroundColor: address.isDefault ? '#EEF2FF' : 'white',
-              }}
+              className={`rounded-lg p-4 border ${
+                address.isDefault
+                  ? 'border-indigo-500 bg-indigo-50'
+                  : 'border-gray-200 bg-white'
+              }`}
             >
               <div className="flex items-start gap-3">
-                <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: '#F8F9FA' }}
-                >
-                  <Icon size={20} style={{ color: '#6366F1' }} />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-gray-50">
+                  <Icon size={20} className="text-indigo-500" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="font-bold text-base" style={{ color: '#1F2937' }}>
+                    <p className="font-bold text-base text-gray-800">
                       {address.label}
                     </p>
                     {address.isDefault && (
-                      <span
-                        className="px-2 py-0.5 rounded text-xs font-medium"
-                        style={{ backgroundColor: '#6366F1', color: 'white' }}
-                      >
+                      <span className="px-2 py-0.5 rounded text-xs font-medium bg-indigo-500 text-white">
                         Default
                       </span>
                     )}
                   </div>
-                  <p className="text-sm mb-1" style={{ color: '#1F2937' }}>
+                  <p className="text-sm mb-1 text-gray-800">
                     {address.name}
                   </p>
-                  <p className="text-xs" style={{ color: '#6B7280' }}>
+                  <p className="text-xs text-gray-500">
                     {address.details}
                   </p>
                 </div>
                 <button
+                  type="button"
                   onClick={() => handleDelete(address.id)}
                   className="p-2 flex-shrink-0"
+                  aria-label={`Delete ${address.label} address`}
                 >
-                  <X size={20} style={{ color: '#6B7280' }} />
+                  <X size={20} className="text-gray-500" />
                 </button>
               </div>
               {!address.isDefault && (
                 <button
+                  type="button"
                   onClick={() => handleSetDefault(address.id)}
-                  className="mt-3 w-full h-9 rounded-lg text-sm font-medium"
-                  style={{ backgroundColor: '#F8F9FA', color: '#6366F1' }}
+                  className="mt-3 w-full h-9 rounded-lg text-sm font-medium bg-gray-50 text-indigo-500"
                 >
                   Set as Default
                 </button>
@@ -147,17 +144,17 @@ export default function SavedAddresses() {
 
         {addresses.length === 0 && (
           <div className="text-center py-12">
-            <MapPin size={48} style={{ color: '#E0E0E0', margin: '0 auto 16px' }} />
-            <p className="text-lg font-semibold mb-2" style={{ color: '#1F2937' }}>
+            <MapPin size={48} className="text-gray-200 mx-auto mb-4" />
+            <p className="text-lg font-semibold mb-2 text-gray-800">
               No saved addresses
             </p>
-            <p className="text-sm mb-6" style={{ color: '#6B7280' }}>
+            <p className="text-sm mb-6 text-gray-500">
               Add your frequent delivery locations
             </p>
             <button
+              type="button"
               onClick={() => setShowAddModal(true)}
-              className="px-6 h-12 rounded-lg font-semibold"
-              style={{ backgroundColor: '#6366F1', color: 'white' }}
+              className="px-6 h-12 rounded-lg font-semibold bg-indigo-500 text-white"
             >
               Add Address
             </button>
@@ -170,64 +167,63 @@ export default function SavedAddresses() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
           <div className="bg-white rounded-xl max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold" style={{ color: '#1F2937' }}>
+              <h2 className="text-lg font-bold text-gray-800">
                 Add New Address
               </h2>
-              <button onClick={() => setShowAddModal(false)}>
-                <X size={24} style={{ color: '#6B7280' }} />
+              <button type="button" onClick={() => setShowAddModal(false)} aria-label="Close modal">
+                <X size={24} className="text-gray-500" />
               </button>
             </div>
 
             <form onSubmit={handleAddAddress} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: '#1F2937' }}>
+                <label htmlFor="address-label" className="block text-sm font-medium mb-2 text-gray-800">
                   Label (e.g., Home, Class, Library)
                 </label>
                 <input
+                  id="address-label"
                   type="text"
                   value={newAddress.label}
                   onChange={(e) => setNewAddress({ ...newAddress, label: e.target.value })}
                   placeholder="Hostel"
-                  className="w-full h-12 px-4 rounded-lg border"
-                  style={{ borderColor: '#E0E0E0' }}
+                  className="w-full h-12 px-4 rounded-lg border border-gray-200"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: '#1F2937' }}>
+                <label htmlFor="address-name" className="block text-sm font-medium mb-2 text-gray-800">
                   Location Name
                 </label>
                 <input
+                  id="address-name"
                   type="text"
                   value={newAddress.name}
                   onChange={(e) => setNewAddress({ ...newAddress, name: e.target.value })}
                   placeholder="Fabian House"
-                  className="w-full h-12 px-4 rounded-lg border"
-                  style={{ borderColor: '#E0E0E0' }}
+                  className="w-full h-12 px-4 rounded-lg border border-gray-200"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: '#1F2937' }}>
+                <label htmlFor="address-details" className="block text-sm font-medium mb-2 text-gray-800">
                   Additional Details
                 </label>
                 <input
+                  id="address-details"
                   type="text"
                   value={newAddress.details}
                   onChange={(e) => setNewAddress({ ...newAddress, details: e.target.value })}
                   placeholder="Room 204, Block A"
-                  className="w-full h-12 px-4 rounded-lg border"
-                  style={{ borderColor: '#E0E0E0' }}
+                  className="w-full h-12 px-4 rounded-lg border border-gray-200"
                   required
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full h-12 rounded-lg font-semibold"
-                style={{ backgroundColor: '#6366F1', color: 'white' }}
+                className="w-full h-12 rounded-lg font-semibold bg-indigo-500 text-white"
               >
                 Add Address
               </button>

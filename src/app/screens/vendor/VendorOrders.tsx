@@ -10,19 +10,17 @@ export default function VendorOrders() {
 
   const filteredOrders = vendorOrders.filter((order) => order.status === activeTab);
 
+  const statusBadgeClasses: Record<string, string> = {
+    pending: 'bg-amber-100 text-amber-500',
+    preparing: 'bg-blue-100 text-indigo-500',
+    ready: 'bg-emerald-100 text-emerald-500',
+    completed: 'bg-gray-100 text-gray-500',
+  };
+
   const getStatusBadge = (status: string) => {
-    const styles = {
-      pending: { bg: '#FEF3C7', color: '#F59E0B' },
-      preparing: { bg: '#DBEAFE', color: '#6366F1' },
-      ready: { bg: '#D1FAE5', color: '#10B981' },
-      completed: { bg: '#F3F4F6', color: '#6B7280' },
-    };
-    const style = styles[status as keyof typeof styles];
+    const classes = statusBadgeClasses[status] ?? 'bg-gray-100 text-gray-500';
     return (
-      <span
-        className="px-2 py-1 rounded text-xs font-medium"
-        style={{ backgroundColor: style.bg, color: style.color }}
-      >
+      <span className={`px-2 py-1 rounded text-xs font-medium ${classes}`}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
     );
@@ -33,7 +31,7 @@ export default function VendorOrders() {
       <div className="max-w-[1024px] mx-auto">
         {/* Header */}
         <div className="px-5 py-4 border-b border-gray-100">
-          <h1 className="text-lg font-bold" style={{ color: '#1F2937' }}>
+          <h1 className="text-lg font-bold text-gray-800">
             Orders
           </h1>
         </div>
@@ -43,12 +41,13 @@ export default function VendorOrders() {
           {(['pending', 'preparing', 'ready', 'completed'] as const).map((tab) => (
             <button
               key={tab}
+              type="button"
               onClick={() => setActiveTab(tab)}
-              className="flex-1 py-3 text-sm font-medium"
-              style={{
-                color: activeTab === tab ? '#6366F1' : '#6B7280',
-                borderBottom: activeTab === tab ? '2px solid #6366F1' : 'none',
-              }}
+              className={`flex-1 py-3 text-sm font-medium ${
+                activeTab === tab
+                  ? 'text-indigo-500 border-b-2 border-indigo-500'
+                  : 'text-gray-500'
+              }`}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
@@ -58,7 +57,7 @@ export default function VendorOrders() {
         {/* Orders List */}
         <div className="px-5 py-4">
           {filteredOrders.length === 0 ? (
-            <div className="text-center py-12" style={{ color: '#6B7280' }}>
+            <div className="text-center py-12 text-gray-500">
               No {activeTab} orders
             </div>
           ) : (
@@ -71,23 +70,23 @@ export default function VendorOrders() {
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <p className="font-semibold mb-1" style={{ color: '#1F2937' }}>
+                      <p className="font-semibold mb-1 text-gray-800">
                         {order.id}
                       </p>
-                      <p className="text-xs" style={{ color: '#6B7280' }}>
+                      <p className="text-xs text-gray-500">
                         {order.customerName}'s order
                       </p>
                     </div>
                     <div className="text-right">
                       {getStatusBadge(order.status)}
-                      <p className="font-bold mt-1" style={{ color: '#1F2937' }}>
+                      <p className="font-bold mt-1 text-gray-800">
                         ₦{order.total}
                       </p>
                     </div>
                   </div>
                   <div className="mb-3">
                     {order.items.map((item, idx) => (
-                      <p key={idx} className="text-sm" style={{ color: '#6B7280' }}>
+                      <p key={idx} className="text-sm text-gray-500">
                         {item.quantity}x {item.name}
                       </p>
                     ))}
@@ -95,8 +94,8 @@ export default function VendorOrders() {
                   {activeTab === 'pending' && (
                     <div className="flex gap-2">
                       <button
-                        className="flex-1 h-10 rounded-lg font-semibold text-sm"
-                        style={{ backgroundColor: '#10B981', color: 'white' }}
+                        type="button"
+                        className="flex-1 h-10 rounded-lg font-semibold text-sm bg-emerald-500 text-white"
                         onClick={(e) => {
                           e.preventDefault();
                           alert('Order accepted!');
@@ -105,8 +104,8 @@ export default function VendorOrders() {
                         Accept
                       </button>
                       <button
-                        className="flex-1 h-10 rounded-lg font-semibold text-sm border"
-                        style={{ borderColor: '#E0E0E0', color: '#EF4444' }}
+                        type="button"
+                        className="flex-1 h-10 rounded-lg font-semibold text-sm border border-gray-300 text-red-500"
                         onClick={(e) => {
                           e.preventDefault();
                           alert('Order rejected!');
@@ -118,8 +117,8 @@ export default function VendorOrders() {
                   )}
                   {activeTab === 'preparing' && (
                     <button
-                      className="w-full h-10 rounded-lg font-semibold text-sm"
-                      style={{ backgroundColor: '#6366F1', color: 'white' }}
+                      type="button"
+                      className="w-full h-10 rounded-lg font-semibold text-sm bg-indigo-500 text-white"
                       onClick={(e) => {
                         e.preventDefault();
                         alert('Marked as ready!');
@@ -129,7 +128,7 @@ export default function VendorOrders() {
                     </button>
                   )}
                   {activeTab === 'ready' && (
-                    <p className="text-sm text-center" style={{ color: '#6B7280' }}>
+                    <p className="text-sm text-center text-gray-500">
                       Waiting for rider
                     </p>
                   )}
@@ -143,26 +142,26 @@ export default function VendorOrders() {
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100">
           <div className="max-w-[1024px] mx-auto flex justify-around py-3">
             <Link to="/vendor/dashboard" className="flex flex-col items-center gap-1">
-              <LayoutDashboard size={20} style={{ color: '#6B7280' }} />
-              <span className="text-xs" style={{ color: '#6B7280' }}>
+              <LayoutDashboard size={20} className="text-gray-500" />
+              <span className="text-xs text-gray-500">
                 Dashboard
               </span>
             </Link>
             <Link to="/vendor/orders" className="flex flex-col items-center gap-1">
-              <ClipboardList size={20} style={{ color: '#6366F1' }} />
-              <span className="text-xs font-medium" style={{ color: '#6366F1' }}>
+              <ClipboardList size={20} className="text-indigo-500" />
+              <span className="text-xs font-medium text-indigo-500">
                 Orders
               </span>
             </Link>
             <Link to="/vendor/menu" className="flex flex-col items-center gap-1">
-              <UtensilsCrossed size={20} style={{ color: '#6B7280' }} />
-              <span className="text-xs" style={{ color: '#6B7280' }}>
+              <UtensilsCrossed size={20} className="text-gray-500" />
+              <span className="text-xs text-gray-500">
                 Menu
               </span>
             </Link>
             <Link to="/vendor/earnings" className="flex flex-col items-center gap-1">
-              <DollarSign size={20} style={{ color: '#6B7280' }} />
-              <span className="text-xs" style={{ color: '#6B7280' }}>
+              <DollarSign size={20} className="text-gray-500" />
+              <span className="text-xs text-gray-500">
                 Earnings
               </span>
             </Link>

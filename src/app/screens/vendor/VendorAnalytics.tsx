@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { LayoutDashboard, ClipboardList, UtensilsCrossed, DollarSign, Settings, TrendingUp, TrendingDown } from 'lucide-react';
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const dailySalesData = [
   { day: 'Mon', orders: 45, revenue: 54000 },
@@ -46,29 +46,29 @@ export default function VendorAnalytics() {
       <div className="max-w-[1024px] mx-auto">
         {/* Top Bar */}
         <div className="px-6 py-4 flex items-center justify-between border-b border-gray-200">
-          <h1 className="text-xl font-bold" style={{ color: '#1F2937' }}>
+          <h1 className="text-xl font-bold text-gray-800">
             Mavise Grill
           </h1>
           <div className="flex items-center gap-4">
             <nav className="flex gap-2">
-              <Link to="/vendor/dashboard" className="px-3 py-2 rounded-lg text-sm hover:bg-gray-100" style={{ color: '#6B7280' }}>
+              <Link to="/vendor/dashboard" className="px-3 py-2 rounded-lg text-sm hover:bg-gray-100 text-gray-500">
                 <LayoutDashboard size={18} />
               </Link>
-              <Link to="/vendor/orders" className="px-3 py-2 rounded-lg text-sm hover:bg-gray-100" style={{ color: '#6B7280' }}>
+              <Link to="/vendor/orders" className="px-3 py-2 rounded-lg text-sm hover:bg-gray-100 text-gray-500">
                 <ClipboardList size={18} />
               </Link>
-              <Link to="/vendor/menu" className="px-3 py-2 rounded-lg text-sm hover:bg-gray-100" style={{ color: '#6B7280' }}>
+              <Link to="/vendor/menu" className="px-3 py-2 rounded-lg text-sm hover:bg-gray-100 text-gray-500">
                 <UtensilsCrossed size={18} />
               </Link>
-              <Link to="/vendor/analytics" className="px-3 py-2 rounded-lg text-sm" style={{ backgroundColor: '#DBEAFE', color: '#6366F1' }}>
+              <Link to="/vendor/analytics" className="px-3 py-2 rounded-lg text-sm bg-blue-100 text-indigo-500">
                 <TrendingUp size={18} />
               </Link>
-              <Link to="/vendor/earnings" className="px-3 py-2 rounded-lg text-sm hover:bg-gray-100" style={{ color: '#6B7280' }}>
+              <Link to="/vendor/earnings" className="px-3 py-2 rounded-lg text-sm hover:bg-gray-100 text-gray-500">
                 <DollarSign size={18} />
               </Link>
             </nav>
             <Link to="/vendor/profile">
-              <Settings size={20} style={{ color: '#6B7280' }} />
+              <Settings size={20} className="text-gray-500" />
             </Link>
           </div>
         </div>
@@ -76,7 +76,7 @@ export default function VendorAnalytics() {
         <div className="px-6 py-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold" style={{ color: '#1F2937' }}>
+            <h2 className="text-2xl font-bold text-gray-800">
               Analytics & Reports
             </h2>
 
@@ -85,13 +85,13 @@ export default function VendorAnalytics() {
               {(['week', 'month', 'year'] as const).map((range) => (
                 <button
                   key={range}
+                  type="button"
                   onClick={() => setTimeRange(range)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium capitalize"
-                  style={
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize ${
                     timeRange === range
-                      ? { backgroundColor: '#6366F1', color: 'white' }
-                      : { backgroundColor: '#F8F9FA', color: '#6B7280' }
-                  }
+                      ? 'bg-indigo-500 text-white'
+                      : 'bg-gray-50 text-gray-500'
+                  }`}
                 >
                   This {range}
                 </button>
@@ -101,46 +101,46 @@ export default function VendorAnalytics() {
 
           {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div className="rounded-lg p-4 border" style={{ borderColor: '#E0E0E0' }}>
+            <div className="rounded-lg p-4 border border-gray-300">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs" style={{ color: '#6B7280' }}>Total Orders</p>
-                <TrendingUp size={16} style={{ color: '#10B981' }} />
+                <p className="text-xs text-gray-500">Total Orders</p>
+                <TrendingUp size={16} className="text-emerald-500" />
               </div>
-              <p className="text-2xl font-bold mb-1" style={{ color: '#1F2937' }}>425</p>
-              <p className="text-xs" style={{ color: '#10B981' }}>
+              <p className="text-2xl font-bold mb-1 text-gray-800">425</p>
+              <p className="text-xs text-emerald-500">
                 +12% from last week
               </p>
             </div>
 
-            <div className="rounded-lg p-4 border" style={{ borderColor: '#E0E0E0' }}>
+            <div className="rounded-lg p-4 border border-gray-300">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs" style={{ color: '#6B7280' }}>Total Revenue</p>
-                <TrendingUp size={16} style={{ color: '#10B981' }} />
+                <p className="text-xs text-gray-500">Total Revenue</p>
+                <TrendingUp size={16} className="text-emerald-500" />
               </div>
-              <p className="text-2xl font-bold mb-1" style={{ color: '#1F2937' }}>₦510,000</p>
-              <p className="text-xs" style={{ color: '#10B981' }}>
+              <p className="text-2xl font-bold mb-1 text-gray-800">₦510,000</p>
+              <p className="text-xs text-emerald-500">
                 +18% from last week
               </p>
             </div>
 
-            <div className="rounded-lg p-4 border" style={{ borderColor: '#E0E0E0' }}>
+            <div className="rounded-lg p-4 border border-gray-300">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs" style={{ color: '#6B7280' }}>Avg Order Value</p>
-                <TrendingUp size={16} style={{ color: '#10B981' }} />
+                <p className="text-xs text-gray-500">Avg Order Value</p>
+                <TrendingUp size={16} className="text-emerald-500" />
               </div>
-              <p className="text-2xl font-bold mb-1" style={{ color: '#1F2937' }}>₦1,200</p>
-              <p className="text-xs" style={{ color: '#10B981' }}>
+              <p className="text-2xl font-bold mb-1 text-gray-800">₦1,200</p>
+              <p className="text-xs text-emerald-500">
                 +5% from last week
               </p>
             </div>
 
-            <div className="rounded-lg p-4 border" style={{ borderColor: '#E0E0E0' }}>
+            <div className="rounded-lg p-4 border border-gray-300">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs" style={{ color: '#6B7280' }}>Completion Rate</p>
-                <TrendingDown size={16} style={{ color: '#EF4444' }} />
+                <p className="text-xs text-gray-500">Completion Rate</p>
+                <TrendingDown size={16} className="text-red-500" />
               </div>
-              <p className="text-2xl font-bold mb-1" style={{ color: '#1F2937' }}>94.2%</p>
-              <p className="text-xs" style={{ color: '#EF4444' }}>
+              <p className="text-2xl font-bold mb-1 text-gray-800">94.2%</p>
+              <p className="text-xs text-red-500">
                 -2% from last week
               </p>
             </div>
@@ -149,8 +149,8 @@ export default function VendorAnalytics() {
           {/* Charts Row 1 */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Daily Sales */}
-            <div className="rounded-lg p-5 border" style={{ borderColor: '#E0E0E0' }}>
-              <h3 className="font-bold text-base mb-4" style={{ color: '#1F2937' }}>
+            <div className="rounded-lg p-5 border border-gray-300">
+              <h3 className="font-bold text-base mb-4 text-gray-800">
                 Daily Sales (This Week)
               </h3>
               <ResponsiveContainer width="100%" height={250}>
@@ -165,8 +165,8 @@ export default function VendorAnalytics() {
             </div>
 
             {/* Peak Hours */}
-            <div className="rounded-lg p-5 border" style={{ borderColor: '#E0E0E0' }}>
-              <h3 className="font-bold text-base mb-4" style={{ color: '#1F2937' }}>
+            <div className="rounded-lg p-5 border border-gray-300">
+              <h3 className="font-bold text-base mb-4 text-gray-800">
                 Peak Order Hours
               </h3>
               <ResponsiveContainer width="100%" height={250}>
@@ -184,28 +184,25 @@ export default function VendorAnalytics() {
           {/* Charts Row 2 */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Top Selling Items */}
-            <div className="rounded-lg p-5 border" style={{ borderColor: '#E0E0E0' }}>
-              <h3 className="font-bold text-base mb-4" style={{ color: '#1F2937' }}>
+            <div className="rounded-lg p-5 border border-gray-300">
+              <h3 className="font-bold text-base mb-4 text-gray-800">
                 Top Selling Items
               </h3>
               <div className="space-y-3">
                 {topItemsData.map((item, index) => (
                   <div key={index}>
                     <div className="flex items-center justify-between mb-1">
-                      <p className="text-sm font-medium" style={{ color: '#1F2937' }}>
+                      <p className="text-sm font-medium text-gray-800">
                         {index + 1}. {item.name}
                       </p>
-                      <p className="text-sm font-bold" style={{ color: '#6366F1' }}>
+                      <p className="text-sm font-bold text-indigo-500">
                         {item.orders} orders
                       </p>
                     </div>
-                    <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#F8F9FA' }}>
+                    <div className="h-2 rounded-full overflow-hidden bg-gray-50">
                       <div
-                        className="h-full rounded-full"
-                        style={{
-                          width: `${(item.orders / topItemsData[0].orders) * 100}%`,
-                          backgroundColor: '#6366F1',
-                        }}
+                        className="h-full rounded-full bg-indigo-500"
+                        style={{ width: `${(item.orders / topItemsData[0].orders) * 100}%` }}
                       />
                     </div>
                   </div>
@@ -214,8 +211,8 @@ export default function VendorAnalytics() {
             </div>
 
             {/* Order Sources */}
-            <div className="rounded-lg p-5 border" style={{ borderColor: '#E0E0E0' }}>
-              <h3 className="font-bold text-base mb-4" style={{ color: '#1F2937' }}>
+            <div className="rounded-lg p-5 border border-gray-300">
+              <h3 className="font-bold text-base mb-4 text-gray-800">
                 Order Sources
               </h3>
               <ResponsiveContainer width="100%" height={250}>

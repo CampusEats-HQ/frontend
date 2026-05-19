@@ -11,14 +11,14 @@ export default function SignUp() {
 
   return (
     <div className="min-h-screen bg-white px-5 py-6 max-w-[390px] mx-auto md:max-w-md">
-      <button onClick={() => navigate(-1)} className="mb-8">
-        <ArrowLeft size={24} style={{ color: '#6366F1' }} />
+      <button type="button" onClick={() => navigate(-1)} className="mb-8" aria-label="Go back">
+        <ArrowLeft size={24} className="text-indigo-500" />
       </button>
 
-      <h1 className="text-2xl font-bold mb-1" style={{ color: '#1F2937' }}>
+      <h1 className="text-2xl font-bold mb-1 text-gray-800">
         Create account
       </h1>
-      <p className="text-sm mb-8" style={{ color: '#6B7280' }}>
+      <p className="text-sm mb-8 text-gray-500">
         Quick and easy
       </p>
 
@@ -27,45 +27,40 @@ export default function SignUp() {
           <input
             type="text"
             placeholder="Full name"
-            className="w-full h-[52px] px-4 rounded-lg"
-            style={{ backgroundColor: '#F8F9FA' }}
+            className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
           />
           <input
             type="email"
             placeholder="Unilag email"
-            className="w-full h-[52px] px-4 rounded-lg"
-            style={{ backgroundColor: '#F8F9FA' }}
+            className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
           />
           <input
             type="password"
             placeholder="Password"
-            className="w-full h-[52px] px-4 rounded-lg"
-            style={{ backgroundColor: '#F8F9FA' }}
+            className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
           />
           <div>
-            <label className="text-xs mb-1 block" style={{ color: '#6B7280' }}>
+            <label className="text-xs mb-1 block text-gray-500">
               Optional
             </label>
             <input
               type="text"
               placeholder="Matric number"
-              className="w-full h-[52px] px-4 rounded-lg"
-              style={{ backgroundColor: '#F8F9FA' }}
+              className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
             />
           </div>
         </div>
 
         <button
           type="submit"
-          className="w-full h-[52px] rounded-lg font-semibold mb-4"
-          style={{ backgroundColor: '#6366F1', color: 'white' }}
+          className="w-full h-[52px] rounded-lg font-semibold mb-4 bg-indigo-500 text-white"
         >
           Create Account
         </button>
 
-        <p className="text-center text-sm" style={{ color: '#6B7280' }}>
+        <p className="text-center text-sm text-gray-500">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium" style={{ color: '#6366F1' }}>
+          <Link to="/login" className="font-medium text-indigo-500">
             Log in
           </Link>
         </p>

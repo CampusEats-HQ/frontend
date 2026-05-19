@@ -26,10 +26,10 @@ export default function VendorMenuEdit() {
       <div className="max-w-[480px] mx-auto">
         {/* Header */}
         <div className="px-5 py-4 flex items-center gap-4 border-b border-gray-100">
-          <button onClick={() => navigate(-1)}>
-            <ArrowLeft size={24} style={{ color: '#6366F1' }} />
+          <button type="button" aria-label="Go back" onClick={() => navigate(-1)}>
+            <ArrowLeft size={24} className="text-indigo-500" />
           </button>
-          <h1 className="text-lg font-bold" style={{ color: '#1F2937' }}>
+          <h1 className="text-lg font-bold text-gray-800">
             {isEditing ? 'Edit Item' : 'Add Item'}
           </h1>
         </div>
@@ -37,22 +37,20 @@ export default function VendorMenuEdit() {
         <form onSubmit={handleSubmit} className="px-5 py-6">
           {/* Photo Upload */}
           <div className="mb-6">
-            <label className="text-sm font-medium mb-2 block" style={{ color: '#1F2937' }}>
+            <label className="text-sm font-medium mb-2 block text-gray-800">
               Photo
             </label>
-            <div
-              className="w-full h-40 rounded-lg border-2 border-dashed flex items-center justify-center cursor-pointer"
-              style={{ borderColor: '#E0E0E0', backgroundColor: '#F8F9FA' }}
-            >
+            <div className="w-full h-40 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center cursor-pointer overflow-hidden">
               {item?.image ? (
-                <div
-                  className="w-full h-full rounded-lg bg-cover bg-center"
-                  style={{ backgroundImage: `url(${item.image})` }}
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-full object-cover rounded-lg"
                 />
               ) : (
                 <div className="text-center">
-                  <Upload size={32} style={{ color: '#6B7280', margin: '0 auto 8px' }} />
-                  <p className="text-sm" style={{ color: '#6B7280' }}>
+                  <Upload size={32} className="text-gray-500 mx-auto mb-2" />
+                  <p className="text-sm text-gray-500">
                     Tap to upload photo
                   </p>
                 </div>
@@ -62,42 +60,40 @@ export default function VendorMenuEdit() {
 
           {/* Item Name */}
           <div className="mb-4">
-            <label className="text-sm font-medium mb-2 block" style={{ color: '#1F2937' }}>
+            <label className="text-sm font-medium mb-2 block text-gray-800">
               Item Name
             </label>
             <input
               type="text"
               defaultValue={item?.name}
               placeholder="e.g. Jollof Rice with Chicken"
-              className="w-full h-12 px-4 rounded-lg"
-              style={{ backgroundColor: '#F8F9FA' }}
+              className="w-full h-12 px-4 rounded-lg bg-gray-50"
               required
             />
           </div>
 
           {/* Description */}
           <div className="mb-4">
-            <label className="text-sm font-medium mb-2 block" style={{ color: '#1F2937' }}>
+            <label className="text-sm font-medium mb-2 block text-gray-800">
               Description (optional)
             </label>
             <textarea
               defaultValue={item?.description}
               placeholder="Short description"
               rows={2}
-              className="w-full px-4 py-3 rounded-lg resize-none"
-              style={{ backgroundColor: '#F8F9FA' }}
+              className="w-full px-4 py-3 rounded-lg resize-none bg-gray-50"
             />
           </div>
 
           {/* Category */}
           <div className="mb-4">
-            <label className="text-sm font-medium mb-2 block" style={{ color: '#1F2937' }}>
+            <label htmlFor="item-category" className="text-sm font-medium mb-2 block text-gray-800">
               Category
             </label>
             <select
+              id="item-category"
               defaultValue={item?.category}
-              className="w-full h-12 px-4 rounded-lg"
-              style={{ backgroundColor: '#F8F9FA' }}
+              className="w-full h-12 px-4 rounded-lg bg-gray-50"
               required
             >
               <option value="">Select category</option>
@@ -112,28 +108,27 @@ export default function VendorMenuEdit() {
 
           {/* Price */}
           <div className="mb-4">
-            <label className="text-sm font-medium mb-2 block" style={{ color: '#1F2937' }}>
+            <label className="text-sm font-medium mb-2 block text-gray-800">
               Price (₦)
             </label>
             <input
               type="number"
               defaultValue={item?.price}
               placeholder="1200"
-              className="w-full h-12 px-4 rounded-lg"
-              style={{ backgroundColor: '#F8F9FA' }}
+              className="w-full h-12 px-4 rounded-lg bg-gray-50"
               required
             />
           </div>
 
           {/* Prep Time */}
           <div className="mb-4">
-            <label className="text-sm font-medium mb-2 block" style={{ color: '#1F2937' }}>
+            <label htmlFor="item-prep-time" className="text-sm font-medium mb-2 block text-gray-800">
               Prep Time Estimate
             </label>
             <select
+              id="item-prep-time"
               defaultValue={item?.prepTime}
-              className="w-full h-12 px-4 rounded-lg"
-              style={{ backgroundColor: '#F8F9FA' }}
+              className="w-full h-12 px-4 rounded-lg bg-gray-50"
               required
             >
               <option value="5 mins">5 mins</option>
@@ -146,17 +141,18 @@ export default function VendorMenuEdit() {
 
           {/* Availability */}
           <div className="mb-8">
-            <label className="text-sm font-medium mb-2 block" style={{ color: '#1F2937' }}>
+            <label className="text-sm font-medium mb-2 block text-gray-800">
               Availability
             </label>
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                className="w-12 h-6 rounded-full relative bg-[#10B981]"
+                aria-label="Toggle availability"
+                className="w-12 h-6 rounded-full relative bg-emerald-500"
               >
                 <div className="w-5 h-5 rounded-full bg-white absolute top-0.5 right-0.5" />
               </button>
-              <span className="text-sm" style={{ color: '#6B7280' }}>
+              <span className="text-sm text-gray-500">
                 Available
               </span>
             </div>
@@ -165,8 +161,7 @@ export default function VendorMenuEdit() {
           {/* Save Button */}
           <button
             type="submit"
-            className="w-full h-[52px] rounded-lg font-semibold mb-3"
-            style={{ backgroundColor: '#6366F1', color: 'white' }}
+            className="w-full h-[52px] rounded-lg font-semibold mb-3 bg-indigo-500 text-white"
           >
             Save Item
           </button>
@@ -176,8 +171,7 @@ export default function VendorMenuEdit() {
             <button
               type="button"
               onClick={handleDelete}
-              className="w-full py-3 text-center font-medium"
-              style={{ color: '#EF4444' }}
+              className="w-full py-3 text-center font-medium text-red-500"
             >
               Delete Item
             </button>

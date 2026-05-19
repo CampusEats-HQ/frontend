@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router";
+import NotFound from "./screens/NotFound";
 import Splash from "./screens/Splash";
 import SignUp from "./screens/SignUp";
 import Login from "./screens/Login";
@@ -188,5 +189,9 @@ export const router = createBrowserRouter([
   {
     path: "/admin/finance",
     Component: AdminFinance,
+  },
+  {
+    path: "*",
+    Component: NotFound,
   },
 ]);

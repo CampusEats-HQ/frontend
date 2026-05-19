@@ -18,28 +18,25 @@ export default function Profile() {
     <div className="min-h-screen bg-white">
       <div className="max-w-[390px] mx-auto md:max-w-4xl px-5 py-6">
         {/* Header */}
-        <h1 className="text-2xl font-bold mb-8" style={{ color: '#1F2937' }}>
+        <h1 className="text-2xl font-bold mb-8 text-gray-800">
           Profile
         </h1>
 
         {/* User Info */}
         <div className="flex items-center gap-4 mb-8">
-          <div
-            className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold"
-            style={{ backgroundColor: '#6366F1', color: 'white' }}
-          >
+          <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold bg-indigo-500 text-white">
             JD
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <h2 className="font-bold" style={{ color: '#1F2937' }}>
+              <h2 className="font-bold text-gray-800">
                 John Doe
               </h2>
-              <button>
-                <Edit size={16} style={{ color: '#6B7280' }} />
+              <button type="button" aria-label="Edit profile">
+                <Edit size={16} className="text-gray-500" />
               </button>
             </div>
-            <p className="text-sm" style={{ color: '#6B7280' }}>
+            <p className="text-sm text-gray-500">
               john.doe@unilag.edu.ng
             </p>
           </div>
@@ -50,29 +47,29 @@ export default function Profile() {
           {menuItems.map((item, index) => (
             <button
               key={index}
+              type="button"
               onClick={() => navigate(item.path)}
-              className="w-full flex items-center justify-between py-4 border-b"
-              style={{ borderColor: '#F8F9FA' }}
+              className="w-full flex items-center justify-between py-4 border-b border-gray-50"
             >
               <div className="flex items-center gap-3">
                 <span className="text-xl">{item.icon}</span>
-                <span className="font-medium" style={{ color: '#1F2937' }}>
+                <span className="font-medium text-gray-800">
                   {item.label}
                 </span>
               </div>
-              <ChevronRight size={20} style={{ color: '#6B7280' }} />
+              <ChevronRight size={20} className="text-gray-500" />
             </button>
           ))}
         </div>
 
         {/* Divider */}
-        <div className="h-px my-6" style={{ backgroundColor: '#E0E0E0' }} />
+        <div className="h-px my-6 bg-gray-200" />
 
         {/* Logout */}
         <button
+          type="button"
           onClick={() => navigate('/')}
-          className="w-full py-4 text-left font-medium"
-          style={{ color: '#6366F1' }}
+          className="w-full py-4 text-left font-medium text-indigo-500"
         >
           Log out
         </button>

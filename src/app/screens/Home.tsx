@@ -16,29 +16,23 @@ export default function Home() {
         {/* Top Bar */}
         <div className="bg-white px-5 py-4 flex items-center justify-between border-b border-gray-100">
           <div className="flex items-center gap-2">
-            <MapPin size={16} style={{ color: '#6366F1' }} />
-            <span className="text-sm font-semibold" style={{ color: '#1F2937' }}>
+            <MapPin size={16} className="text-indigo-500" />
+            <span className="text-sm font-semibold text-gray-800">
               Unilag, Yaba
             </span>
           </div>
           <Link to="/cart" className="relative">
-            <ShoppingCart size={20} style={{ color: '#6366F1' }} />
+            <ShoppingCart size={20} className="text-indigo-500" />
             {getItemCount() > 0 && (
-              <div
-                className="absolute -top-1 -right-1 w-2 h-2 rounded-full"
-                style={{ backgroundColor: '#EF4444' }}
-              />
+              <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500" />
             )}
           </Link>
         </div>
 
         {/* Search Bar */}
         <div className="px-5 py-4">
-          <div
-            className="flex items-center gap-3 px-4 h-12 rounded-full"
-            style={{ backgroundColor: '#F8F9FA' }}
-          >
-            <Search size={18} style={{ color: '#6B7280' }} />
+          <div className="flex items-center gap-3 px-4 h-12 rounded-full bg-gray-50">
+            <Search size={18} className="text-gray-500" />
             <input
               type="text"
               placeholder="Search jollof, shawarma..."
@@ -53,17 +47,13 @@ export default function Home() {
             {categories.map((cat) => (
               <button
                 key={cat}
+                type="button"
                 onClick={() => setActiveCategory(cat)}
-                className="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors"
-                style={
+                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                   activeCategory === cat
-                    ? { backgroundColor: '#F59E0B', color: 'white' }
-                    : {
-                        backgroundColor: 'white',
-                        border: '1px solid #E0E0E0',
-                        color: '#1F2937',
-                      }
-                }
+                    ? 'bg-amber-500 text-white'
+                    : 'bg-white border border-gray-200 text-gray-800'
+                }`}
               >
                 {cat}
               </button>
@@ -73,17 +63,12 @@ export default function Home() {
 
         {/* Hero Banner */}
         <div className="px-5 mb-6">
-          <div
-            className="rounded-xl p-6 flex items-center justify-between"
-            style={{
-              background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
-            }}
-          >
+          <div className="rounded-xl p-6 flex items-center justify-between bg-gradient-to-br from-amber-100 to-[#FDE68A]">
             <div>
-              <p className="text-base font-semibold mb-1" style={{ color: '#1F2937' }}>
+              <p className="text-base font-semibold mb-1 text-gray-800">
                 🔥 Delivered in 20 mins
               </p>
-              <p className="text-xs" style={{ color: '#6B7280' }}>
+              <p className="text-xs text-gray-500">
                 Hot & fresh to your hostel
               </p>
             </div>
@@ -92,7 +77,7 @@ export default function Home() {
 
         {/* Restaurants Section */}
         <div className="mb-6">
-          <h2 className="px-5 text-base font-semibold mb-4" style={{ color: '#1F2937' }}>
+          <h2 className="px-5 text-base font-semibold mb-4 text-gray-800">
             Restaurants
           </h2>
           <div className="flex gap-4 overflow-x-auto hide-scrollbar px-5">
@@ -106,10 +91,10 @@ export default function Home() {
                   className="w-full h-[140px] rounded-xl mb-3 bg-cover bg-center"
                   style={{ backgroundImage: `url(${restaurant.image})` }}
                 />
-                <h3 className="font-semibold text-sm mb-1" style={{ color: '#1F2937' }}>
+                <h3 className="font-semibold text-sm mb-1 text-gray-800">
                   {restaurant.name}
                 </h3>
-                <p className="text-xs" style={{ color: '#6B7280' }}>
+                <p className="text-xs text-gray-500">
                   ⭐ {restaurant.rating} · {restaurant.deliveryTime} · ₦{restaurant.deliveryFee}{' '}
                   delivery
                 </p>
@@ -120,7 +105,7 @@ export default function Home() {
 
         {/* Popular Right Now */}
         <div className="px-5">
-          <h2 className="text-base font-semibold mb-4" style={{ color: '#1F2937' }}>
+          <h2 className="text-base font-semibold mb-4 text-gray-800">
             Popular right now
           </h2>
           <div className="space-y-3">
@@ -131,24 +116,25 @@ export default function Home() {
                   style={{ backgroundImage: `url(${item.image})` }}
                 />
                 <div className="flex-1">
-                  <h3 className="font-semibold text-sm mb-0.5" style={{ color: '#1F2937' }}>
+                  <h3 className="font-semibold text-sm mb-0.5 text-gray-800">
                     {item.name}
                   </h3>
-                  <p className="text-xs" style={{ color: '#6B7280' }}>
+                  <p className="text-xs text-gray-500">
                     {item.restaurant}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <p className="font-semibold text-sm" style={{ color: '#F59E0B' }}>
+                  <p className="font-semibold text-sm text-amber-500">
                     ₦{item.price}
                   </p>
                   <button
+                    type="button"
                     onClick={() => {
                       addItem({ ...item, restaurant: item.restaurant });
                       toast.success(`${item.name} added to cart!`);
                     }}
-                    className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
-                    style={{ backgroundColor: '#F59E0B' }}
+                    className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity bg-amber-500"
+                    aria-label={`Add ${item.name} to cart`}
                   >
                     <Plus size={16} color="white" />
                   </button>
@@ -163,26 +149,26 @@ export default function Home() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100">
         <div className="max-w-[390px] mx-auto md:max-w-4xl flex justify-around py-3">
           <Link to="/home" className="flex flex-col items-center gap-1">
-            <HomeIcon size={20} style={{ color: '#6366F1' }} />
-            <span className="text-xs font-medium" style={{ color: '#6366F1' }}>
+            <HomeIcon size={20} className="text-indigo-500" />
+            <span className="text-xs font-medium text-indigo-500">
               Home
             </span>
           </Link>
-          <button className="flex flex-col items-center gap-1">
-            <SearchIcon size={20} style={{ color: '#6B7280' }} />
-            <span className="text-xs" style={{ color: '#6B7280' }}>
+          <button type="button" className="flex flex-col items-center gap-1" aria-label="Search">
+            <SearchIcon size={20} className="text-gray-500" />
+            <span className="text-xs text-gray-500">
               Search
             </span>
           </button>
           <Link to="/tracking/1042" className="flex flex-col items-center gap-1">
-            <Package size={20} style={{ color: '#6B7280' }} />
-            <span className="text-xs" style={{ color: '#6B7280' }}>
+            <Package size={20} className="text-gray-500" />
+            <span className="text-xs text-gray-500">
               Orders
             </span>
           </Link>
           <Link to="/profile" className="flex flex-col items-center gap-1">
-            <User size={20} style={{ color: '#6B7280' }} />
-            <span className="text-xs" style={{ color: '#6B7280' }}>
+            <User size={20} className="text-gray-500" />
+            <span className="text-xs text-gray-500">
               Profile
             </span>
           </Link>

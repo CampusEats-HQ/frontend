@@ -85,65 +85,63 @@ export default function Help() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="px-6 py-4 flex items-center border-b border-gray-200">
-        <button onClick={() => navigate('/profile')} className="mr-4">
-          <ArrowLeft size={24} style={{ color: '#1F2937' }} />
+        <button type="button" onClick={() => navigate('/profile')} className="mr-4" aria-label="Go back to profile">
+          <ArrowLeft size={24} className="text-gray-800" />
         </button>
-        <h1 className="text-xl font-bold" style={{ color: '#1F2937' }}>
+        <h1 className="text-xl font-bold text-gray-800">
           Help & Support
         </h1>
       </div>
 
       <div className="px-6 py-6 max-w-4xl mx-auto">
         {/* Quick Contact */}
-        <div className="rounded-lg p-5 mb-8" style={{ backgroundColor: '#EEF2FF' }}>
-          <h2 className="font-bold text-lg mb-3" style={{ color: '#1F2937' }}>
+        <div className="rounded-lg p-5 mb-8 bg-indigo-50">
+          <h2 className="font-bold text-lg mb-3 text-gray-800">
             Need immediate help?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <button
+              type="button"
               onClick={() => setShowContactForm(true)}
-              className="flex items-center gap-3 p-3 rounded-lg"
-              style={{ backgroundColor: 'white' }}
+              className="flex items-center gap-3 p-3 rounded-lg bg-white"
             >
-              <MessageCircle size={20} style={{ color: '#6366F1' }} />
+              <MessageCircle size={20} className="text-indigo-500" />
               <div className="text-left">
-                <p className="text-sm font-semibold" style={{ color: '#1F2937' }}>Live Chat</p>
-                <p className="text-xs" style={{ color: '#6B7280' }}>Reply in ~2 mins</p>
+                <p className="text-sm font-semibold text-gray-800">Live Chat</p>
+                <p className="text-xs text-gray-500">Reply in ~2 mins</p>
               </div>
             </button>
             <a
               href="mailto:support@campuseats.ng"
-              className="flex items-center gap-3 p-3 rounded-lg"
-              style={{ backgroundColor: 'white' }}
+              className="flex items-center gap-3 p-3 rounded-lg bg-white"
             >
-              <Mail size={20} style={{ color: '#6366F1' }} />
+              <Mail size={20} className="text-indigo-500" />
               <div className="text-left">
-                <p className="text-sm font-semibold" style={{ color: '#1F2937' }}>Email Us</p>
-                <p className="text-xs" style={{ color: '#6B7280' }}>support@campuseats.ng</p>
+                <p className="text-sm font-semibold text-gray-800">Email Us</p>
+                <p className="text-xs text-gray-500">support@campuseats.ng</p>
               </div>
             </a>
             <a
               href="tel:+2348012345678"
-              className="flex items-center gap-3 p-3 rounded-lg"
-              style={{ backgroundColor: 'white' }}
+              className="flex items-center gap-3 p-3 rounded-lg bg-white"
             >
-              <Phone size={20} style={{ color: '#6366F1' }} />
+              <Phone size={20} className="text-indigo-500" />
               <div className="text-left">
-                <p className="text-sm font-semibold" style={{ color: '#1F2937' }}>Call Us</p>
-                <p className="text-xs" style={{ color: '#6B7280' }}>0801 234 5678</p>
+                <p className="text-sm font-semibold text-gray-800">Call Us</p>
+                <p className="text-xs text-gray-500">0801 234 5678</p>
               </div>
             </a>
           </div>
         </div>
 
         {/* FAQs */}
-        <h2 className="text-xl font-bold mb-4" style={{ color: '#1F2937' }}>
+        <h2 className="text-xl font-bold mb-4 text-gray-800">
           Frequently Asked Questions
         </h2>
         <div className="space-y-6">
           {faqs.map((category, catIndex) => (
             <div key={catIndex}>
-              <h3 className="font-bold text-base mb-3" style={{ color: '#6366F1' }}>
+              <h3 className="font-bold text-base mb-3 text-indigo-500">
                 {category.category}
               </h3>
               <div className="space-y-2">
@@ -153,28 +151,24 @@ export default function Help() {
                   return (
                     <div
                       key={key}
-                      className="rounded-lg border overflow-hidden"
-                      style={{ borderColor: '#E0E0E0' }}
+                      className="rounded-lg border border-gray-200 overflow-hidden"
                     >
                       <button
+                        type="button"
                         onClick={() => setExpandedQuestion(isExpanded ? null : key)}
                         className="w-full flex items-start justify-between p-4 text-left hover:bg-gray-50"
                       >
-                        <p className="font-semibold text-sm flex-1 pr-4" style={{ color: '#1F2937' }}>
+                        <p className="font-semibold text-sm flex-1 pr-4 text-gray-800">
                           {faq.q}
                         </p>
                         <ChevronDown
                           size={20}
-                          style={{
-                            color: '#6B7280',
-                            transform: isExpanded ? 'rotate(180deg)' : 'none',
-                            transition: 'transform 0.2s',
-                          }}
+                          className={`text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
                         />
                       </button>
                       {isExpanded && (
                         <div className="px-4 pb-4">
-                          <p className="text-sm" style={{ color: '#6B7280' }}>
+                          <p className="text-sm text-gray-500">
                             {faq.a}
                           </p>
                         </div>
@@ -188,17 +182,17 @@ export default function Help() {
         </div>
 
         {/* Still Need Help */}
-        <div className="mt-8 p-6 rounded-lg text-center" style={{ backgroundColor: '#F8F9FA' }}>
-          <p className="text-base font-semibold mb-2" style={{ color: '#1F2937' }}>
+        <div className="mt-8 p-6 rounded-lg text-center bg-gray-50">
+          <p className="text-base font-semibold mb-2 text-gray-800">
             Still need help?
           </p>
-          <p className="text-sm mb-4" style={{ color: '#6B7280' }}>
+          <p className="text-sm mb-4 text-gray-500">
             Can't find what you're looking for? Send us a message.
           </p>
           <button
+            type="button"
             onClick={() => setShowContactForm(true)}
-            className="px-6 h-11 rounded-lg font-semibold"
-            style={{ backgroundColor: '#6366F1', color: 'white' }}
+            className="px-6 h-11 rounded-lg font-semibold bg-indigo-500 text-white"
           >
             Contact Support
           </button>
@@ -209,18 +203,18 @@ export default function Help() {
       {showContactForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
           <div className="bg-white rounded-xl max-w-md w-full p-6 max-h-[80vh] overflow-y-auto">
-            <h2 className="text-lg font-bold mb-4" style={{ color: '#1F2937' }}>
+            <h2 className="text-lg font-bold mb-4 text-gray-800">
               Send us a message
             </h2>
 
             <form onSubmit={handleSubmitContact} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: '#1F2937' }}>
+                <label htmlFor="contact-subject" className="block text-sm font-medium mb-2 text-gray-800">
                   Subject
                 </label>
                 <select
-                  className="w-full h-12 px-4 rounded-lg border"
-                  style={{ borderColor: '#E0E0E0' }}
+                  id="contact-subject"
+                  className="w-full h-12 px-4 rounded-lg border border-gray-200"
                   required
                 >
                   <option value="">Select a topic</option>
@@ -233,26 +227,26 @@ export default function Help() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: '#1F2937' }}>
+                <label htmlFor="contact-order-id" className="block text-sm font-medium mb-2 text-gray-800">
                   Order ID (if applicable)
                 </label>
                 <input
+                  id="contact-order-id"
                   type="text"
                   placeholder="ORD-1234"
-                  className="w-full h-12 px-4 rounded-lg border"
-                  style={{ borderColor: '#E0E0E0' }}
+                  className="w-full h-12 px-4 rounded-lg border border-gray-200"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: '#1F2937' }}>
+                <label htmlFor="contact-message" className="block text-sm font-medium mb-2 text-gray-800">
                   Message
                 </label>
                 <textarea
+                  id="contact-message"
                   rows={5}
                   placeholder="Describe your issue in detail..."
-                  className="w-full px-4 py-3 rounded-lg border resize-none"
-                  style={{ borderColor: '#E0E0E0' }}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 resize-none"
                   required
                 />
               </div>
@@ -261,15 +255,13 @@ export default function Help() {
                 <button
                   type="button"
                   onClick={() => setShowContactForm(false)}
-                  className="flex-1 h-12 rounded-lg font-semibold"
-                  style={{ backgroundColor: '#F8F9FA', color: '#1F2937' }}
+                  className="flex-1 h-12 rounded-lg font-semibold bg-gray-50 text-gray-800"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 h-12 rounded-lg font-semibold"
-                  style={{ backgroundColor: '#6366F1', color: 'white' }}
+                  className="flex-1 h-12 rounded-lg font-semibold bg-indigo-500 text-white"
                 >
                   Send Message
                 </button>
