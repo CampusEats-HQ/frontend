@@ -71,7 +71,7 @@ export default function RiderLogin() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your.email@students.unilag.edu.ng"
+                placeholder="Enter your email"
                 className="w-full h-12 px-4 rounded-lg border border-gray-300"
                 required
               />

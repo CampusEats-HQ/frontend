@@ -31,7 +31,7 @@ export default function SignUp() {
           />
           <input
             type="email"
-            placeholder="Unilag email"
+            placeholder="Email"
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
           />
           <input
@@ -39,16 +39,6 @@ export default function SignUp() {
             placeholder="Password"
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
           />
-          <div>
-            <label className="text-xs mb-1 block text-gray-500">
-              Optional
-            </label>
-            <input
-              type="text"
-              placeholder="Matric number"
-              className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
-            />
-          </div>
         </div>
 
         <button

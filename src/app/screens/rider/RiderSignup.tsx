@@ -71,7 +71,7 @@ export default function RiderSignup() {
           />
           <input
             type="email"
-            placeholder="Unilag email"
+            placeholder="Email"
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
             required
           />

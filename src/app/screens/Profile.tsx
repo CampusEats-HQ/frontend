@@ -37,7 +37,7 @@ export default function Profile() {
               </button>
             </div>
             <p className="text-sm text-gray-500">
-              john.doe@unilag.edu.ng
+              john.doe@gmail.com
             </p>
           </div>
         </div>

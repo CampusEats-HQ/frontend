@@ -40,9 +40,8 @@ Register a new student customer account.
 ```json
 {
   "fullName": "John Doe",
-  "email": "john.doe@unilag.edu.ng",
-  "password": "secret123",
-  "matricNumber": "180101001"
+  "email": "john.doe@gmail.com",
+  "password": "secret123"
 }
 ```
 
@@ -53,8 +52,7 @@ Register a new student customer account.
   "user": {
     "id": "usr_abc123",
     "fullName": "John Doe",
-    "email": "john.doe@unilag.edu.ng",
-    "matricNumber": "180101001"
+    "email": "john.doe@gmail.com"
   }
 }
 ```
@@ -71,7 +69,7 @@ Log in as a customer.
 **Request**
 ```json
 {
-  "email": "john.doe@unilag.edu.ng",
+  "email": "john.doe@gmail.com",
   "password": "secret123"
 }
 ```
@@ -83,7 +81,7 @@ Log in as a customer.
   "user": {
     "id": "usr_abc123",
     "fullName": "John Doe",
-    "email": "john.doe@unilag.edu.ng"
+    "email": "john.doe@gmail.com"
   }
 }
 ```
@@ -130,7 +128,7 @@ Submit a rider application. Does **not** grant immediate access — triggers adm
 **Request** — `multipart/form-data`
 ```
 fullName      string   required
-email         string   required  (unilag.edu.ng)
+email         string   required
 phone         string   required
 matricNumber  string   required
 bankName      string   required
@@ -158,7 +156,7 @@ Log in as an approved rider.
 **Request**
 ```json
 {
-  "email": "emeka@unilag.edu.ng",
+  "email": "emeka@gmail.com",
   "password": "secret123"
 }
 ```
@@ -170,7 +168,7 @@ Log in as an approved rider.
   "rider": {
     "id": "R001",
     "name": "Emeka Obi",
-    "email": "emeka@unilag.edu.ng",
+    "email": "emeka@gmail.com",
     "phone": "+2348012345678",
     "rating": 4.9,
     "totalDeliveries": 124,
@@ -626,8 +624,7 @@ Get the authenticated customer's profile.
 {
   "id": "usr_abc123",
   "fullName": "John Doe",
-  "email": "john.doe@unilag.edu.ng",
-  "matricNumber": "180101001",
+  "email": "john.doe@gmail.com",
   "phone": "+2348012345678"
 }
 ```
@@ -1144,7 +1141,7 @@ Get the authenticated rider's profile.
 {
   "id": "R001",
   "name": "Emeka Obi",
-  "email": "emeka@unilag.edu.ng",
+  "email": "emeka@gmail.com",
   "phone": "+2348012345678",
   "rating": 4.9,
   "totalDeliveries": 124,
@@ -1329,7 +1326,7 @@ Get all riders, filtered by status.
       "id": "PR001",
       "name": "Kola Adeyemi",
       "matricNumber": "190202001",
-      "email": "kola@unilag.edu.ng",
+      "email": "kola@gmail.com",
       "phone": "+2348056781234",
       "bankName": "Access Bank",
       "accountNumber": "0123456789",

@@ -60,7 +60,7 @@ const faqs = [
     questions: [
       {
         q: 'How do I verify my student status?',
-        a: 'Use your official Unilag email address (@students.unilag.edu.ng) when signing up.',
+        a: 'Go to Student Verification in your profile and enter your matric number to verify your student status.',
       },
       {
         q: 'I forgot my password',
