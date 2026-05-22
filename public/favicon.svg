@@ -1,6 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-  <line x1="11" y1="4" x2="21" y2="28"/>
-  <line x1="21" y1="4" x2="11" y2="28"/>
-  <path d="M8 4 Q8 12 12 14 Q16 16 16 16 Q16 16 20 14 Q24 12 24 4"/>
-  <line x1="16" y1="16" x2="16" y2="28"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Amber background with rounded corners -->
+  <rect width="32" height="32" rx="8" fill="#F59E0B"/>
+  <!-- Fork (left) -->
+  <g stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <line x1="10" y1="5" x2="10" y2="14"/>
+    <line x1="8" y1="5" x2="8" y2="9"/>
+    <line x1="12" y1="5" x2="12" y2="9"/>
+    <line x1="8" y1="9" x2="12" y2="9"/>
+    <line x1="10" y1="14" x2="10" y2="27"/>
+  </g>
+  <!-- Knife (right) -->
+  <g stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <line x1="22" y1="5" x2="22" y2="27"/>
+    <path d="M22 5 Q26 8 26 13 Q26 16 22 16"/>
+  </g>
 </svg>
