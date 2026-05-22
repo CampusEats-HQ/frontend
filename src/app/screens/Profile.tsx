@@ -13,9 +13,16 @@ export default function Profile() {
   useEffect(() => {
     profileService.get()
       .then((res) => setProfile(res))
-      .catch(() => toast.error('Failed to load profile'))
+      .catch((err: any) => {
+        if (err?.message?.includes('404') || err?.message?.toLowerCase().includes('not found')) {
+          authService.logout();
+          navigate('/login');
+        } else {
+          toast.error('Failed to load profile');
+        }
+      })
       .finally(() => setLoading(false));
-  }, []);
+  }, [navigate]);
 
   const menuItems = [
     { icon: '📦', label: 'My Orders', path: '/orders' },
