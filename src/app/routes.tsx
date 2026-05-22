@@ -1,6 +1,8 @@
 import { createBrowserRouter } from "react-router";
 import NotFound from "./screens/NotFound";
 import VerifyOtp from "./screens/VerifyOtp";
+import ForgotPassword from "./screens/ForgotPassword";
+import ResetPassword from "./screens/ResetPassword";
 import Splash from "./screens/Splash";
 import SignUp from "./screens/SignUp";
 import Login from "./screens/Login";
@@ -55,6 +57,14 @@ export const router = createBrowserRouter([
   {
     path: "/verify-otp",
     Component: VerifyOtp,
+  },
+  {
+    path: "/forgot-password",
+    Component: ForgotPassword,
+  },
+  {
+    path: "/reset-password",
+    Component: ResetPassword,
   },
   {
     path: "/login",

@@ -50,7 +50,7 @@ export default function Login() {
         </div>
 
         <div className="text-right mb-6">
-          <Link to="/login" className="text-sm text-gray-500">
+          <Link to="/forgot-password" className="text-sm text-gray-500">
             Forgot password?
           </Link>
         </div>
