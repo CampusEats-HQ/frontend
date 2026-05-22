@@ -3,12 +3,12 @@ import { useNavigate, useLocation } from 'react-router';
 import { ArrowLeft, CreditCard, Building2, Wallet, Lock } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
-import { orderService } from '../services/orders';
+import { orderService, paymentService } from '../services/orders';
 
 export default function Payment() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { getTotal, items, clearCart } = useCart();
+  const { getTotal, items, clearCart } = useCart(); // clearCart called on payment callback
   const [selectedMethod, setSelectedMethod] = useState<'card' | 'bank' | 'wallet'>('card');
   const [promoCode, setPromoCode] = useState('');
   const [discount, setDiscount] = useState(0);
@@ -36,26 +36,28 @@ export default function Payment() {
       .finally(() => setApplyingPromo(false));
   };
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     setPlacing(true);
-    orderService.place({
-      items: items.map((item) => ({
-        itemId: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        restaurantId: item.id.split('-')[0] || item.id,
-      })),
-      deliveryLocation,
-      paymentMethod: selectedMethod,
-      promoCode: promoCode || undefined,
-    })
-      .then((res) => {
-        clearCart();
-        navigate(`/success/${res.orderId}`);
-      })
-      .catch((err: any) => toast.error(err.message || 'Payment failed'))
-      .finally(() => setPlacing(false));
+    try {
+      const order = await orderService.place({
+        items: items.map((item) => ({
+          itemId: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          restaurantId: item.id.split('-')[0] || item.id,
+        })),
+        deliveryLocation,
+        paymentMethod: selectedMethod,
+        promoCode: promoCode || undefined,
+      });
+
+      const payment = await paymentService.initialize(order.orderId);
+      window.location.href = payment.authorizationUrl;
+    } catch (err: any) {
+      toast.error(err.message || 'Payment failed');
+      setPlacing(false);
+    }
   };
 
   return (

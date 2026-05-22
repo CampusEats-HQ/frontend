@@ -104,6 +104,11 @@ export const notificationService = {
     api.put<{ message: string }>(`/notifications/${id}/read`),
 }
 
+export const paymentService = {
+  initialize: (orderId: string) =>
+    api.post<{ authorizationUrl: string; reference: string }>('/payments/initialize', { orderId }),
+}
+
 export const profileService = {
   get: () =>
     api.get<{ id: string; firstName: string; lastName: string; email: string; phone: string }>('/profile'),

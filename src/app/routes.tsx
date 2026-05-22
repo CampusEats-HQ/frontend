@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import NotFound from "./screens/NotFound";
+import PaymentCallback from "./screens/PaymentCallback";
 import VerifyOtp from "./screens/VerifyOtp";
 import ForgotPassword from "./screens/ForgotPassword";
 import ResetPassword from "./screens/ResetPassword";
@@ -82,6 +83,10 @@ export const router = createBrowserRouter([
   {
     path: "/cart",
     Component: Cart,
+  },
+  {
+    path: "/payment/callback",
+    Component: PaymentCallback,
   },
   {
     path: "/payment",
