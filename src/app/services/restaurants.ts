@@ -9,6 +9,7 @@ export interface Restaurant {
   deliveryFee: number
   image: string
   isOpen: boolean
+  sponsored?: boolean
 }
 
 export interface MenuItem {
