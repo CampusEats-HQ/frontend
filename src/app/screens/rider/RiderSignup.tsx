@@ -10,7 +10,8 @@ export default function RiderSignup() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [matricNumber, setMatricNumber] = useState('');
@@ -23,7 +24,8 @@ export default function RiderSignup() {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('fullName', fullName);
+    formData.append('firstName', firstName);
+    formData.append('lastName', lastName);
     formData.append('email', email);
     formData.append('phone', phone);
     formData.append('matricNumber', matricNumber);
@@ -114,14 +116,24 @@ export default function RiderSignup() {
 
         {/* Personal Info */}
         <div className="space-y-4 mb-6">
-          <input
-            type="text"
-            placeholder="Full name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
-            required
-          />
+          <div className="flex gap-3">
+            <input
+              type="text"
+              placeholder="First name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
+              required
+            />
+            <input
+              type="text"
+              placeholder="Last name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
+              required
+            />
+          </div>
           <input
             type="email"
             placeholder="Email"

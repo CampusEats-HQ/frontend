@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import NotFound from "./screens/NotFound";
+import VerifyOtp from "./screens/VerifyOtp";
 import Splash from "./screens/Splash";
 import SignUp from "./screens/SignUp";
 import Login from "./screens/Login";
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
   {
     path: "/signup",
     Component: SignUp,
+  },
+  {
+    path: "/verify-otp",
+    Component: VerifyOtp,
   },
   {
     path: "/login",

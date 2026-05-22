@@ -7,7 +7,7 @@ import { authService } from '../services/auth';
 
 export default function Profile() {
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<{ id: string; fullName: string; email: string; phone: string } | null>(null);
+  const [profile, setProfile] = useState<{ id: string; firstName: string; lastName: string; email: string; phone: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function Profile() {
     navigate('/');
   };
 
-  const displayName = profile?.fullName ?? '';
+  const displayName = profile ? `${profile.firstName} ${profile.lastName}`.trim() : '';
   const displayEmail = profile?.email ?? '';
   const initials = displayName
     ? displayName.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)

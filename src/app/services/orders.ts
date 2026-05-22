@@ -106,8 +106,8 @@ export const notificationService = {
 
 export const profileService = {
   get: () =>
-    api.get<{ id: string; fullName: string; email: string; phone: string }>('/profile'),
+    api.get<{ id: string; firstName: string; lastName: string; email: string; phone: string }>('/profile'),
 
-  update: (data: { fullName?: string; phone?: string }) =>
-    api.put<{ id: string; fullName: string; phone: string }>('/profile', data),
+  update: (data: { firstName?: string; lastName?: string; phone?: string }) =>
+    api.put<{ id: string; firstName: string; lastName: string; phone: string }>('/profile', data),
 }

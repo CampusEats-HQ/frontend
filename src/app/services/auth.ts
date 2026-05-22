@@ -2,7 +2,8 @@ import { api, setToken, clearToken } from '../lib/api'
 
 export interface CustomerUser {
   id: string
-  fullName: string
+  firstName: string
+  lastName: string
   email: string
   phone?: string
 }
@@ -34,11 +35,8 @@ export interface AdminUser {
 }
 
 export const authService = {
-  registerCustomer: async (data: { fullName: string; email: string; password: string }) => {
-    const res = await api.post<{ token: string; user: CustomerUser }>('/auth/customer/register', data)
-    setToken(res.token)
-    return res
-  },
+  registerCustomer: (data: { firstName: string; lastName: string; email: string; password: string }) =>
+    api.post<{ message: string; email: string }>('/auth/customer/register', data),
 
   loginCustomer: async (data: { email: string; password: string }) => {
     const res = await api.post<{ token: string; user: CustomerUser }>('/auth/customer/login', data)
@@ -67,8 +65,11 @@ export const authService = {
     return res
   },
 
-  verifyOtp: (data: { email: string; otp: string }) =>
-    api.post<{ message: string; verified: boolean }>('/auth/verify-otp', data),
+  verifyOtp: async (data: { email: string; otp: string }) => {
+    const res = await api.post<{ token: string; user: CustomerUser }>('/auth/verify-otp', data)
+    setToken(res.token)
+    return res
+  },
 
   forgotPassword: (data: { email: string }) =>
     api.post<{ message: string }>('/auth/forgot-password', data),
