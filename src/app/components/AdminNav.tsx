@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router';
-import { Bell, User, LayoutDashboard, ClipboardList, Users, DollarSign, Megaphone, Menu, X, Moon, Sun } from 'lucide-react';
+import { Bell, User, LayoutDashboard, ClipboardList, Users, DollarSign, Megaphone, Menu, X, Moon, Sun, BarChart3 } from 'lucide-react';
 
 const NAV_LINKS = [
   { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/admin/orders', icon: ClipboardList, label: 'Orders' },
   { to: '/admin/people', icon: Users, label: 'People' },
-  { to: '/admin/analytics', icon: null, label: 'Analytics' },
+  { to: '/admin/analytics', icon: BarChart3, label: 'Analytics' },
   { to: '/admin/finance', icon: DollarSign, label: 'Finance' },
   { to: '/admin/promotions', icon: Megaphone, label: 'Promotions' },
 ];
