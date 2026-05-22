@@ -15,7 +15,7 @@ export default function Login() {
     setLoading(true);
     authService.loginCustomer({ email, password })
       .then(() => navigate('/home'))
-      .catch((err: any) => toast.error(err.message || 'Login failed'))
+      .catch((err: Error) => toast.error(err.message || 'Login failed'))
       .finally(() => setLoading(false));
   };
 
