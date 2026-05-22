@@ -7,7 +7,7 @@ import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
 import { restaurantService } from '../services/restaurants';
 import type { Restaurant, PopularItem } from '../services/restaurants';
-import { adminService } from '../services/admin';
+import { api } from '../lib/api';
 import type { Promo } from '../services/admin';
 
 const FALLBACK_SLIDES: Promo[] = [
@@ -46,10 +46,9 @@ export default function Home() {
   }, [emblaApi, onSelect]);
 
   useEffect(() => {
-    adminService.getPromos()
+    api.get<{ promos: Promo[] }>('/restaurants/promos')
       .then((res) => {
-        const active = res.promos.filter((p) => p.active);
-        if (active.length > 0) setPromoSlides(active);
+        if (res.promos.length > 0) setPromoSlides(res.promos);
       })
       .catch(() => {}); // silently fall back to hardcoded slides
   }, []);
