@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { UtensilsCrossed } from 'lucide-react';
+import { PasswordInput } from '../components/ui/PasswordInput';
 import { toast } from 'sonner';
 import { authService } from '../services/auth';
 
@@ -39,8 +40,7 @@ export default function Login() {
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
             required
           />
-          <input
-            type="password"
+          <PasswordInput
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

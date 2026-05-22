@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Shield } from 'lucide-react';
+import { PasswordInput } from '../../components/ui/PasswordInput';
 import { authService } from '../../services/auth';
 import { toast } from 'sonner';
 
@@ -47,8 +48,7 @@ export default function AdminLogin() {
               className="w-full h-[52px] px-4 rounded-lg border border-gray-300"
               required
             />
-            <input
-              type="password"
+            <PasswordInput
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { authService } from '../services/auth';
+import { PasswordInput } from '../components/ui/PasswordInput';
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -62,8 +63,7 @@ export default function SignUp() {
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
             required
           />
-          <input
-            type="password"
+          <PasswordInput
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

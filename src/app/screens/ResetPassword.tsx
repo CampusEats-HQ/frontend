@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
+import { PasswordInput } from '../components/ui/PasswordInput';
 import { toast } from 'sonner';
 import { authService } from '../services/auth';
 
@@ -56,16 +57,14 @@ export default function ResetPassword() {
           maxLength={6}
           required
         />
-        <input
-          type="password"
+        <PasswordInput
           placeholder="New password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
           required
         />
-        <input
-          type="password"
+        <PasswordInput
           placeholder="Confirm new password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}

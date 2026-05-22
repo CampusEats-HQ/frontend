@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
+import { PasswordInput } from '../../components/ui/PasswordInput';
 import { useRider } from '../../context/RiderContext';
 import { toast } from 'sonner';
 import { authService } from '../../services/auth';
@@ -79,8 +80,7 @@ export default function RiderLogin() {
               <label className="block text-sm font-medium mb-2 text-gray-800">
                 Password
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
