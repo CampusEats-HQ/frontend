@@ -1,14 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Trash2, Minus, Plus, ChevronDown } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { hostels } from '../data/mockData';
+import { toast } from 'sonner';
+import { restaurantService } from '../services/restaurants';
 
 export default function Cart() {
   const navigate = useNavigate();
   const { items, updateQuantity, removeItem, clearCart, getTotal } = useCart();
-  const [selectedHostel, setSelectedHostel] = useState('Eni-Jokun Hostel');
+  const [locations, setLocations] = useState<string[]>([]);
+  const [selectedHostel, setSelectedHostel] = useState('');
   const deliveryFee = 400;
+
+  useEffect(() => {
+    restaurantService.getDeliveryLocations()
+      .then((res) => {
+        setLocations(res.locations);
+        if (res.locations.length > 0) setSelectedHostel(res.locations[0]);
+      })
+      .catch(() => toast.error('Failed to load delivery locations'));
+  }, []);
 
   if (items.length === 0) {
     return (
@@ -108,9 +119,9 @@ export default function Cart() {
               onChange={(e) => setSelectedHostel(e.target.value)}
               className="w-full h-12 px-3 rounded-lg appearance-none pr-10 bg-white text-gray-800"
             >
-              {hostels.map((hostel) => (
-                <option key={hostel} value={hostel}>
-                  {hostel}
+              {locations.map((loc) => (
+                <option key={loc} value={loc}>
+                  {loc}
                 </option>
               ))}
             </select>
@@ -153,7 +164,7 @@ export default function Cart() {
         {/* Proceed Button */}
         <button
           type="button"
-          onClick={() => navigate('/payment')}
+          onClick={() => navigate('/payment', { state: { deliveryLocation: selectedHostel } })}
           className="w-full h-[52px] rounded-lg font-semibold bg-indigo-500 text-white"
         >
           Proceed to Pay — ₦{getTotal() + deliveryFee}

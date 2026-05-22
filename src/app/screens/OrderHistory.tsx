@@ -1,105 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
-
-const orderHistory = [
-  {
-    id: 'ORD-1045',
-    date: '2026-05-18',
-    time: '14:30',
-    restaurant: 'Mavise Grill',
-    restaurantId: 'r1',
-    items: [
-      { name: 'Jollof Rice with Chicken', quantity: 2, price: 1200 },
-      { name: 'Zobo', quantity: 1, price: 300 },
-    ],
-    total: 2700,
-    deliveryFee: 300,
-    status: 'delivered',
-    rider: 'Emeka Okafor',
-  },
-  {
-    id: 'ORD-1038',
-    date: '2026-05-17',
-    time: '19:15',
-    restaurant: 'Jollof Palace',
-    restaurantId: 'r2',
-    items: [
-      { name: 'Fried Rice Special', quantity: 1, price: 1500 },
-      { name: 'Chicken Wings (6pcs)', quantity: 1, price: 800 },
-    ],
-    total: 2300,
-    deliveryFee: 300,
-    status: 'delivered',
-    rider: 'Ngozi Adeyemi',
-  },
-  {
-    id: 'ORD-1029',
-    date: '2026-05-16',
-    time: '13:45',
-    restaurant: 'Suya Kingdom',
-    restaurantId: 'r3',
-    items: [
-      { name: 'Beef Suya (Medium)', quantity: 1, price: 1800 },
-      { name: 'Chapman', quantity: 1, price: 400 },
-    ],
-    total: 2200,
-    deliveryFee: 300,
-    status: 'delivered',
-    rider: 'Ibrahim Sule',
-  },
-  {
-    id: 'ORD-1018',
-    date: '2026-05-15',
-    time: '20:00',
-    restaurant: 'Mavise Grill',
-    restaurantId: 'r1',
-    items: [
-      { name: 'Jollof Rice with Chicken', quantity: 1, price: 1200 },
-      { name: 'Moi Moi', quantity: 1, price: 200 },
-    ],
-    total: 1400,
-    deliveryFee: 300,
-    status: 'delivered',
-    rider: 'Funke Daniels',
-  },
-  {
-    id: 'ORD-1005',
-    date: '2026-05-14',
-    time: '12:30',
-    restaurant: 'Eba & Egusi Spot',
-    restaurantId: 'r4',
-    items: [
-      { name: 'Eba & Egusi Soup with Assorted', quantity: 1, price: 1000 },
-    ],
-    total: 1000,
-    deliveryFee: 300,
-    status: 'delivered',
-    rider: 'Emeka Okafor',
-  },
-];
+import { orderService } from '../services/orders';
+import type { Order } from '../services/orders';
 
 export default function OrderHistory() {
   const navigate = useNavigate();
   const { addItem } = useCart();
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  const handleReorder = (order: any) => {
-    order.items.forEach((item: any) => {
-      for (let i = 0; i < item.quantity; i++) {
-        addItem({
-          id: `${order.restaurantId}-${item.name}`,
-          name: item.name,
-          price: item.price,
-          quantity: 1,
-          restaurant: order.restaurant,
-          image: 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=200&h=200&fit=crop',
+  useEffect(() => {
+    orderService.getHistory()
+      .then((res) => setOrders(res.orders))
+      .catch(() => toast.error('Failed to load order history'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleReorder = (order: Order) => {
+    orderService.reorder(order.id)
+      .then((res) => {
+        res.items.forEach((item) => {
+          for (let i = 0; i < item.quantity; i++) {
+            addItem({
+              id: item.itemId,
+              name: item.name,
+              price: item.price,
+              restaurant: res.restaurant,
+              image: 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=200&h=200&fit=crop',
+            });
+          }
         });
-      }
-    });
-    toast.success(`${order.items.length} items added to cart!`);
+        toast.success(`${res.items.length} items added to cart!`);
+        navigate('/cart');
+      })
+      .catch(() => toast.error('Failed to reorder'));
   };
 
   const formatDate = (dateStr: string) => {
@@ -113,6 +51,12 @@ export default function OrderHistory() {
 
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-white">
@@ -128,7 +72,7 @@ export default function OrderHistory() {
 
       {/* Orders List */}
       <div className="px-6 py-6 space-y-4 max-w-4xl mx-auto">
-        {orderHistory.map((order) => (
+        {orders.map((order) => (
           <div
             key={order.id}
             className="rounded-lg p-4 border border-gray-200"
@@ -143,7 +87,7 @@ export default function OrderHistory() {
                 </p>
               </div>
               <span className="px-3 py-1 rounded text-xs font-medium whitespace-nowrap bg-emerald-100 text-emerald-500">
-                Delivered
+                {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
               </span>
             </div>
 
@@ -162,7 +106,7 @@ export default function OrderHistory() {
               <div className="border-t mt-2 pt-2 border-gray-200">
                 <div className="flex justify-between text-xs mb-1">
                   <span className="text-gray-500">Subtotal</span>
-                  <span className="text-gray-800">₦{order.total}</span>
+                  <span className="text-gray-800">₦{order.subtotal}</span>
                 </div>
                 <div className="flex justify-between text-xs mb-1">
                   <span className="text-gray-500">Delivery Fee</span>
@@ -170,14 +114,16 @@ export default function OrderHistory() {
                 </div>
                 <div className="flex justify-between text-sm font-bold">
                   <span className="text-gray-800">Total</span>
-                  <span className="text-gray-800">₦{order.total + order.deliveryFee}</span>
+                  <span className="text-gray-800">₦{order.total}</span>
                 </div>
               </div>
             </div>
 
-            <p className="text-xs mb-3 text-gray-500">
-              Delivered by {order.rider}
-            </p>
+            {order.rider && (
+              <p className="text-xs mb-3 text-gray-500">
+                Delivered by {order.rider}
+              </p>
+            )}
 
             {/* Actions */}
             <div className="flex gap-2">
@@ -201,7 +147,7 @@ export default function OrderHistory() {
           </div>
         ))}
 
-        {orderHistory.length === 0 && (
+        {orders.length === 0 && (
           <div className="text-center py-12">
             <p className="text-lg font-semibold mb-2 text-gray-800">
               No orders yet
@@ -258,7 +204,7 @@ export default function OrderHistory() {
               <div>
                 <p className="text-xs mb-2 text-gray-500">Items</p>
                 <div className="space-y-2">
-                  {selectedOrder.items.map((item: any, idx: number) => (
+                  {selectedOrder.items.map((item, idx) => (
                     <div key={idx} className="flex justify-between text-sm">
                       <span className="text-gray-800">{item.quantity}x {item.name}</span>
                       <span className="text-gray-800">₦{item.price * item.quantity}</span>
@@ -267,15 +213,17 @@ export default function OrderHistory() {
                 </div>
               </div>
 
-              <div>
-                <p className="text-xs mb-1 text-gray-500">Rider</p>
-                <p className="text-sm font-semibold text-gray-800">{selectedOrder.rider}</p>
-              </div>
+              {selectedOrder.rider && (
+                <div>
+                  <p className="text-xs mb-1 text-gray-500">Rider</p>
+                  <p className="text-sm font-semibold text-gray-800">{selectedOrder.rider}</p>
+                </div>
+              )}
 
               <div className="pt-4 border-t border-gray-200">
                 <div className="flex justify-between text-sm mb-2">
                   <span className="text-gray-500">Subtotal</span>
-                  <span className="text-gray-800">₦{selectedOrder.total}</span>
+                  <span className="text-gray-800">₦{selectedOrder.subtotal}</span>
                 </div>
                 <div className="flex justify-between text-sm mb-2">
                   <span className="text-gray-500">Delivery Fee</span>
@@ -283,7 +231,7 @@ export default function OrderHistory() {
                 </div>
                 <div className="flex justify-between text-base font-bold">
                   <span className="text-gray-800">Total Paid</span>
-                  <span className="text-gray-800">₦{selectedOrder.total + selectedOrder.deliveryFee}</span>
+                  <span className="text-gray-800">₦{selectedOrder.total}</span>
                 </div>
               </div>
             </div>

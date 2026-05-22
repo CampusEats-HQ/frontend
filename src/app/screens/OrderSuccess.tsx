@@ -1,12 +1,34 @@
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { CheckCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { toast } from 'sonner';
+import { orderService } from '../services/orders';
+import type { OrderTracking } from '../services/orders';
 
 export default function OrderSuccess() {
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const { getTotal, clearCart } = useCart();
-  const total = getTotal() + 400;
+  const { clearCart } = useCart();
+  const [order, setOrder] = useState<OrderTracking | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!orderId) return;
+    orderService.getById(orderId)
+      .then((res) => setOrder(res))
+      .catch(() => toast.error('Failed to load order details'))
+      .finally(() => setLoading(false));
+  }, [orderId]);
+
+  const restaurantName = order?.restaurant ?? 'Your Restaurant';
+  const total = order?.total ?? 0;
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-5">
@@ -21,7 +43,7 @@ export default function OrderSuccess() {
           Order placed! 🎉
         </h1>
         <p className="text-sm mb-8 text-gray-500">
-          Emeka will pick up your food in ~5 mins
+          Your rider will pick up your food shortly
         </p>
 
         {/* Order Summary */}
@@ -32,7 +54,7 @@ export default function OrderSuccess() {
                 Order #{orderId}
               </p>
               <p className="text-xs text-gray-500">
-                Mavise Grill
+                {restaurantName}
               </p>
             </div>
             <p className="font-bold text-indigo-500">

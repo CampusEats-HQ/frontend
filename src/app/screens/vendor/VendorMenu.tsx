@@ -1,19 +1,48 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { LayoutDashboard, ClipboardList, UtensilsCrossed, DollarSign, Plus, Edit, Search } from 'lucide-react';
-import { vendorMenuItems } from '../../data/vendorMockData';
+import { toast } from 'sonner';
+import { vendorService, VendorMenuItem } from '../../services/vendor';
 
 export default function VendorMenu() {
+  const [menuItems, setMenuItems] = useState<VendorMenuItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
   const categories = ['All', 'Rice', 'Proteins', 'Drinks', 'Snacks', 'Swallow', 'Pastries'];
 
-  const filteredItems = vendorMenuItems.filter((item) => {
+  useEffect(() => {
+    vendorService.getMenu()
+      .then((res) => setMenuItems(res.items))
+      .catch(() => toast.error('Failed to load menu'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleToggleAvailability = (item: VendorMenuItem) => {
+    const newAvailable = !item.available;
+    vendorService.toggleAvailability(item.id, newAvailable)
+      .then((res) => {
+        setMenuItems((prev) =>
+          prev.map((m) => (m.id === res.id ? { ...m, available: res.available } : m))
+        );
+      })
+      .catch(() => toast.error('Failed to update availability'));
+  };
+
+  const filteredItems = menuItems.filter((item) => {
     const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white pb-20">
@@ -87,7 +116,7 @@ export default function VendorMenu() {
                     className={`w-12 h-6 rounded-full relative transition-colors ${
                       item.available ? 'bg-emerald-500' : 'bg-gray-300'
                     }`}
-                    onClick={() => alert(`Toggle availability for ${item.name}`)}
+                    onClick={() => handleToggleAvailability(item)}
                   >
                     <div
                       className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform ${

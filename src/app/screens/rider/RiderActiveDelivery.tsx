@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Phone, CheckCircle } from 'lucide-react';
 import { useRider } from '../../context/RiderContext';
+import { riderService } from '../../services/rider';
 import { toast } from 'sonner';
 
 export default function RiderActiveDelivery() {
   const navigate = useNavigate();
   const { activeDelivery, setActiveDelivery } = useRider();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(activeDelivery?.currentStep ?? 1);
 
   useEffect(() => {
     if (!activeDelivery) {
@@ -19,15 +20,25 @@ export default function RiderActiveDelivery() {
     return null;
   }
 
-  const handleConfirmPickup = () => {
-    setCurrentStep(2);
-    toast.success('Pickup confirmed! Now delivering to customer.');
+  const handleConfirmPickup = async () => {
+    try {
+      await riderService.updateDeliveryStep(2);
+      setCurrentStep(2);
+      toast.success('Pickup confirmed! Now delivering to customer.');
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to update step');
+    }
   };
 
-  const handleConfirmDelivery = () => {
-    toast.success('Delivery complete! ₦300 earned.');
-    setActiveDelivery(null);
-    navigate('/rider/home');
+  const handleConfirmDelivery = async () => {
+    try {
+      const res = await riderService.completeDelivery();
+      toast.success(`Delivery complete! ₦${res.earnings} earned.`);
+      setActiveDelivery(null);
+      navigate('/rider/home');
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to complete delivery');
+    }
   };
 
   return (

@@ -1,45 +1,71 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { LayoutDashboard, ClipboardList, UtensilsCrossed, DollarSign, Settings, TrendingUp, TrendingDown } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { toast } from 'sonner';
+import { vendorService } from '../../services/vendor';
 
-const dailySalesData = [
-  { day: 'Mon', orders: 45, revenue: 54000 },
-  { day: 'Tue', orders: 52, revenue: 62400 },
-  { day: 'Wed', orders: 38, revenue: 45600 },
-  { day: 'Thu', orders: 61, revenue: 73200 },
-  { day: 'Fri', orders: 73, revenue: 87600 },
-  { day: 'Sat', orders: 89, revenue: 106800 },
-  { day: 'Sun', orders: 67, revenue: 80400 },
-];
+interface DailySaleItem {
+  day: string;
+  orders?: number;
+  revenue?: number;
+  [key: string]: unknown;
+}
 
-const topItemsData = [
-  { name: 'Jollof Rice', orders: 234, revenue: 280800 },
-  { name: 'Fried Rice', orders: 189, revenue: 283500 },
-  { name: 'Chicken Wings', orders: 156, revenue: 124800 },
-  { name: 'Suya', orders: 142, revenue: 255600 },
-  { name: 'Moi Moi', orders: 98, revenue: 19600 },
-];
+interface PeakHourItem {
+  hour: string;
+  orders?: number;
+  [key: string]: unknown;
+}
 
-const orderSourceData = [
-  { name: 'Direct Orders', value: 65, color: '#6366F1' },
-  { name: 'Search', value: 25, color: '#F59E0B' },
-  { name: 'Favorites', value: 10, color: '#10B981' },
-];
+interface TopItem {
+  name: string;
+  orders?: number;
+  revenue?: number;
+  [key: string]: unknown;
+}
 
-const peakHoursData = [
-  { hour: '8am', orders: 12 },
-  { hour: '10am', orders: 28 },
-  { hour: '12pm', orders: 65 },
-  { hour: '2pm', orders: 54 },
-  { hour: '4pm', orders: 32 },
-  { hour: '6pm', orders: 48 },
-  { hour: '8pm', orders: 71 },
-  { hour: '10pm', orders: 45 },
-];
+interface OrderSourceItem {
+  name: string;
+  value?: number;
+  color?: string;
+  [key: string]: unknown;
+}
+
+interface AnalyticsData {
+  dailySales: DailySaleItem[];
+  peakHours: PeakHourItem[];
+  topItems: TopItem[];
+  orderSources: OrderSourceItem[];
+}
 
 export default function VendorAnalytics() {
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'year'>('week');
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    vendorService.getAnalytics(timeRange === 'year' ? undefined : timeRange)
+      .then((res) => setAnalytics(res as AnalyticsData))
+      .catch(() => toast.error('Failed to load analytics'))
+      .finally(() => setLoading(false));
+  }, [timeRange]);
+
+  const dailySales = analytics?.dailySales ?? [];
+  const peakHours = analytics?.peakHours ?? [];
+  const topItems = analytics?.topItems ?? [];
+  const orderSources = analytics?.orderSources ?? [];
+
+  const topItemsMax = topItems.length > 0 ? ((topItems[0].orders as number) ?? 1) : 1;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -106,7 +132,9 @@ export default function VendorAnalytics() {
                 <p className="text-xs text-gray-500">Total Orders</p>
                 <TrendingUp size={16} className="text-emerald-500" />
               </div>
-              <p className="text-2xl font-bold mb-1 text-gray-800">425</p>
+              <p className="text-2xl font-bold mb-1 text-gray-800">
+                {dailySales.reduce((sum, d) => sum + ((d.orders as number) ?? 0), 0)}
+              </p>
               <p className="text-xs text-emerald-500">
                 +12% from last week
               </p>
@@ -117,7 +145,9 @@ export default function VendorAnalytics() {
                 <p className="text-xs text-gray-500">Total Revenue</p>
                 <TrendingUp size={16} className="text-emerald-500" />
               </div>
-              <p className="text-2xl font-bold mb-1 text-gray-800">₦510,000</p>
+              <p className="text-2xl font-bold mb-1 text-gray-800">
+                ₦{dailySales.reduce((sum, d) => sum + ((d.revenue as number) ?? 0), 0).toLocaleString()}
+              </p>
               <p className="text-xs text-emerald-500">
                 +18% from last week
               </p>
@@ -128,7 +158,13 @@ export default function VendorAnalytics() {
                 <p className="text-xs text-gray-500">Avg Order Value</p>
                 <TrendingUp size={16} className="text-emerald-500" />
               </div>
-              <p className="text-2xl font-bold mb-1 text-gray-800">₦1,200</p>
+              <p className="text-2xl font-bold mb-1 text-gray-800">
+                {(() => {
+                  const totalOrders = dailySales.reduce((sum, d) => sum + ((d.orders as number) ?? 0), 0);
+                  const totalRevenue = dailySales.reduce((sum, d) => sum + ((d.revenue as number) ?? 0), 0);
+                  return totalOrders > 0 ? `₦${Math.round(totalRevenue / totalOrders).toLocaleString()}` : '₦0';
+                })()}
+              </p>
               <p className="text-xs text-emerald-500">
                 +5% from last week
               </p>
@@ -154,7 +190,7 @@ export default function VendorAnalytics() {
                 Daily Sales (This Week)
               </h3>
               <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={dailySalesData}>
+                <BarChart data={dailySales}>
                   <CartesianGrid key="grid" strokeDasharray="3 3" stroke="#E0E0E0" />
                   <XAxis key="xaxis" dataKey="day" stroke="#6B7280" fontSize={12} />
                   <YAxis key="yaxis" stroke="#6B7280" fontSize={12} />
@@ -170,7 +206,7 @@ export default function VendorAnalytics() {
                 Peak Order Hours
               </h3>
               <ResponsiveContainer width="100%" height={250}>
-                <LineChart data={peakHoursData}>
+                <LineChart data={peakHours}>
                   <CartesianGrid key="grid" strokeDasharray="3 3" stroke="#E0E0E0" />
                   <XAxis key="xaxis" dataKey="hour" stroke="#6B7280" fontSize={12} />
                   <YAxis key="yaxis" stroke="#6B7280" fontSize={12} />
@@ -189,7 +225,7 @@ export default function VendorAnalytics() {
                 Top Selling Items
               </h3>
               <div className="space-y-3">
-                {topItemsData.map((item, index) => (
+                {topItems.map((item, index) => (
                   <div key={index}>
                     <div className="flex items-center justify-between mb-1">
                       <p className="text-sm font-medium text-gray-800">
@@ -202,7 +238,7 @@ export default function VendorAnalytics() {
                     <div className="h-2 rounded-full overflow-hidden bg-gray-50">
                       <div
                         className="h-full rounded-full bg-indigo-500"
-                        style={{ width: `${(item.orders / topItemsData[0].orders) * 100}%` }}
+                        style={{ width: `${(((item.orders as number) ?? 0) / topItemsMax) * 100}%` }}
                       />
                     </div>
                   </div>
@@ -218,17 +254,17 @@ export default function VendorAnalytics() {
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
-                    data={orderSourceData}
+                    data={orderSources}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {orderSourceData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    {orderSources.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={(entry.color as string) ?? '#6366F1'} />
                     ))}
                   </Pie>
                   <Tooltip />

@@ -1,9 +1,50 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { LayoutDashboard, ClipboardList, UtensilsCrossed, DollarSign } from 'lucide-react';
-import { earningsData } from '../../data/vendorMockData';
+import { toast } from 'sonner';
+import { vendorService } from '../../services/vendor';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, CartesianGrid } from 'recharts';
 
+interface DailyEarning {
+  day: string;
+  amount: number;
+  [key: string]: unknown;
+}
+
+interface Transaction {
+  date: string;
+  orders: number;
+  amount: number;
+  [key: string]: unknown;
+}
+
+interface EarningsData {
+  thisMonth: number;
+  thisWeek: number;
+  pendingSettlement: number;
+  dailyEarnings: DailyEarning[];
+  transactions: Transaction[];
+}
+
 export default function VendorEarnings() {
+  const [earnings, setEarnings] = useState<EarningsData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    vendorService.getEarnings()
+      .then((res) => setEarnings(res as EarningsData))
+      .catch(() => toast.error('Failed to load earnings'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white pb-20">
       <div className="max-w-[1024px] mx-auto">
@@ -21,7 +62,7 @@ export default function VendorEarnings() {
               Total Earned This Month
             </p>
             <p className="text-3xl font-bold text-white">
-              ₦{earningsData.thisMonth.toLocaleString()}
+              ₦{(earnings?.thisMonth ?? 0).toLocaleString()}
             </p>
           </div>
 
@@ -32,7 +73,7 @@ export default function VendorEarnings() {
                 This Week's Earnings
               </p>
               <p className="text-xl font-bold text-gray-800">
-                ₦{earningsData.thisWeek.toLocaleString()}
+                ₦{(earnings?.thisWeek ?? 0).toLocaleString()}
               </p>
             </div>
             <div className="rounded-lg p-4 bg-gray-50">
@@ -40,7 +81,7 @@ export default function VendorEarnings() {
                 Pending Settlement
               </p>
               <p className="text-xl font-bold text-amber-500">
-                ₦{earningsData.pendingSettlement.toLocaleString()}
+                ₦{(earnings?.pendingSettlement ?? 0).toLocaleString()}
               </p>
             </div>
           </div>
@@ -52,7 +93,7 @@ export default function VendorEarnings() {
             </h2>
             <div className="rounded-lg p-4 bg-gray-50">
               <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={earningsData.dailyEarnings}>
+                <BarChart data={earnings?.dailyEarnings ?? []}>
                   <CartesianGrid key="grid" strokeDasharray="3 3" stroke="#E0E0E0" />
                   <XAxis key="xaxis" dataKey="day" stroke="#6B7280" fontSize={12} />
                   <YAxis key="yaxis" stroke="#6B7280" fontSize={12} />
@@ -68,7 +109,7 @@ export default function VendorEarnings() {
               Transaction History
             </h2>
             <div className="space-y-3 mb-4">
-              {earningsData.transactions.map((txn, idx) => (
+              {(earnings?.transactions ?? []).map((txn, idx) => (
                 <div
                   key={idx}
                   className="flex items-center justify-between p-4 rounded-lg bg-gray-50"

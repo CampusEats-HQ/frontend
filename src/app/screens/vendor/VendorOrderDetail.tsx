@@ -1,22 +1,46 @@
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-import { vendorOrders } from '../../data/vendorMockData';
+import { toast } from 'sonner';
+import { vendorService, VendorOrder } from '../../services/vendor';
 
 export default function VendorOrderDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const order = vendorOrders.find((o) => o.id === id);
+  const [order, setOrder] = useState<VendorOrder | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!order) {
-    return <div>Order not found</div>;
-  }
+  useEffect(() => {
+    vendorService.getOrders()
+      .then((res) => {
+        const found = res.orders.find((o) => o.id === id);
+        if (found) {
+          setOrder(found);
+        } else {
+          toast.error('Order not found');
+        }
+      })
+      .catch(() => toast.error('Failed to load order'))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  const handleUpdateStatus = (newStatus: VendorOrder['status']) => {
+    if (!order) return;
+    vendorService.updateOrderStatus(order.id, newStatus)
+      .then(() => {
+        setOrder((prev) => prev ? { ...prev, status: newStatus } : prev);
+        toast.success(`Order marked as ${newStatus}`);
+      })
+      .catch(() => toast.error('Failed to update order status'));
+  };
 
   const getActionButton = () => {
+    if (!order) return null;
     if (order.status === 'pending') {
       return (
         <button
           type="button"
-          onClick={() => alert('Order accepted!')}
+          onClick={() => handleUpdateStatus('preparing')}
           className="w-full h-[52px] rounded-lg font-semibold bg-emerald-500 text-white"
         >
           Accept Order
@@ -27,7 +51,7 @@ export default function VendorOrderDetail() {
       return (
         <button
           type="button"
-          onClick={() => alert('Marked as ready!')}
+          onClick={() => handleUpdateStatus('ready')}
           className="w-full h-[52px] rounded-lg font-semibold bg-indigo-500 text-white"
         >
           Mark as Ready for Pickup
@@ -48,6 +72,18 @@ export default function VendorOrderDetail() {
     }
     return null;
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!order) {
+    return <div>Order not found</div>;
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -71,7 +107,7 @@ export default function VendorOrderDetail() {
                   {order.id}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {order.timestamp.toLocaleString()}
+                  {new Date(order.timestamp).toLocaleString()}
                 </p>
               </div>
               <span className="px-3 py-1 rounded text-sm font-medium bg-blue-100 text-indigo-500">

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { X, LayoutDashboard, ClipboardList, Users, DollarSign, Bell, User } from 'lucide-react';
-import { unassignedOrders, liveOrders, completedOrders, onlineRiders } from '../../data/adminMockData';
+import { adminService } from '../../services/admin';
 import { toast } from 'sonner';
 
 export default function AdminOrders() {
@@ -9,14 +9,60 @@ export default function AdminOrders() {
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
-  const handleAssignRider = (riderId: string, riderName: string) => {
-    toast.success(`Order ${selectedOrder?.id} assigned to ${riderName}`);
-    setShowAssignModal(false);
-    setSelectedOrder(null);
+  const [allOrders, setAllOrders] = useState<any[]>([]);
+  const [unassignedOrders, setUnassignedOrders] = useState<any[]>([]);
+  const [availableRiders, setAvailableRiders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchOrders = (tab: typeof activeTab) => {
+    setLoading(true);
+    const statusMap: Record<typeof activeTab, string | undefined> = {
+      all: undefined,
+      unassigned: undefined,
+      active: 'active',
+      completed: 'completed',
+    };
+
+    if (tab === 'unassigned') {
+      Promise.all([
+        adminService.getUnassignedOrders(),
+        adminService.getRiders('active'),
+      ])
+        .then(([unassigned, riders]) => {
+          setUnassignedOrders(unassigned.orders);
+          setAvailableRiders(riders.riders.filter((r: any) => r.status === 'available'));
+        })
+        .catch(() => toast.error('Failed to load orders'))
+        .finally(() => setLoading(false));
+    } else {
+      adminService
+        .getOrders(statusMap[tab])
+        .then((res) => setAllOrders(res.orders))
+        .catch(() => toast.error('Failed to load orders'))
+        .finally(() => setLoading(false));
+    }
   };
 
-  const formatWaitingTime = (timestamp: Date) => {
-    const seconds = Math.floor((Date.now() - timestamp.getTime()) / 1000);
+  useEffect(() => {
+    fetchOrders(activeTab);
+  }, [activeTab]);
+
+  const handleAssignRider = async (riderId: string, riderName: string) => {
+    if (!selectedOrder) return;
+    try {
+      await adminService.assignRider(selectedOrder.id, riderId);
+      toast.success(`Order ${selectedOrder.id} assigned to ${riderName}`);
+      setShowAssignModal(false);
+      setSelectedOrder(null);
+      fetchOrders(activeTab);
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to assign rider');
+    }
+  };
+
+  const formatWaitingTime = (timestamp: string | Date) => {
+    const ts = typeof timestamp === 'string' ? new Date(timestamp) : timestamp;
+    const seconds = Math.floor((Date.now() - ts.getTime()) / 1000);
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
@@ -82,7 +128,7 @@ export default function AdminOrders() {
               className={`px-4 py-3 text-sm font-medium capitalize ${activeTab === tab ? 'text-indigo-500 border-b-2 border-indigo-500' : 'text-gray-500'}`}
             >
               {tab}
-              {tab === 'unassigned' && (
+              {tab === 'unassigned' && unassignedOrders.length > 0 && (
                 <span className="ml-2 px-2 py-0.5 rounded text-xs bg-amber-100 text-amber-500">
                   {unassignedOrders.length}
                 </span>
@@ -91,112 +137,146 @@ export default function AdminOrders() {
           ))}
         </div>
 
-        {/* Content */}
-        {activeTab === 'unassigned' && (
-          <div className="space-y-4">
-            {unassignedOrders.map((order) => (
-              <div
-                key={order.id}
-                className="rounded-lg p-4 md:p-5 border-2 border-amber-500 bg-amber-50"
-              >
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-3 mb-3">
-                  <div className="min-w-0 flex-1">
-                    <p className="font-bold text-base mb-1 text-gray-800">
-                      {order.id}
-                    </p>
-                    <p className="text-sm mb-1 break-words text-gray-500">
-                      {order.customerName} · {order.restaurant}
-                    </p>
-                    <div className="mt-2">
-                      {order.items.map((item, idx) => (
-                        <p key={idx} className="text-xs break-words text-gray-500">
-                          • {item}
-                        </p>
-                      ))}
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : (
+          <>
+            {/* Content */}
+            {activeTab === 'unassigned' && (
+              <div className="space-y-4">
+                {unassignedOrders.length === 0 ? (
+                  <p className="text-center text-gray-500 py-12">No unassigned orders</p>
+                ) : (
+                  unassignedOrders.map((order: any) => (
+                    <div
+                      key={order.id}
+                      className="rounded-lg p-4 md:p-5 border-2 border-amber-500 bg-amber-50"
+                    >
+                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-3 mb-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="font-bold text-base mb-1 text-gray-800">
+                            {order.id}
+                          </p>
+                          <p className="text-sm mb-1 break-words text-gray-500">
+                            {order.customerName} · {order.restaurant}
+                          </p>
+                          <div className="mt-2">
+                            {(order.items ?? []).map((item: string, idx: number) => (
+                              <p key={idx} className="text-xs break-words text-gray-500">
+                                • {item}
+                              </p>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="text-left md:text-right">
+                          {order.timestamp && (
+                            <p className="text-base md:text-lg font-bold mb-1 text-amber-500">
+                              Waiting {formatWaitingTime(order.timestamp)}
+                            </p>
+                          )}
+                          <p className="text-sm text-gray-500">
+                            ₦{order.total}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedOrder(order);
+                          setShowAssignModal(true);
+                        }}
+                        className="w-full h-11 rounded-lg font-semibold text-sm md:text-base bg-amber-500 text-white"
+                      >
+                        Assign Rider
+                      </button>
                     </div>
-                  </div>
-                  <div className="text-left md:text-right">
-                    <p className="text-base md:text-lg font-bold mb-1 text-amber-500">
-                      Waiting {formatWaitingTime(order.timestamp)}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      ₦{order.total}
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedOrder(order);
-                    setShowAssignModal(true);
-                  }}
-                  className="w-full h-11 rounded-lg font-semibold text-sm md:text-base bg-amber-500 text-white"
-                >
-                  Assign Rider
-                </button>
+                  ))
+                )}
               </div>
-            ))}
-          </div>
-        )}
+            )}
 
-        {activeTab === 'active' && (
-          <div className="space-y-4">
-            {liveOrders.filter(o => o.status !== 'delivered' && !o.needsRider).map((order) => (
-              <div key={order.id} className="rounded-lg p-4 md:p-5 border border-gray-300">
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <p className="font-bold text-base mb-1 text-gray-800">
-                      {order.id}
-                    </p>
-                    <p className="text-sm mb-1 break-words text-gray-500">
-                      {order.customerName} · {order.restaurant}
-                    </p>
-                    <p className="text-sm truncate text-indigo-500">
-                      Rider: {order.riderName}
-                    </p>
-                  </div>
-                  <span className="px-3 py-1 rounded text-sm font-medium self-start whitespace-nowrap bg-blue-100 text-indigo-500">
-                    {order.status}
-                  </span>
-                </div>
+            {activeTab === 'active' && (
+              <div className="space-y-4">
+                {allOrders.length === 0 ? (
+                  <p className="text-center text-gray-500 py-12">No active orders</p>
+                ) : (
+                  allOrders.map((order: any) => (
+                    <div key={order.id} className="rounded-lg p-4 md:p-5 border border-gray-300">
+                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="font-bold text-base mb-1 text-gray-800">
+                            {order.id}
+                          </p>
+                          <p className="text-sm mb-1 break-words text-gray-500">
+                            {order.customerName} · {order.restaurant}
+                          </p>
+                          {order.riderName && (
+                            <p className="text-sm truncate text-indigo-500">
+                              Rider: {order.riderName}
+                            </p>
+                          )}
+                        </div>
+                        <span className="px-3 py-1 rounded text-sm font-medium self-start whitespace-nowrap bg-blue-100 text-indigo-500">
+                          {order.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
-            ))}
-          </div>
-        )}
+            )}
 
-        {activeTab === 'completed' && (
-          <div className="space-y-4">
-            {completedOrders.map((order) => (
-              <div key={order.id} className="rounded-lg p-4 md:p-5 border border-gray-300">
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <p className="font-bold text-base mb-1 text-gray-800">
-                      {order.id}
-                    </p>
-                    <p className="text-sm mb-1 break-words text-gray-500">
-                      {order.customerName} · {order.restaurant} · Rider: {order.riderName}
-                    </p>
-                    <p className="text-xs break-words text-gray-500">
-                      {order.completedAt} · Duration: {order.duration}
-                    </p>
-                  </div>
-                  <p className="font-bold text-left md:text-right whitespace-nowrap text-gray-800">
-                    ₦{order.total}
-                  </p>
-                </div>
+            {activeTab === 'completed' && (
+              <div className="space-y-4">
+                {allOrders.length === 0 ? (
+                  <p className="text-center text-gray-500 py-12">No completed orders</p>
+                ) : (
+                  allOrders.map((order: any) => (
+                    <div key={order.id} className="rounded-lg p-4 md:p-5 border border-gray-300">
+                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="font-bold text-base mb-1 text-gray-800">
+                            {order.id}
+                          </p>
+                          <p className="text-sm mb-1 break-words text-gray-500">
+                            {order.customerName} · {order.restaurant}
+                            {order.riderName ? ` · Rider: ${order.riderName}` : ''}
+                          </p>
+                          {(order.completedAt || order.duration) && (
+                            <p className="text-xs break-words text-gray-500">
+                              {order.completedAt}{order.duration ? ` · Duration: ${order.duration}` : ''}
+                            </p>
+                          )}
+                        </div>
+                        <p className="font-bold text-left md:text-right whitespace-nowrap text-gray-800">
+                          ₦{order.total}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
-            ))}
-          </div>
-        )}
+            )}
 
-        {activeTab === 'all' && (
-          <div className="space-y-4">
-            {[...unassignedOrders, ...liveOrders].map((order: any) => (
-              <div key={order.id} className="rounded-lg p-4 md:p-5 border border-gray-300">
-                <p className="font-bold break-words text-gray-800">{order.id}</p>
+            {activeTab === 'all' && (
+              <div className="space-y-4">
+                {allOrders.length === 0 ? (
+                  <p className="text-center text-gray-500 py-12">No orders found</p>
+                ) : (
+                  allOrders.map((order: any) => (
+                    <div key={order.id} className="rounded-lg p-4 md:p-5 border border-gray-300">
+                      <p className="font-bold break-words text-gray-800">{order.id}</p>
+                      {order.customerName && (
+                        <p className="text-sm text-gray-500">{order.customerName} · {order.restaurant}</p>
+                      )}
+                    </div>
+                  ))
+                )}
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
         </div>
       </div>
@@ -218,27 +298,31 @@ export default function AdminOrders() {
               Select an available rider to assign this order
             </p>
 
-            <div className="space-y-2">
-              {onlineRiders.filter(r => r.status === 'available').map((rider) => (
-                <button
-                  type="button"
-                  key={rider.id}
-                  onClick={() => handleAssignRider(rider.id, rider.name)}
-                  className="w-full p-4 rounded-lg border border-gray-300 text-left hover:border-blue-500 transition-colors"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold text-sm text-gray-800">
-                        {rider.name}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        ⭐ {rider.rating} · {rider.deliveriesToday} deliveries today
-                      </p>
+            {availableRiders.length === 0 ? (
+              <p className="text-center text-gray-500 py-4">No available riders at this time</p>
+            ) : (
+              <div className="space-y-2">
+                {availableRiders.map((rider: any) => (
+                  <button
+                    type="button"
+                    key={rider.id}
+                    onClick={() => handleAssignRider(rider.id, rider.name)}
+                    className="w-full p-4 rounded-lg border border-gray-300 text-left hover:border-blue-500 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold text-sm text-gray-800">
+                          {rider.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          ⭐ {rider.rating} · {rider.deliveriesToday} deliveries today
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </button>
-              ))}
-            </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

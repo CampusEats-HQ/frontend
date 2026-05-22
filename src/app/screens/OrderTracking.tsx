@@ -1,16 +1,40 @@
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { ArrowLeft, Phone, MessageCircle } from 'lucide-react';
+import { toast } from 'sonner';
+import { orderService } from '../services/orders';
+import type { OrderTracking as OrderTrackingType } from '../services/orders';
 
 export default function OrderTracking() {
   const { orderId } = useParams();
   const navigate = useNavigate();
+  const [order, setOrder] = useState<OrderTrackingType | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const steps = [
-    { label: 'Order Confirmed', completed: true },
-    { label: 'Being Prepared', completed: true },
+  useEffect(() => {
+    if (!orderId) return;
+    orderService.getById(orderId)
+      .then((res) => setOrder(res))
+      .catch(() => toast.error('Failed to load order tracking'))
+      .finally(() => setLoading(false));
+  }, [orderId]);
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
+  const steps = order?.steps ?? [
+    { label: 'Order Confirmed', completed: true, active: false },
+    { label: 'Being Prepared', completed: true, active: false },
     { label: 'Rider on the way', completed: false, active: true },
-    { label: 'Delivered', completed: false },
+    { label: 'Delivered', completed: false, active: false },
   ];
+
+  const rider = order?.rider;
+  const estimatedArrival = order?.estimatedArrival ?? '~8 mins';
+  const riderInitial = rider?.name ? rider.name.charAt(0).toUpperCase() : 'R';
 
   return (
     <div className="min-h-screen bg-white">
@@ -84,7 +108,7 @@ export default function OrderTracking() {
         {/* Delivery Info Card */}
         <div className="mx-5 bg-white rounded-xl shadow-lg p-5 border border-gray-100">
           <p className="text-xl font-bold text-center mb-6 text-gray-800">
-            Arriving in ~8 mins
+            Arriving in {estimatedArrival}
           </p>
 
           <div className="h-px mb-4 bg-gray-200" />
@@ -92,14 +116,14 @@ export default function OrderTracking() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full flex items-center justify-center font-semibold bg-amber-500 text-white">
-                E
+                {riderInitial}
               </div>
               <div>
                 <p className="font-semibold text-gray-800">
-                  Emeka
+                  {rider?.name ?? 'Your Rider'}
                 </p>
                 <p className="text-sm text-gray-500">
-                  ⭐ 4.9
+                  ⭐ {rider?.rating ?? '—'}
                 </p>
               </div>
             </div>

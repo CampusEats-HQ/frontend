@@ -1,12 +1,23 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
+import { toast } from 'sonner';
+import { authService } from '../services/auth';
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/home');
+    setLoading(true);
+    authService.registerCustomer({ fullName, email, password })
+      .then(() => navigate('/home'))
+      .catch((err: any) => toast.error(err.message || 'Registration failed'))
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -27,25 +38,35 @@ export default function SignUp() {
           <input
             type="text"
             placeholder="Full name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
+            required
           />
           <input
             type="email"
             placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
+            required
           />
           <input
             type="password"
             placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
+            required
           />
         </div>
 
         <button
           type="submit"
-          className="w-full h-[52px] rounded-lg font-semibold mb-4 bg-indigo-500 text-white"
+          disabled={loading}
+          className="w-full h-[52px] rounded-lg font-semibold mb-4 bg-indigo-500 text-white disabled:opacity-60"
         >
-          Create Account
+          {loading ? 'Creating account...' : 'Create Account'}
         </button>
 
         <p className="text-center text-sm text-gray-500">

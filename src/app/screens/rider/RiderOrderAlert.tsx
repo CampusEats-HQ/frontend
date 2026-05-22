@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowRight, Clock } from 'lucide-react';
 import { useRider } from '../../context/RiderContext';
-import { incomingOrder, activeDelivery } from '../../data/riderMockData';
+import { riderService } from '../../services/rider';
 import { toast } from 'sonner';
 
 export default function RiderOrderAlert() {
   const navigate = useNavigate();
-  const { setActiveDelivery, setHasIncomingOrder } = useRider();
+  const { activeDelivery, setActiveDelivery, setHasIncomingOrder } = useRider();
   const [elapsedTime, setElapsedTime] = useState(0);
   const [orderTakenByOther, setOrderTakenByOther] = useState(false);
 
@@ -27,11 +27,32 @@ export default function RiderOrderAlert() {
     }
   }, [elapsedTime]);
 
-  const handleAccept = () => {
-    setActiveDelivery(activeDelivery);
-    setHasIncomingOrder(false);
-    toast.success('Order accepted!');
-    navigate('/rider/delivery');
+  const order = activeDelivery;
+
+  const handleAccept = async () => {
+    if (!order?.id) return;
+    try {
+      const res = await riderService.acceptOrder(order.id);
+      setActiveDelivery(res.delivery);
+      setHasIncomingOrder(false);
+      toast.success('Order accepted!');
+      navigate('/rider/delivery');
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to accept order');
+    }
+  };
+
+  const handleReject = async () => {
+    if (!order?.id) return;
+    try {
+      await riderService.rejectOrder(order.id);
+      setHasIncomingOrder(false);
+      navigate('/rider/home');
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to reject order');
+      setHasIncomingOrder(false);
+      navigate('/rider/home');
+    }
   };
 
   const handleGoBack = () => {
@@ -39,16 +60,6 @@ export default function RiderOrderAlert() {
     // This just returns rider to home but alert persists
     setHasIncomingOrder(false);
     navigate('/rider/home');
-  };
-
-  // Simulate another rider accepting (for demo)
-  const simulateOtherRiderAccepted = () => {
-    setOrderTakenByOther(true);
-    toast.info('Another rider accepted this order');
-    setTimeout(() => {
-      setHasIncomingOrder(false);
-      navigate('/rider/home');
-    }, 2000);
   };
 
   if (orderTakenByOther) {
@@ -102,16 +113,16 @@ export default function RiderOrderAlert() {
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1">
               <p className="font-bold mb-1 text-gray-800">
-                {incomingOrder.restaurant.name}
+                {order?.restaurant?.name ?? '—'}
               </p>
               <p className="text-xs text-gray-500">
-                {incomingOrder.restaurant.location}
+                {order?.restaurant?.location ?? '—'}
               </p>
             </div>
             <ArrowRight size={24} className="text-gray-500" />
             <div className="flex-1">
               <p className="font-bold mb-1 text-gray-800">
-                {incomingOrder.customer.location}
+                {order?.customer?.location ?? '—'}
               </p>
             </div>
           </div>
@@ -123,7 +134,7 @@ export default function RiderOrderAlert() {
               Distance
             </p>
             <p className="font-semibold text-sm text-gray-800">
-              {incomingOrder.distance}
+              {order?.distance ?? '—'}
             </p>
           </div>
 
@@ -133,7 +144,7 @@ export default function RiderOrderAlert() {
               You'll earn
             </p>
             <p className="text-3xl font-bold text-indigo-500">
-              ₦{incomingOrder.payout}
+              ₦{order?.payout ?? '—'}
             </p>
           </div>
         </div>
@@ -148,19 +159,17 @@ export default function RiderOrderAlert() {
         </button>
         <button
           type="button"
+          onClick={handleReject}
+          className="w-full text-center py-3 font-medium mb-2 text-red-500"
+        >
+          Reject Order
+        </button>
+        <button
+          type="button"
           onClick={handleGoBack}
           className="w-full text-center py-3 font-medium mb-2 text-gray-500"
         >
           Go Back (Alert stays active)
-        </button>
-
-        {/* Demo Button */}
-        <button
-          type="button"
-          onClick={simulateOtherRiderAccepted}
-          className="w-full text-center py-2 text-xs text-gray-500"
-        >
-          [Demo: Simulate another rider accepting]
         </button>
       </div>
     </div>
