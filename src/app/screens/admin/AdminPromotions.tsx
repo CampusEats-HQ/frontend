@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { Bell, User, LayoutDashboard, ClipboardList, Users, DollarSign, Megaphone, Plus, Pencil, Trash2, X } from 'lucide-react';
 import { adminService } from '../../services/admin';
 import type { Promo } from '../../services/admin';
+import AdminNav from '../../components/AdminNav';
 import { toast } from 'sonner';
 
 const BG_OPTIONS = [
@@ -85,45 +86,7 @@ export default function AdminPromotions() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-[1400px] mx-auto">
-        {/* Top Bar */}
-        <div className="px-6 py-4 flex items-center justify-between border-b border-gray-200 bg-white">
-          <div className="flex items-center gap-6">
-            <h1 className="text-xl font-bold text-gray-800">CampusEats Admin</h1>
-            <nav className="hidden lg:flex gap-4">
-              <Link to="/admin/dashboard" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <LayoutDashboard size={18} className="text-gray-500" />
-                <span className="text-sm text-gray-500">Dashboard</span>
-              </Link>
-              <Link to="/admin/orders" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <ClipboardList size={18} className="text-gray-500" />
-                <span className="text-sm text-gray-500">Orders</span>
-              </Link>
-              <Link to="/admin/people" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <Users size={18} className="text-gray-500" />
-                <span className="text-sm text-gray-500">People</span>
-              </Link>
-              <Link to="/admin/analytics" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <span className="text-sm text-gray-500">Analytics</span>
-              </Link>
-              <Link to="/admin/finance" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <DollarSign size={18} className="text-gray-500" />
-                <span className="text-sm text-gray-500">Finance</span>
-              </Link>
-              <Link to="/admin/promotions" className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-100 text-indigo-500">
-                <Megaphone size={18} />
-                <span className="text-sm font-medium">Promotions</span>
-              </Link>
-            </nav>
-          </div>
-          <div className="flex items-center gap-4">
-            <button type="button" className="relative" aria-label="Notifications">
-              <Bell size={20} className="text-gray-500" />
-            </button>
-            <button type="button" aria-label="Profile">
-              <User size={20} className="text-gray-500" />
-            </button>
-          </div>
-        </div>
+        <AdminNav />
 
         <div className="p-6">
           {/* Header */}

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router';
 import { LayoutDashboard, ClipboardList, Users, DollarSign, Bell, User, Megaphone } from 'lucide-react';;
 import { adminService } from '../../services/admin';
+import AdminNav from '../../components/AdminNav';
 import { toast } from 'sonner';
 
 export default function AdminFinance() {
@@ -80,50 +81,7 @@ export default function AdminFinance() {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-[1400px] mx-auto">
-        {/* Top Bar */}
-        <div className="px-6 py-4 flex items-center justify-between border-b border-gray-200">
-          <div className="flex items-center gap-6">
-            <h1 className="text-xl font-bold text-gray-800">
-              CampusEats Admin
-            </h1>
-            <nav className="hidden lg:flex gap-4">
-              <Link to="/admin/dashboard" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <LayoutDashboard size={18} className="text-gray-500" />
-                <span className="text-sm text-gray-500">Dashboard</span>
-              </Link>
-              <Link to="/admin/orders" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <ClipboardList size={18} className="text-gray-500" />
-                <span className="text-sm text-gray-500">Orders</span>
-              </Link>
-              <Link to="/admin/people" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <Users size={18} className="text-gray-500" />
-                <span className="text-sm text-gray-500">People</span>
-              </Link>
-              <Link to="/admin/analytics" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <span className="text-sm text-gray-500">Analytics</span>
-              </Link>
-              <Link to="/admin/finance" className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-100 text-indigo-500">
-                <DollarSign size={18} />
-                <span className="text-sm font-medium">Finance</span>
-              </Link>
-              <Link to="/admin/promotions" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-                <Megaphone size={18} className="text-gray-500" />
-                <span className="text-sm text-gray-500">Promotions</span>
-              </Link>
-            </nav>
-          </div>
-          <div className="flex items-center gap-4">
-            <button type="button" className="relative" aria-label="Notifications">
-              <Bell size={20} className="text-gray-500" />
-            </button>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-indigo-500">
-                <User size={16} color="white" />
-              </div>
-              <span className="text-sm font-medium text-gray-800">Admin</span>
-            </div>
-          </div>
-        </div>
+        <AdminNav />
 
         <div className="px-6 py-6">
           {/* Header */}
