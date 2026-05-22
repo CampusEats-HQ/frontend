@@ -45,18 +45,6 @@ export default function AdminAnalytics() {
     <div className="min-h-screen bg-white">
       <div className="max-w-[1400px] mx-auto">
         <AdminNav />
-          <div className="flex items-center gap-4">
-            <button type="button" className="relative" aria-label="Notifications">
-              <Bell size={20} className="text-gray-500" />
-            </button>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-indigo-500">
-                <User size={16} color="white" />
-              </div>
-              <span className="text-sm font-medium text-gray-800">Admin</span>
-            </div>
-          </div>
-        </div>
 
         <div className="px-6 py-6">
           {/* Header */}
