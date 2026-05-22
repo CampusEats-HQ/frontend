@@ -1,4 +1,4 @@
-const BASE_URL = (import.meta.env.VITE_API_URL as string) ?? 'https://campuseats-backend-fa1n.onrender.com'
+const BASE_URL = (import.meta.env.VITE_API_URL as string) ?? 'https://staging-api.campus-eats.me/api/v1'
 
 export const WS_URL = BASE_URL.replace(/^http/, 'ws').replace(/\/v1$/, '')
 

@@ -1,6 +1,6 @@
 # CampusEats API Reference
 
-Base URL: `https://api.campus-eats.me/v1`
+Base URL: `https://staging-api.campus-eats.me/api/v1`
 
 All protected endpoints require:
 ```
