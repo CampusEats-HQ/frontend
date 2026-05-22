@@ -188,7 +188,7 @@ export default function Home() {
               Search
             </span>
           </button>
-          <Link to="/tracking/1042" className="flex flex-col items-center gap-1">
+          <Link to="/orders" className="flex flex-col items-center gap-1">
             <Package size={20} className="text-gray-500" />
             <span className="text-xs text-gray-500">
               Orders
