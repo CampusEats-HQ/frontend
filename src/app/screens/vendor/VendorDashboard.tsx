@@ -1,19 +1,77 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { LayoutDashboard, ClipboardList, UtensilsCrossed, DollarSign, Clock, Settings } from 'lucide-react';
-import { useVendor } from '../../context/VendorContext';
-import { vendorStats, vendorOrders } from '../../data/vendorMockData';
+import { toast } from 'sonner';
+import { vendorService, VendorOrder } from '../../services/vendor';
+
+interface DashboardData {
+  isOpen: boolean;
+  todayOrders: number;
+  todayRevenue: number;
+  pendingOrders: number;
+  avgPrepTime: number;
+}
 
 export default function VendorDashboard() {
-  const { isOpen, toggleOpen } = useVendor();
+  const [dashboard, setDashboard] = useState<DashboardData | null>(null);
+  const [pendingOrders, setPendingOrders] = useState<VendorOrder[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const pendingOrders = vendorOrders.filter((o) => o.status === 'pending');
+  useEffect(() => {
+    Promise.all([
+      vendorService.getDashboard(),
+      vendorService.getOrders('pending'),
+    ])
+      .then(([dashRes, ordersRes]) => {
+        setDashboard(dashRes);
+        setPendingOrders(ordersRes.orders);
+      })
+      .catch(() => toast.error('Failed to load dashboard'))
+      .finally(() => setLoading(false));
+  }, []);
 
-  const getTimeAgo = (timestamp: Date) => {
-    const mins = Math.floor((Date.now() - timestamp.getTime()) / 60000);
+  const handleToggleOpen = () => {
+    if (!dashboard) return;
+    const newStatus = !dashboard.isOpen;
+    vendorService.setStoreStatus(newStatus)
+      .then((res) => setDashboard((prev) => prev ? { ...prev, isOpen: res.isOpen } : prev))
+      .catch(() => toast.error('Failed to update store status'));
+  };
+
+  const handleAcceptOrder = (e: React.MouseEvent, orderId: string) => {
+    e.preventDefault();
+    vendorService.updateOrderStatus(orderId, 'preparing')
+      .then(() => {
+        setPendingOrders((prev) => prev.filter((o) => o.id !== orderId));
+        toast.success('Order accepted');
+      })
+      .catch(() => toast.error('Failed to accept order'));
+  };
+
+  const handleRejectOrder = (e: React.MouseEvent, orderId: string) => {
+    e.preventDefault();
+    vendorService.updateOrderStatus(orderId, 'completed')
+      .then(() => {
+        setPendingOrders((prev) => prev.filter((o) => o.id !== orderId));
+        toast.success('Order rejected');
+      })
+      .catch(() => toast.error('Failed to reject order'));
+  };
+
+  const getTimeAgo = (timestamp: string) => {
+    const mins = Math.floor((Date.now() - new Date(timestamp).getTime()) / 60000);
     if (mins < 1) return 'Just now';
     if (mins === 1) return '1 min ago';
     return `${mins} mins ago`;
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white pb-20">
@@ -26,10 +84,10 @@ export default function VendorDashboard() {
           <div className="flex items-center gap-3">
             <button
               type="button"
-              onClick={toggleOpen}
-              className={`px-4 py-2 rounded-full font-semibold text-sm text-white ${isOpen ? 'bg-emerald-500' : 'bg-red-500'}`}
+              onClick={handleToggleOpen}
+              className={`px-4 py-2 rounded-full font-semibold text-sm text-white ${dashboard?.isOpen ? 'bg-emerald-500' : 'bg-red-500'}`}
             >
-              {isOpen ? 'Open' : 'Closed'}
+              {dashboard?.isOpen ? 'Open' : 'Closed'}
             </button>
             <Link to="/vendor/profile">
               <Settings size={20} className="text-gray-500" />
@@ -45,7 +103,7 @@ export default function VendorDashboard() {
                 Today's Orders
               </p>
               <p className="text-2xl font-bold text-gray-800">
-                {vendorStats.todayOrders}
+                {dashboard?.todayOrders ?? 0}
               </p>
             </div>
             <div className="rounded-lg p-4 bg-gray-50">
@@ -53,7 +111,7 @@ export default function VendorDashboard() {
                 Today's Revenue
               </p>
               <p className="text-2xl font-bold text-gray-800">
-                ₦{vendorStats.todayRevenue.toLocaleString()}
+                ₦{(dashboard?.todayRevenue ?? 0).toLocaleString()}
               </p>
             </div>
             <div className="rounded-lg p-4 bg-gray-50">
@@ -61,7 +119,7 @@ export default function VendorDashboard() {
                 Pending Orders
               </p>
               <p className="text-2xl font-bold text-amber-500">
-                {vendorStats.pendingOrders}
+                {dashboard?.pendingOrders ?? 0}
               </p>
             </div>
             <div className="rounded-lg p-4 bg-gray-50">
@@ -69,7 +127,7 @@ export default function VendorDashboard() {
                 Avg. Prep Time
               </p>
               <p className="text-2xl font-bold text-gray-800">
-                {vendorStats.avgPrepTime} min
+                {dashboard?.avgPrepTime ?? 0} min
               </p>
             </div>
           </div>
@@ -116,20 +174,14 @@ export default function VendorDashboard() {
                       <button
                         type="button"
                         className="flex-1 h-10 rounded-lg font-semibold text-sm bg-emerald-500 text-white"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          alert('Order accepted!');
-                        }}
+                        onClick={(e) => handleAcceptOrder(e, order.id)}
                       >
                         Accept
                       </button>
                       <button
                         type="button"
                         className="flex-1 h-10 rounded-lg font-semibold text-sm border border-gray-300 text-red-500"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          alert('Order rejected!');
-                        }}
+                        onClick={(e) => handleRejectOrder(e, order.id)}
                       >
                         Reject
                       </button>

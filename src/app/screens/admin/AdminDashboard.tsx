@@ -1,8 +1,32 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { Bell, User, LayoutDashboard, ClipboardList, Users, DollarSign } from 'lucide-react';
-import { adminStats, liveOrders, onlineRiders, closedVendors } from '../../data/adminMockData';
+import { adminService } from '../../services/admin';
+import { toast } from 'sonner';
 
 export default function AdminDashboard() {
+  const [stats, setStats] = useState({
+    liveOrders: 0,
+    onlineRiders: 0,
+    activeVendors: 0,
+    revenueToday: 0,
+  });
+  const [liveOrders, setLiveOrders] = useState<any[]>([]);
+  const [onlineRiders, setOnlineRiders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    adminService
+      .getDashboard()
+      .then((res) => {
+        setStats(res.stats);
+        setLiveOrders(res.liveOrders);
+        setOnlineRiders(res.onlineRiders);
+      })
+      .catch(() => toast.error('Failed to load dashboard'))
+      .finally(() => setLoading(false));
+  }, []);
+
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
       pending: 'bg-amber-100 text-amber-500',
@@ -29,6 +53,14 @@ export default function AdminDashboard() {
     if (mins === 0) return `${secs}s`;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -85,7 +117,7 @@ export default function AdminDashboard() {
                 Live Orders
               </p>
               <p className="text-2xl md:text-3xl font-bold text-gray-800">
-                {adminStats.liveOrders}
+                {stats.liveOrders}
               </p>
             </div>
             <div className="rounded-lg p-4 border border-gray-300">
@@ -93,7 +125,7 @@ export default function AdminDashboard() {
                 Online Riders
               </p>
               <p className="text-2xl md:text-3xl font-bold text-emerald-500">
-                {adminStats.onlineRiders}
+                {stats.onlineRiders}
               </p>
             </div>
             <div className="rounded-lg p-4 border border-gray-300">
@@ -101,7 +133,7 @@ export default function AdminDashboard() {
                 Active Vendors
               </p>
               <p className="text-2xl md:text-3xl font-bold text-indigo-500">
-                {adminStats.activeVendors}
+                {stats.activeVendors}
               </p>
             </div>
             <div className="rounded-lg p-4 border border-gray-300">
@@ -109,7 +141,7 @@ export default function AdminDashboard() {
                 Revenue Today
               </p>
               <p className="text-2xl md:text-3xl font-bold break-words text-gray-800">
-                ₦{adminStats.revenueToday.toLocaleString()}
+                ₦{stats.revenueToday.toLocaleString()}
               </p>
             </div>
           </div>
@@ -126,39 +158,45 @@ export default function AdminDashboard() {
                   View All
                 </Link>
               </div>
-              <div className="space-y-3">
-                {liveOrders.map((order) => (
-                  <div
-                    key={order.id}
-                    className={`rounded-lg p-4 border ${order.needsRider ? 'border-amber-500 bg-amber-50' : 'border-gray-300 bg-white'}`}
-                  >
-                    <div className="flex items-start justify-between gap-3 mb-2">
-                      <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-sm mb-1 text-gray-800">
-                          {order.id}
-                        </p>
-                        <p className="text-xs break-words text-gray-500">
-                          {order.customerName} · {order.restaurant}
-                        </p>
+              {liveOrders.length === 0 ? (
+                <p className="text-sm text-gray-500">No live orders at the moment</p>
+              ) : (
+                <div className="space-y-3">
+                  {liveOrders.map((order: any) => (
+                    <div
+                      key={order.id}
+                      className={`rounded-lg p-4 border ${order.needsRider ? 'border-amber-500 bg-amber-50' : 'border-gray-300 bg-white'}`}
+                    >
+                      <div className="flex items-start justify-between gap-3 mb-2">
+                        <div className="min-w-0 flex-1">
+                          <p className="font-semibold text-sm mb-1 text-gray-800">
+                            {order.id}
+                          </p>
+                          <p className="text-xs break-words text-gray-500">
+                            {order.customerName} · {order.restaurant}
+                          </p>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          {getStatusBadge(order.status)}
+                          {order.elapsedTime != null && (
+                            <p className="text-xs mt-1 text-gray-500">
+                              {formatElapsedTime(order.elapsedTime)}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                      <div className="text-right flex-shrink-0">
-                        {getStatusBadge(order.status)}
-                        <p className="text-xs mt-1 text-gray-500">
-                          {formatElapsedTime(order.elapsedTime)}
-                        </p>
-                      </div>
+                      {order.needsRider && (
+                        <Link
+                          to="/admin/orders"
+                          className="block w-full mt-3 h-9 rounded-lg flex items-center justify-center text-sm font-semibold bg-amber-500 text-white"
+                        >
+                          Assign Rider
+                        </Link>
+                      )}
                     </div>
-                    {order.needsRider && (
-                      <Link
-                        to="/admin/orders"
-                        className="block w-full mt-3 h-9 rounded-lg flex items-center justify-center text-sm font-semibold bg-amber-500 text-white"
-                      >
-                        Assign Rider
-                      </Link>
-                    )}
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* RIGHT: Platform Snapshot */}
@@ -172,42 +210,26 @@ export default function AdminDashboard() {
                 <h3 className="text-sm font-semibold mb-3 text-gray-800">
                   Online Riders ({onlineRiders.length})
                 </h3>
-                <div className="space-y-2">
-                  {onlineRiders.map((rider) => (
-                    <div key={rider.id} className="flex items-center justify-between gap-3">
-                      <p className="text-sm truncate flex-1 min-w-0 text-gray-800">
-                        {rider.name}
-                      </p>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <span className="text-xs text-gray-500">
-                          ⭐ {rider.rating}
-                        </span>
-                        <span
-                          className={`px-2 py-0.5 rounded text-xs whitespace-nowrap ${rider.status === 'available' ? 'bg-emerald-100 text-emerald-500' : 'bg-amber-100 text-amber-500'}`}
-                        >
-                          {rider.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Closed Vendors */}
-              <div className="rounded-lg p-4 border border-gray-300 mb-4">
-                <h3 className="text-sm font-semibold mb-3 text-gray-800">
-                  Closed Vendors
-                </h3>
-                {closedVendors.length === 0 ? (
-                  <p className="text-sm text-gray-500">
-                    All vendors open
-                  </p>
+                {onlineRiders.length === 0 ? (
+                  <p className="text-sm text-gray-500">No riders online</p>
                 ) : (
-                  <div className="space-y-1">
-                    {closedVendors.map((vendor, idx) => (
-                      <p key={idx} className="text-sm text-red-500">
-                        • {vendor}
-                      </p>
+                  <div className="space-y-2">
+                    {onlineRiders.map((rider: any) => (
+                      <div key={rider.id} className="flex items-center justify-between gap-3">
+                        <p className="text-sm truncate flex-1 min-w-0 text-gray-800">
+                          {rider.name}
+                        </p>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <span className="text-xs text-gray-500">
+                            ⭐ {rider.rating}
+                          </span>
+                          <span
+                            className={`px-2 py-0.5 rounded text-xs whitespace-nowrap ${rider.status === 'available' ? 'bg-emerald-100 text-emerald-500' : 'bg-amber-100 text-amber-500'}`}
+                          >
+                            {rider.status}
+                          </span>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -219,11 +241,8 @@ export default function AdminDashboard() {
                   Recent Notifications
                 </h3>
                 <div className="space-y-2">
-                  <p className="text-xs text-amber-500">
-                    • ORD-1050 waiting 45s without rider
-                  </p>
                   <p className="text-xs text-gray-500">
-                    • ORD-1049 assigned to Emeka
+                    Live data loaded successfully
                   </p>
                 </div>
               </div>

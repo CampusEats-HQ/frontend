@@ -1,18 +1,101 @@
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router';
 import { User } from 'lucide-react';
 import { useRider } from '../../context/RiderContext';
-import { riderStats } from '../../data/riderMockData';
+import { riderService } from '../../services/rider';
+import { getToken, WS_URL } from '../../lib/api';
+import { toast } from 'sonner';
 
 export default function RiderHome() {
-  const { isOnline, toggleOnline, hasIncomingOrder, setHasIncomingOrder, activeDelivery } =
+  const { rider, isOnline, toggleOnline, hasIncomingOrder, setHasIncomingOrder, activeDelivery, setActiveDelivery } =
     useRider();
 
-  // Simulate incoming order when online (for demo)
-  const handleTestIncomingOrder = () => {
-    if (isOnline) {
-      setHasIncomingOrder(true);
+  const [stats, setStats] = useState({
+    deliveriesToday: 0,
+    earningsToday: 0,
+    rating: 0,
+    earningsThisWeek: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const wsRef = useRef<WebSocket | null>(null);
+
+  useEffect(() => {
+    riderService
+      .getStats()
+      .then((res) => setStats(res))
+      .catch(() => toast.error('Failed to load stats'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const openWebSocket = () => {
+    const token = getToken();
+    if (!token) return;
+
+    const ws = new WebSocket(WS_URL);
+    wsRef.current = ws;
+
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ type: 'auth', token }));
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'order.assigned') {
+          setActiveDelivery(data.order ?? null);
+          setHasIncomingOrder(true);
+        } else if (data.type === 'order.taken') {
+          setHasIncomingOrder(false);
+        }
+      } catch {
+        // ignore parse errors
+      }
+    };
+
+    ws.onerror = () => {
+      toast.error('Connection error');
+    };
+
+    ws.onclose = () => {
+      wsRef.current = null;
+    };
+  };
+
+  const closeWebSocket = () => {
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
     }
   };
+
+  const handleToggleOnline = async () => {
+    try {
+      await riderService.setOnlineStatus(!isOnline);
+      toggleOnline();
+      if (!isOnline) {
+        openWebSocket();
+      } else {
+        closeWebSocket();
+      }
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to update status');
+    }
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      closeWebSocket();
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -25,10 +108,10 @@ export default function RiderHome() {
             </div>
             <div>
               <p className="font-bold text-sm text-gray-800">
-                Emeka Okafor
+                {rider?.name ?? 'Rider'}
               </p>
               <p className="text-xs text-gray-500">
-                ⭐ {riderStats.rating}
+                ⭐ {stats.rating}
               </p>
             </div>
           </Link>
@@ -36,7 +119,7 @@ export default function RiderHome() {
           {/* Online/Offline Toggle - MOST IMPORTANT */}
           <button
             type="button"
-            onClick={toggleOnline}
+            onClick={handleToggleOnline}
             className={`px-6 py-3 rounded-full font-bold text-base text-white ${isOnline ? 'bg-emerald-500' : 'bg-gray-300'}`}
           >
             {isOnline ? 'Online' : 'Offline'}
@@ -57,7 +140,7 @@ export default function RiderHome() {
           <div className="grid grid-cols-3 gap-3">
             <div className="text-center p-3 rounded-lg bg-gray-50">
               <p className="text-2xl font-bold mb-1 text-gray-800">
-                {riderStats.deliveriesToday}
+                {stats.deliveriesToday}
               </p>
               <p className="text-xs text-gray-500">
                 Today
@@ -65,7 +148,7 @@ export default function RiderHome() {
             </div>
             <div className="text-center p-3 rounded-lg bg-gray-50">
               <p className="text-2xl font-bold mb-1 text-emerald-500">
-                ₦{riderStats.earningsToday}
+                ₦{stats.earningsToday}
               </p>
               <p className="text-xs text-gray-500">
                 Earned
@@ -73,7 +156,7 @@ export default function RiderHome() {
             </div>
             <div className="text-center p-3 rounded-lg bg-gray-50">
               <p className="text-2xl font-bold mb-1 text-amber-500">
-                {riderStats.rating}
+                {stats.rating}
               </p>
               <p className="text-xs text-gray-500">
                 Rating
@@ -88,58 +171,11 @@ export default function RiderHome() {
             <h2 className="text-sm font-semibold text-gray-800">
               Recent Deliveries
             </h2>
-            {isOnline && !activeDelivery && (
-              <button
-                type="button"
-                onClick={handleTestIncomingOrder}
-                className="px-3 py-1 rounded-lg text-xs bg-indigo-500 text-white"
-              >
-                Test Order
-              </button>
-            )}
           </div>
 
           {isOnline ? (
-            <div className="space-y-3">
-              <div className="rounded-lg p-4 border border-gray-200">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-semibold text-gray-800">
-                    Mavise Grill → Fabian House
-                  </p>
-                  <p className="text-sm font-bold text-emerald-500">
-                    ₦300
-                  </p>
-                </div>
-                <p className="text-xs text-gray-500">
-                  Completed 2h ago
-                </p>
-              </div>
-              <div className="rounded-lg p-4 border border-gray-200">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-semibold text-gray-800">
-                    Jollof Palace → Jaja Hostel
-                  </p>
-                  <p className="text-sm font-bold text-emerald-500">
-                    ₦300
-                  </p>
-                </div>
-                <p className="text-xs text-gray-500">
-                  Completed 3h ago
-                </p>
-              </div>
-              <div className="rounded-lg p-4 border border-gray-200">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-semibold text-gray-800">
-                    Suya Kingdom → Engineering Faculty
-                  </p>
-                  <p className="text-sm font-bold text-emerald-500">
-                    ₦300
-                  </p>
-                </div>
-                <p className="text-xs text-gray-500">
-                  Completed 4h ago
-                </p>
-              </div>
+            <div className="text-center py-8 text-gray-500">
+              <p className="text-sm">Waiting for new orders...</p>
             </div>
           ) : (
             <div className="text-center py-8 text-gray-500">
@@ -157,7 +193,7 @@ export default function RiderHome() {
                   This week
                 </p>
                 <p className="text-xl font-bold text-gray-800">
-                  ₦{riderStats.earningsThisWeek.toLocaleString()}
+                  ₦{stats.earningsThisWeek.toLocaleString()}
                 </p>
               </div>
               <Link
@@ -183,7 +219,7 @@ export default function RiderHome() {
           >
             <div className="bg-white rounded-xl p-6">
               <p className="text-center text-sm text-gray-500">
-                Order alert would appear here
+                New order incoming!
               </p>
               <Link
                 to="/rider/order-alert"

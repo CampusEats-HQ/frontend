@@ -1,18 +1,61 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { ArrowLeft, CreditCard, Building2, Wallet, Lock } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { toast } from 'sonner';
+import { orderService } from '../services/orders';
 
 export default function Payment() {
   const navigate = useNavigate();
-  const { getTotal, items } = useCart();
-  const [selectedMethod, setSelectedMethod] = useState('card');
+  const location = useLocation();
+  const { getTotal, items, clearCart } = useCart();
+  const [selectedMethod, setSelectedMethod] = useState<'card' | 'bank' | 'wallet'>('card');
   const [promoCode, setPromoCode] = useState('');
+  const [discount, setDiscount] = useState(0);
+  const [placing, setPlacing] = useState(false);
+  const [applyingPromo, setApplyingPromo] = useState(false);
   const deliveryFee = 400;
-  const total = getTotal() + deliveryFee;
+  const subtotal = getTotal();
+  const total = subtotal + deliveryFee - discount;
+
+  const deliveryLocation = (location.state as any)?.deliveryLocation || '';
+
+  const handleApplyPromo = () => {
+    if (!promoCode.trim()) return;
+    setApplyingPromo(true);
+    orderService.applyPromo({ code: promoCode, subtotal })
+      .then((res) => {
+        if (res.valid && res.discountAmount != null) {
+          setDiscount(res.discountAmount);
+          toast.success(res.message || 'Promo applied!');
+        } else {
+          toast.error(res.message || 'Invalid promo code');
+        }
+      })
+      .catch(() => toast.error('Failed to apply promo code'))
+      .finally(() => setApplyingPromo(false));
+  };
 
   const handlePayment = () => {
-    navigate('/success/1042');
+    setPlacing(true);
+    orderService.place({
+      items: items.map((item) => ({
+        itemId: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        restaurantId: item.id.split('-')[0] || item.id,
+      })),
+      deliveryLocation,
+      paymentMethod: selectedMethod,
+      promoCode: promoCode || undefined,
+    })
+      .then((res) => {
+        clearCart();
+        navigate(`/success/${res.orderId}`);
+      })
+      .catch((err: any) => toast.error(err.message || 'Payment failed'))
+      .finally(() => setPlacing(false));
   };
 
   return (
@@ -121,12 +164,18 @@ export default function Payment() {
             <div className="h-px bg-gray-200" />
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Subtotal</span>
-              <span className="text-gray-800">₦{getTotal()}</span>
+              <span className="text-gray-800">₦{subtotal}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Delivery fee</span>
               <span className="text-gray-800">₦{deliveryFee}</span>
             </div>
+            {discount > 0 && (
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">Discount</span>
+                <span className="text-emerald-500">-₦{discount}</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -139,8 +188,13 @@ export default function Payment() {
             placeholder="Promo code"
             className="flex-1 h-12 px-4 rounded-lg bg-gray-50"
           />
-          <button type="button" className="px-6 font-semibold text-amber-500">
-            Apply
+          <button
+            type="button"
+            onClick={handleApplyPromo}
+            disabled={applyingPromo}
+            className="px-6 font-semibold text-amber-500 disabled:opacity-60"
+          >
+            {applyingPromo ? '...' : 'Apply'}
           </button>
         </div>
 
@@ -160,9 +214,10 @@ export default function Payment() {
         <button
           type="button"
           onClick={handlePayment}
-          className="w-full h-[52px] rounded-lg font-semibold mb-3 bg-indigo-500 text-white"
+          disabled={placing}
+          className="w-full h-[52px] rounded-lg font-semibold mb-3 bg-indigo-500 text-white disabled:opacity-60"
         >
-          Pay ₦{total}
+          {placing ? 'Processing...' : `Pay ₦${total}`}
         </button>
 
         {/* Security Note */}

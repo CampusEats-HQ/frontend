@@ -1,9 +1,36 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ChevronRight, Camera } from 'lucide-react';
-import { vendorProfile } from '../../data/vendorMockData';
+import { toast } from 'sonner';
+import { authService } from '../../services/auth';
+import { vendorService } from '../../services/vendor';
+
+interface ProfileData {
+  id: string;
+  name: string;
+  category: string;
+  location: string;
+  image: string;
+  contact: string;
+  bankAccount: string;
+}
 
 export default function VendorProfile() {
   const navigate = useNavigate();
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    vendorService.getProfile()
+      .then((res) => setProfile(res))
+      .catch(() => toast.error('Failed to load profile'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/vendor/login');
+  };
 
   const settingsItems = [
     { icon: '🕐', label: 'Opening Hours', path: '/vendor/profile' },
@@ -13,6 +40,14 @@ export default function VendorProfile() {
     { icon: '🔒', label: 'Change Password', path: '/vendor/profile' },
     { icon: '❓', label: 'Help & Support', path: '/vendor/profile' },
   ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -26,8 +61,8 @@ export default function VendorProfile() {
         <div className="mb-8">
           <div className="relative w-32 h-32 mx-auto mb-4">
             <img
-              src={vendorProfile.image}
-              alt={vendorProfile.name}
+              src={profile?.image ?? ''}
+              alt={profile?.name ?? 'Restaurant'}
               className="w-full h-full rounded-xl object-cover"
             />
             <button
@@ -41,13 +76,13 @@ export default function VendorProfile() {
 
           <div className="text-center mb-6">
             <h2 className="text-lg font-bold mb-1 text-gray-800">
-              {vendorProfile.name}
+              {profile?.name ?? ''}
             </h2>
             <p className="text-sm mb-1 text-gray-500">
-              {vendorProfile.category}
+              {profile?.category ?? ''}
             </p>
             <p className="text-sm text-gray-500">
-              {vendorProfile.location}
+              {profile?.location ?? ''}
             </p>
           </div>
         </div>
@@ -78,7 +113,7 @@ export default function VendorProfile() {
         {/* Logout */}
         <button
           type="button"
-          onClick={() => navigate('/vendor/login')}
+          onClick={handleLogout}
           className="w-full py-4 text-center font-medium text-indigo-500"
         >
           Log Out

@@ -1,8 +1,21 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ChevronRight, Edit } from 'lucide-react';
+import { toast } from 'sonner';
+import { profileService } from '../services/orders';
+import { authService } from '../services/auth';
 
 export default function Profile() {
   const navigate = useNavigate();
+  const [profile, setProfile] = useState<{ id: string; fullName: string; email: string; phone: string } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    profileService.get()
+      .then((res) => setProfile(res))
+      .catch(() => toast.error('Failed to load profile'))
+      .finally(() => setLoading(false));
+  }, []);
 
   const menuItems = [
     { icon: '📦', label: 'My Orders', path: '/orders' },
@@ -13,6 +26,23 @@ export default function Profile() {
     { icon: '⚙️', label: 'Settings', path: '/profile' },
     { icon: '❓', label: 'Help & Support', path: '/help' },
   ];
+
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/');
+  };
+
+  const displayName = profile?.fullName ?? '';
+  const displayEmail = profile?.email ?? '';
+  const initials = displayName
+    ? displayName.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+    : '?';
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-white">
@@ -25,19 +55,19 @@ export default function Profile() {
         {/* User Info */}
         <div className="flex items-center gap-4 mb-8">
           <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold bg-indigo-500 text-white">
-            JD
+            {initials}
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <h2 className="font-bold text-gray-800">
-                John Doe
+                {displayName}
               </h2>
               <button type="button" aria-label="Edit profile">
                 <Edit size={16} className="text-gray-500" />
               </button>
             </div>
             <p className="text-sm text-gray-500">
-              john.doe@gmail.com
+              {displayEmail}
             </p>
           </div>
         </div>
@@ -68,7 +98,7 @@ export default function Profile() {
         {/* Logout */}
         <button
           type="button"
-          onClick={() => navigate('/')}
+          onClick={handleLogout}
           className="w-full py-4 text-left font-medium text-indigo-500"
         >
           Log out

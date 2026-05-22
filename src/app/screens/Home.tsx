@@ -1,13 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { MapPin, Search, ShoppingCart, Home as HomeIcon, SearchIcon, Package, User, Plus } from 'lucide-react';
-import { restaurants, popularItems, categories } from '../data/mockData';
+import { categories } from '../data/mockData';
 import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
+import { restaurantService } from '../services/restaurants';
+import type { Restaurant, PopularItem } from '../services/restaurants';
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('All');
   const { getItemCount, addItem } = useCart();
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const [popularItems, setPopularItems] = useState<PopularItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      restaurantService.getAll(),
+      restaurantService.getPopularItems(),
+    ])
+      .then(([restaurantsRes, popularRes]) => {
+        setRestaurants(restaurantsRes.restaurants);
+        setPopularItems(popularRes.items);
+      })
+      .catch(() => toast.error('Failed to load data'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filteredRestaurants = activeCategory === 'All'
+    ? restaurants
+    : restaurants.filter((r) => r.category?.toLowerCase() === activeCategory.toLowerCase());
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-white">
@@ -81,7 +109,7 @@ export default function Home() {
             Restaurants
           </h2>
           <div className="flex gap-4 overflow-x-auto hide-scrollbar px-5">
-            {restaurants.map((restaurant) => (
+            {filteredRestaurants.map((restaurant) => (
               <Link
                 key={restaurant.id}
                 to={`/restaurant/${restaurant.id}`}

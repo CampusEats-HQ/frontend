@@ -1,16 +1,31 @@
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { ArrowLeft, Share2, Plus } from 'lucide-react';
-import { restaurants, menuItems } from '../data/mockData';
 import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
+import { restaurantService } from '../services/restaurants';
+import type { RestaurantDetail } from '../services/restaurants';
 
 export default function Restaurant() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addItem, getItemCount, getTotal } = useCart();
+  const [restaurant, setRestaurant] = useState<RestaurantDetail | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const restaurant = restaurants.find((r) => r.id === id);
-  const menu = menuItems[id as keyof typeof menuItems] || [];
+  useEffect(() => {
+    if (!id) return;
+    restaurantService.getById(id)
+      .then((res) => setRestaurant(res))
+      .catch(() => toast.error('Failed to load restaurant'))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   if (!restaurant) {
     return <div>Restaurant not found</div>;
@@ -48,7 +63,7 @@ export default function Restaurant() {
             {restaurant.name}
           </h1>
           <p className="text-[13px] text-gray-500">
-            ⭐ {restaurant.rating} (12 reviews) · Open now · {restaurant.deliveryTime} · ₦
+            ⭐ {restaurant.rating} ({restaurant.reviewsCount} reviews) · Open now · {restaurant.deliveryTime} · ₦
             {restaurant.deliveryFee} delivery
           </p>
         </div>
@@ -57,7 +72,7 @@ export default function Restaurant() {
 
         {/* Menu */}
         <div className="px-5 py-4">
-          {menu.map((section) => (
+          {restaurant.menu.map((section) => (
             <div key={section.category} className="mb-6">
               <h2 className="text-xs font-semibold mb-4 text-gray-500">
                 {section.category}

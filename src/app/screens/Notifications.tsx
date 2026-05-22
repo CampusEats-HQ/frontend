@@ -1,78 +1,56 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft, Package, CheckCircle, Star, Gift, Bell } from 'lucide-react';
+import { toast } from 'sonner';
+import { notificationService } from '../services/orders';
+import type { Notification } from '../services/orders';
 
-const notifications = [
-  {
-    id: '1',
-    type: 'delivery',
-    icon: CheckCircle,
-    iconColorClass: 'text-emerald-500',
-    iconBgClass: 'bg-emerald-100',
-    title: 'Order Delivered!',
-    message: 'Your order from Mavise Grill has been delivered',
-    time: '5 mins ago',
-    read: false,
-  },
-  {
-    id: '2',
-    type: 'order',
-    icon: Package,
-    iconColorClass: 'text-indigo-500',
-    iconBgClass: 'bg-indigo-50',
-    title: 'Order Confirmed',
-    message: 'Your order #ORD-1045 is being prepared',
-    time: '1 hour ago',
-    read: false,
-  },
-  {
-    id: '3',
-    type: 'promo',
-    icon: Gift,
-    iconColorClass: 'text-amber-500',
-    iconBgClass: 'bg-amber-100',
-    title: '20% Off Your Next Order!',
-    message: 'Use code UNILAG20 on orders above ₦2000',
-    time: '3 hours ago',
-    read: true,
-  },
-  {
-    id: '4',
-    type: 'rating',
-    icon: Star,
-    iconColorClass: 'text-amber-500',
-    iconBgClass: 'bg-amber-100',
-    title: 'Rate Your Experience',
-    message: 'How was your order from Jollof Palace?',
-    time: 'Yesterday',
-    read: true,
-  },
-  {
-    id: '5',
-    type: 'order',
-    icon: Package,
-    iconColorClass: 'text-indigo-500',
-    iconBgClass: 'bg-indigo-50',
-    title: 'Order On the Way',
-    message: 'Emeka is delivering your order. ETA: 8 mins',
-    time: 'Yesterday',
-    read: true,
-  },
-  {
-    id: '6',
-    type: 'delivery',
-    icon: CheckCircle,
-    iconColorClass: 'text-emerald-500',
-    iconBgClass: 'bg-emerald-100',
-    title: 'Order Delivered!',
-    message: 'Your order from Suya Kingdom has been delivered',
-    time: '2 days ago',
-    read: true,
-  },
-];
+function getIconProps(type: Notification['type']) {
+  switch (type) {
+    case 'delivery':
+      return { Icon: CheckCircle, iconColorClass: 'text-emerald-500', iconBgClass: 'bg-emerald-100' };
+    case 'order':
+      return { Icon: Package, iconColorClass: 'text-indigo-500', iconBgClass: 'bg-indigo-50' };
+    case 'promo':
+      return { Icon: Gift, iconColorClass: 'text-amber-500', iconBgClass: 'bg-amber-100' };
+    case 'rating':
+      return { Icon: Star, iconColorClass: 'text-amber-500', iconBgClass: 'bg-amber-100' };
+    default:
+      return { Icon: Bell, iconColorClass: 'text-gray-500', iconBgClass: 'bg-gray-100' };
+  }
+}
 
 export default function Notifications() {
   const navigate = useNavigate();
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    notificationService.getAll()
+      .then((res) => {
+        setNotifications(res.notifications);
+        setUnreadCount(res.unreadCount);
+      })
+      .catch(() => toast.error('Failed to load notifications'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleMarkAllRead = () => {
+    notificationService.markAllRead()
+      .then(() => {
+        setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+        setUnreadCount(0);
+        toast.success('All notifications marked as read');
+      })
+      .catch(() => toast.error('Failed to mark notifications as read'));
+  };
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-white">
@@ -105,7 +83,7 @@ export default function Notifications() {
         ) : (
           <div className="divide-y divide-gray-100">
             {notifications.map((notification) => {
-              const Icon = notification.icon;
+              const { Icon, iconColorClass, iconBgClass } = getIconProps(notification.type);
               return (
                 <div
                   key={notification.id}
@@ -114,9 +92,9 @@ export default function Notifications() {
                   }`}
                 >
                   <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${notification.iconBgClass}`}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${iconBgClass}`}
                   >
-                    <Icon size={20} className={notification.iconColorClass} />
+                    <Icon size={20} className={iconColorClass} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2 mb-1">
@@ -139,6 +117,7 @@ export default function Notifications() {
         <div className="px-6 py-6 border-t border-gray-100">
           <button
             type="button"
+            onClick={handleMarkAllRead}
             className="w-full max-w-4xl mx-auto h-10 rounded-lg text-sm font-medium bg-gray-100 text-gray-500"
           >
             Mark All as Read

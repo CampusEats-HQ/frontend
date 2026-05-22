@@ -1,12 +1,27 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Shield } from 'lucide-react';
+import { authService } from '../../services/auth';
+import { toast } from 'sonner';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/admin/dashboard');
+    setLoading(true);
+    try {
+      const res = await authService.loginAdmin({ email, password });
+      localStorage.setItem('ce_admin', JSON.stringify(res.admin));
+      navigate('/admin/dashboard');
+    } catch (err: any) {
+      toast.error(err?.message || 'Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -27,12 +42,16 @@ export default function AdminLogin() {
             <input
               type="email"
               placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full h-[52px] px-4 rounded-lg border border-gray-300"
               required
             />
             <input
               type="password"
               placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full h-[52px] px-4 rounded-lg border border-gray-300"
               required
             />
@@ -40,9 +59,10 @@ export default function AdminLogin() {
 
           <button
             type="submit"
-            className="w-full h-[52px] rounded-lg font-semibold mb-6 bg-indigo-500 text-white"
+            disabled={loading}
+            className="w-full h-[52px] rounded-lg font-semibold mb-6 bg-indigo-500 text-white disabled:opacity-60"
           >
-            Log In
+            {loading ? 'Logging in...' : 'Log In'}
           </button>
         </form>
 

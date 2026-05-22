@@ -1,14 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { LayoutDashboard, ClipboardList, UtensilsCrossed, DollarSign } from 'lucide-react';
-import { vendorOrders } from '../../data/vendorMockData';
+import { toast } from 'sonner';
+import { vendorService, VendorOrder } from '../../services/vendor';
 
 export default function VendorOrders() {
   const [activeTab, setActiveTab] = useState<'pending' | 'preparing' | 'ready' | 'completed'>(
     'pending'
   );
+  const [orders, setOrders] = useState<VendorOrder[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredOrders = vendorOrders.filter((order) => order.status === activeTab);
+  useEffect(() => {
+    setLoading(true);
+    vendorService.getOrders()
+      .then((res) => setOrders(res.orders))
+      .catch(() => toast.error('Failed to load orders'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filteredOrders = orders.filter((order) => order.status === activeTab);
 
   const statusBadgeClasses: Record<string, string> = {
     pending: 'bg-amber-100 text-amber-500',
@@ -25,6 +36,26 @@ export default function VendorOrders() {
       </span>
     );
   };
+
+  const handleUpdateStatus = (e: React.MouseEvent, orderId: string, newStatus: VendorOrder['status']) => {
+    e.preventDefault();
+    vendorService.updateOrderStatus(orderId, newStatus)
+      .then(() => {
+        setOrders((prev) =>
+          prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
+        );
+        toast.success(`Order marked as ${newStatus}`);
+      })
+      .catch(() => toast.error('Failed to update order status'));
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white pb-20">
@@ -96,20 +127,14 @@ export default function VendorOrders() {
                       <button
                         type="button"
                         className="flex-1 h-10 rounded-lg font-semibold text-sm bg-emerald-500 text-white"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          alert('Order accepted!');
-                        }}
+                        onClick={(e) => handleUpdateStatus(e, order.id, 'preparing')}
                       >
                         Accept
                       </button>
                       <button
                         type="button"
                         className="flex-1 h-10 rounded-lg font-semibold text-sm border border-gray-300 text-red-500"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          alert('Order rejected!');
-                        }}
+                        onClick={(e) => handleUpdateStatus(e, order.id, 'completed')}
                       >
                         Reject
                       </button>
@@ -119,10 +144,7 @@ export default function VendorOrders() {
                     <button
                       type="button"
                       className="w-full h-10 rounded-lg font-semibold text-sm bg-indigo-500 text-white"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        alert('Marked as ready!');
-                      }}
+                      onClick={(e) => handleUpdateStatus(e, order.id, 'ready')}
                     >
                       Mark as Ready
                     </button>

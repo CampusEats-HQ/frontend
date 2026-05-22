@@ -1,6 +1,6 @@
 # CampusEats API Reference
 
-Base URL: `https://api.campuseats.ng/v1`
+Base URL: `https://api.campus-eats.me/v1`
 
 All protected endpoints require:
 ```
@@ -14,9 +14,9 @@ Timestamps are ISO 8601 strings. Monetary values are numbers in Nigerian Naira (
 
 ## Table of Contents
 
-1. [Auth](#1-auth)
+1. [Auth](#1-auth) — register, login, verify OTP, forgot/reset password
 2. [Restaurants](#2-restaurants)
-3. [Orders — Customer](#3-orders--customer)
+3. [Orders — Customer](#3-orders--customer) — place, history, tracking, promo, rate, reorder
 4. [Delivery Locations](#4-delivery-locations)
 5. [Addresses](#5-addresses)
 6. [Notifications](#6-notifications)
@@ -60,6 +60,78 @@ Register a new student customer account.
 **Errors**
 - `400` — missing required fields
 - `409` — email already registered
+
+---
+
+### POST /auth/verify-otp
+Verify the OTP sent to the user's email via Resend after registration or before a password reset.
+
+**Request**
+```json
+{
+  "email": "john.doe@gmail.com",
+  "otp": "482916"
+}
+```
+
+**Response 200**
+```json
+{
+  "message": "Email verified successfully",
+  "verified": true
+}
+```
+
+**Errors**
+- `400` — OTP is incorrect or malformed
+- `410` — OTP has expired (resend required)
+
+---
+
+### POST /auth/forgot-password
+Request a password reset OTP sent to the user's email.
+
+**Request**
+```json
+{
+  "email": "john.doe@gmail.com"
+}
+```
+
+**Response 200**
+```json
+{
+  "message": "Reset code sent to your email"
+}
+```
+
+**Errors**
+- `404` — no account found with that email
+
+---
+
+### POST /auth/reset-password
+Set a new password using the OTP received by email.
+
+**Request**
+```json
+{
+  "email": "john.doe@gmail.com",
+  "otp": "482916",
+  "newPassword": "newSecret123"
+}
+```
+
+**Response 200**
+```json
+{
+  "message": "Password reset successfully"
+}
+```
+
+**Errors**
+- `400` — OTP incorrect or password too weak
+- `410` — OTP expired
 
 ---
 
@@ -438,6 +510,58 @@ Validate a promo code and return the discount.
   "message": "Promo code not found or expired"
 }
 ```
+
+---
+
+### POST /orders/:orderId/rate
+Submit a rating for a completed order. Covers both the food and the rider.
+
+**Request**
+```json
+{
+  "foodRating": 5,
+  "riderRating": 4,
+  "comment": "Food was great, delivery was a bit slow"
+}
+```
+
+**Response 201**
+```json
+{
+  "message": "Rating submitted"
+}
+```
+
+**Errors**
+- `400` — ratings must be integers between 1 and 5
+- `404` — order not found
+- `409` — order already rated
+
+---
+
+### POST /orders/:orderId/reorder
+Re-add all items from a past order into a new cart and return an order summary ready for checkout.
+
+**Response 201**
+```json
+{
+  "items": [
+    {
+      "itemId": "r1",
+      "name": "Jollof Rice + Chicken",
+      "price": 1800,
+      "quantity": 2,
+      "restaurantId": "1"
+    }
+  ],
+  "restaurantId": "1",
+  "restaurant": "Mavise Grill"
+}
+```
+
+**Errors**
+- `404` — original order not found
+- `409` — one or more items are no longer available
 
 ---
 
@@ -1001,10 +1125,46 @@ Toggle the rider's online/offline status.
 
 ---
 
-### GET /rider/incoming-order
-Poll for an incoming order assigned to this rider. Returns `null` when no order is pending.
+### WS order.assigned — Incoming order broadcast
+When a new order is ready for pickup, the server broadcasts it simultaneously to **all online riders** via WebSocket. The order remains on every rider's screen until one rider accepts it — there is no expiry timer.
 
-> **Note:** This endpoint is designed for short-polling. A WebSocket event (`order.assigned`) is the preferred real-time alternative.
+**Connection:** `wss://api.campus-eats.me`
+**Auth:** send `{ "token": "<jwt>" }` as the first message after connecting.
+
+**Event: `order.assigned`** — server → client
+```json
+{
+  "event": "order.assigned",
+  "order": {
+    "id": "ORD-1048",
+    "restaurant": {
+      "name": "Mavise Grill",
+      "location": "Near Eni-Jokun Hostel"
+    },
+    "customer": {
+      "name": "Tunde Bello",
+      "phone": "+2348098765432",
+      "location": "Eni-Jokun Hostel"
+    },
+    "items": ["Jollof Rice + Chicken x1", "Zobo Drink x2"],
+    "distance": "4 min walk",
+    "payout": 300
+  }
+}
+```
+
+**Event: `order.taken`** — server → client (dismiss the alert on all other riders)
+```json
+{
+  "event": "order.taken",
+  "orderId": "ORD-1048"
+}
+```
+
+> **Fallback:** `GET /rider/incoming-order` may be used as a REST fallback if the WebSocket connection drops. It returns the current pending order or `null`. Connect to `wss://api.campus-eats.me` with a valid rider token.
+
+### GET /rider/incoming-order *(fallback only)*
+Returns the current pending order for this rider if the WebSocket connection is unavailable.
 
 **Response 200 — order available**
 ```json
@@ -1022,8 +1182,7 @@ Poll for an incoming order assigned to this rider. Returns `null` when no order 
     },
     "items": ["Jollof Rice + Chicken x1", "Zobo Drink x2"],
     "distance": "4 min walk",
-    "payout": 300,
-    "expiresIn": 30
+    "payout": 300
   }
 }
 ```

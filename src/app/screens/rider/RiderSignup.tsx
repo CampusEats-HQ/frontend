@@ -1,15 +1,47 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { Upload, CheckCircle } from 'lucide-react';
 import { banks } from '../../data/riderMockData';
+import { authService } from '../../services/auth';
+import { toast } from 'sonner';
 
 export default function RiderSignup() {
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [matricNumber, setMatricNumber] = useState('');
+  const [bankName, setBankName] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [photo, setPhoto] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+
+    const formData = new FormData();
+    formData.append('fullName', fullName);
+    formData.append('email', email);
+    formData.append('phone', phone);
+    formData.append('matricNumber', matricNumber);
+    formData.append('bankName', bankName);
+    formData.append('accountNumber', accountNumber);
+    if (photo) {
+      formData.append('photo', photo);
+    }
+
+    setLoading(true);
+    try {
+      await authService.registerRider(formData);
+      setSubmitted(true);
+    } catch (err: any) {
+      toast.error(err?.message || 'Submission failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -51,14 +83,33 @@ export default function RiderSignup() {
           <label className="text-sm font-medium mb-2 block text-gray-800">
             Upload a clear photo of yourself
           </label>
-          <div className="w-32 h-32 mx-auto rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center cursor-pointer">
-            <div className="text-center">
-              <Upload size={32} className="text-gray-500 mx-auto mb-2" />
-              <p className="text-xs text-gray-500">
-                Tap to upload
-              </p>
-            </div>
+          <div
+            className="w-32 h-32 mx-auto rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center cursor-pointer"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {photo ? (
+              <img
+                src={URL.createObjectURL(photo)}
+                alt="Preview"
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : (
+              <div className="text-center">
+                <Upload size={32} className="text-gray-500 mx-auto mb-2" />
+                <p className="text-xs text-gray-500">
+                  Tap to upload
+                </p>
+              </div>
+            )}
           </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
+            aria-label="Upload photo"
+          />
         </div>
 
         {/* Personal Info */}
@@ -66,24 +117,32 @@ export default function RiderSignup() {
           <input
             type="text"
             placeholder="Full name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
             required
           />
           <input
             type="email"
             placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
             required
           />
           <input
             type="tel"
             placeholder="Phone number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
             required
           />
           <input
             type="text"
             placeholder="Matric number"
+            value={matricNumber}
+            onChange={(e) => setMatricNumber(e.target.value)}
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
             required
           />
@@ -94,6 +153,8 @@ export default function RiderSignup() {
           <select
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
             aria-label="Select bank"
+            value={bankName}
+            onChange={(e) => setBankName(e.target.value)}
             required
           >
             <option value="">Select bank</option>
@@ -106,6 +167,8 @@ export default function RiderSignup() {
           <input
             type="text"
             placeholder="Account number"
+            value={accountNumber}
+            onChange={(e) => setAccountNumber(e.target.value)}
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
             required
           />
@@ -122,9 +185,10 @@ export default function RiderSignup() {
         {/* Submit */}
         <button
           type="submit"
-          className="w-full h-[52px] rounded-lg font-semibold bg-indigo-500 text-white"
+          disabled={loading}
+          className="w-full h-[52px] rounded-lg font-semibold bg-indigo-500 text-white disabled:opacity-60"
         >
-          Submit Application
+          {loading ? 'Submitting...' : 'Submit Application'}
         </button>
 
         {/* Login Link */}

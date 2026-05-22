@@ -3,36 +3,34 @@ import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useRider } from '../../context/RiderContext';
 import { toast } from 'sonner';
+import { authService } from '../../services/auth';
 
 export default function RiderLogin() {
   const navigate = useNavigate();
   const { login } = useRider();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Simple validation
     if (!email || !password) {
       toast.error('Please enter both email and password');
       return;
     }
 
-    // Mock login (in real app, verify credentials)
-    login({
-      id: 'R001',
-      name: 'Emeka Okafor',
-      email: email,
-      phone: '+234 801 234 5678',
-      rating: 4.9,
-      totalDeliveries: 234,
-      bankName: 'GTBank',
-      accountNumber: '0123456789',
-    });
-
-    toast.success('Welcome back, Emeka!');
-    navigate('/rider/home');
+    setLoading(true);
+    try {
+      const res = await authService.loginRider({ email, password });
+      login(res.rider);
+      toast.success(`Welcome back, ${res.rider.name}!`);
+      navigate('/rider/home');
+    } catch (err: any) {
+      toast.error(err?.message || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -93,9 +91,10 @@ export default function RiderLogin() {
 
             <button
               type="submit"
-              className="w-full h-12 rounded-lg font-semibold bg-indigo-500 text-white"
+              disabled={loading}
+              className="w-full h-12 rounded-lg font-semibold bg-indigo-500 text-white disabled:opacity-60"
             >
-              Login
+              {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
 

@@ -1,12 +1,22 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { UtensilsCrossed } from 'lucide-react';
+import { toast } from 'sonner';
+import { authService } from '../services/auth';
 
 export default function Login() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/home');
+    setLoading(true);
+    authService.loginCustomer({ email, password })
+      .then(() => navigate('/home'))
+      .catch((err: any) => toast.error(err.message || 'Login failed'))
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -24,12 +34,18 @@ export default function Login() {
           <input
             type="email"
             placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
+            required
           />
           <input
             type="password"
             placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full h-[52px] px-4 rounded-lg bg-gray-50"
+            required
           />
         </div>
 
@@ -41,9 +57,10 @@ export default function Login() {
 
         <button
           type="submit"
-          className="w-full h-[52px] rounded-lg font-semibold mb-4 bg-indigo-500 text-white"
+          disabled={loading}
+          className="w-full h-[52px] rounded-lg font-semibold mb-4 bg-indigo-500 text-white disabled:opacity-60"
         >
-          Log In
+          {loading ? 'Logging in...' : 'Log In'}
         </button>
       </form>
 

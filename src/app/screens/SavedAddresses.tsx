@@ -1,67 +1,70 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft, Plus, MapPin, X, Home, Book } from 'lucide-react';
 import { toast } from 'sonner';
+import { addressService } from '../services/orders';
+import type { Address } from '../services/orders';
 
-const defaultAddresses = [
-  {
-    id: '1',
-    label: 'Hostel',
-    icon: Home,
-    name: 'Fabian House',
-    details: 'Room 204, Block A',
-    isDefault: true,
-  },
-  {
-    id: '2',
-    label: 'Class',
-    icon: Book,
-    name: 'Faculty of Engineering',
-    details: 'Lecture Hall 2',
-    isDefault: false,
-  },
-];
+function getIcon(label: string) {
+  const lower = label.toLowerCase();
+  if (lower.includes('hostel') || lower.includes('home')) return Home;
+  if (lower.includes('class') || lower.includes('lecture') || lower.includes('faculty') || lower.includes('library')) return Book;
+  return MapPin;
+}
 
 export default function SavedAddresses() {
   const navigate = useNavigate();
-  const [addresses, setAddresses] = useState(defaultAddresses);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newAddress, setNewAddress] = useState({
-    label: '',
-    name: '',
-    details: '',
-  });
+  const [newAddress, setNewAddress] = useState({ label: '', name: '', details: '' });
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    addressService.getAll()
+      .then((res) => setAddresses(res.addresses))
+      .catch(() => toast.error('Failed to load addresses'))
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleAddAddress = (e: React.FormEvent) => {
     e.preventDefault();
-    const address = {
-      id: Date.now().toString(),
-      label: newAddress.label,
-      icon: MapPin,
-      name: newAddress.name,
-      details: newAddress.details,
-      isDefault: false,
-    };
-    setAddresses([...addresses, address]);
-    setShowAddModal(false);
-    setNewAddress({ label: '', name: '', details: '' });
-    toast.success('Address added successfully!');
+    setSubmitting(true);
+    addressService.add(newAddress)
+      .then((address) => {
+        setAddresses((prev) => [...prev, address]);
+        setShowAddModal(false);
+        setNewAddress({ label: '', name: '', details: '' });
+        toast.success('Address added successfully!');
+      })
+      .catch(() => toast.error('Failed to add address'))
+      .finally(() => setSubmitting(false));
   };
 
   const handleSetDefault = (id: string) => {
-    setAddresses(addresses.map(addr => ({
-      ...addr,
-      isDefault: addr.id === id,
-    })));
-    toast.success('Default address updated!');
+    addressService.setDefault(id)
+      .then(() => {
+        setAddresses((prev) => prev.map((addr) => ({ ...addr, isDefault: addr.id === id })));
+        toast.success('Default address updated!');
+      })
+      .catch(() => toast.error('Failed to update default address'));
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Delete this address?')) {
-      setAddresses(addresses.filter(addr => addr.id !== id));
-      toast.success('Address deleted');
-    }
+    if (!confirm('Delete this address?')) return;
+    addressService.delete(id)
+      .then(() => {
+        setAddresses((prev) => prev.filter((addr) => addr.id !== id));
+        toast.success('Address deleted');
+      })
+      .catch(() => toast.error('Failed to delete address'));
   };
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-white">
@@ -88,7 +91,7 @@ export default function SavedAddresses() {
       {/* Addresses List */}
       <div className="px-6 py-6 space-y-3 max-w-4xl mx-auto">
         {addresses.map((address) => {
-          const Icon = address.icon;
+          const Icon = getIcon(address.label);
           return (
             <div
               key={address.id}
@@ -223,9 +226,10 @@ export default function SavedAddresses() {
 
               <button
                 type="submit"
-                className="w-full h-12 rounded-lg font-semibold bg-indigo-500 text-white"
+                disabled={submitting}
+                className="w-full h-12 rounded-lg font-semibold bg-indigo-500 text-white disabled:opacity-60"
               >
-                Add Address
+                {submitting ? 'Adding...' : 'Add Address'}
               </button>
             </form>
           </div>

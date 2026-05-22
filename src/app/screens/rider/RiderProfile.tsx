@@ -3,39 +3,73 @@ import { useNavigate } from 'react-router';
 import { ArrowLeft, Edit2, X } from 'lucide-react';
 import { useRider } from '../../context/RiderContext';
 import { banks } from '../../data/riderMockData';
+import { riderService, RiderProfile as RiderProfileData } from '../../services/rider';
+import { authService } from '../../services/auth';
 import { toast } from 'sonner';
 
 export default function RiderProfile() {
   const navigate = useNavigate();
   const { rider, logout } = useRider();
   const [showEditBank, setShowEditBank] = useState(false);
+  const [profile, setProfile] = useState<RiderProfileData | null>(null);
+  const [loading, setLoading] = useState(true);
   const [bankDetails, setBankDetails] = useState({
-    bankName: rider?.bankName || 'GTBank',
-    accountNumber: rider?.accountNumber || '0123456789',
+    bankName: '',
+    accountNumber: '',
   });
 
   useEffect(() => {
     if (!rider) {
       navigate('/rider/login');
+      return;
     }
+    riderService
+      .getProfile()
+      .then((res) => {
+        setProfile(res);
+        setBankDetails({ bankName: res.bankName, accountNumber: res.accountNumber });
+      })
+      .catch(() => {
+        // Fall back to context rider data
+        setProfile(rider);
+        setBankDetails({ bankName: rider.bankName, accountNumber: rider.accountNumber });
+      })
+      .finally(() => setLoading(false));
   }, [rider, navigate]);
 
-  const handleUpdateBank = (e: React.FormEvent) => {
+  const handleUpdateBank = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('Bank details updated successfully!');
-    setShowEditBank(false);
+    try {
+      const res = await riderService.updateBank(bankDetails);
+      setBankDetails({ bankName: res.bankName, accountNumber: res.accountNumber });
+      toast.success('Bank details updated successfully!');
+      setShowEditBank(false);
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to update bank details');
+    }
   };
 
   const handleLogout = () => {
     if (confirm('Are you sure you want to logout?')) {
+      authService.logout();
       logout();
       navigate('/rider/login');
     }
   };
 
-  if (!rider) {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!rider && !profile) {
     return null;
   }
+
+  const displayProfile = profile ?? rider!;
 
   return (
     <div className="min-h-screen bg-white">
@@ -54,17 +88,17 @@ export default function RiderProfile() {
         <div className="rounded-lg p-5 border border-gray-300">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold bg-indigo-500 text-white">
-              {rider.name.split(' ').map(n => n[0]).join('')}
+              {displayProfile.name.split(' ').map(n => n[0]).join('')}
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-bold text-lg mb-1 truncate text-gray-800">
-                {rider.name}
+                {displayProfile.name}
               </p>
               <p className="text-sm truncate text-gray-500">
-                {rider.email}
+                {displayProfile.email}
               </p>
               <p className="text-sm text-gray-500">
-                {rider.phone}
+                {displayProfile.phone}
               </p>
             </div>
           </div>
@@ -75,7 +109,7 @@ export default function RiderProfile() {
                 Rating
               </p>
               <p className="text-2xl font-bold text-gray-800">
-                ⭐ {rider.rating}
+                ⭐ {displayProfile.rating}
               </p>
             </div>
             <div className="text-center">
@@ -83,7 +117,7 @@ export default function RiderProfile() {
                 Total Deliveries
               </p>
               <p className="text-2xl font-bold text-gray-800">
-                {rider.totalDeliveries}
+                {displayProfile.totalDeliveries}
               </p>
             </div>
           </div>
