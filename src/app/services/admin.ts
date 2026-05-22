@@ -55,4 +55,25 @@ export const adminService = {
 
   getSettlements: (period?: 'today' | 'week' | 'month' | 'all') =>
     api.get<{ settlements: object[] }>(`/admin/finance/settlements${period ? `?period=${period}` : ''}`),
+
+  getPromos: () =>
+    api.get<{ promos: Promo[] }>('/admin/promos'),
+
+  createPromo: (data: Omit<Promo, 'id'>) =>
+    api.post<Promo>('/admin/promos', data),
+
+  updatePromo: (id: string, data: Partial<Omit<Promo, 'id'>>) =>
+    api.put<Promo>(`/admin/promos/${id}`, data),
+
+  deletePromo: (id: string) =>
+    api.del<{ message: string }>(`/admin/promos/${id}`),
+}
+
+export interface Promo {
+  id: string
+  emoji: string
+  title: string
+  subtitle: string
+  bg: string
+  active: boolean
 }

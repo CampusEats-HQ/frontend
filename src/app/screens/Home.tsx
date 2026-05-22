@@ -7,26 +7,13 @@ import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
 import { restaurantService } from '../services/restaurants';
 import type { Restaurant, PopularItem } from '../services/restaurants';
+import { adminService } from '../services/admin';
+import type { Promo } from '../services/admin';
 
-const PROMO_SLIDES = [
-  {
-    bg: 'from-amber-100 to-[#FDE68A]',
-    emoji: '🔥',
-    title: 'Delivered in 20 mins',
-    subtitle: 'Hot & fresh to your hostel',
-  },
-  {
-    bg: 'from-indigo-100 to-[#C7D2FE]',
-    emoji: '🍛',
-    title: '20% off orders above ₦2,000',
-    subtitle: 'Today only — select restaurants',
-  },
-  {
-    bg: 'from-emerald-100 to-[#A7F3D0]',
-    emoji: '🎁',
-    title: 'Refer a friend',
-    subtitle: 'You both get ₦200 off your next order',
-  },
+const FALLBACK_SLIDES: Promo[] = [
+  { id: '1', bg: 'from-amber-100 to-[#FDE68A]', emoji: '🔥', title: 'Delivered in 20 mins', subtitle: 'Hot & fresh to your hostel', active: true },
+  { id: '2', bg: 'from-indigo-100 to-[#C7D2FE]', emoji: '🍛', title: '20% off orders above ₦2,000', subtitle: 'Today only — select restaurants', active: true },
+  { id: '3', bg: 'from-emerald-100 to-[#A7F3D0]', emoji: '🎁', title: 'Refer a friend', subtitle: 'You both get ₦200 off your next order', active: true },
 ];
 
 export default function Home() {
@@ -34,6 +21,7 @@ export default function Home() {
   const { getItemCount, addItem } = useCart();
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [popularItems, setPopularItems] = useState<PopularItem[]>([]);
+  const [promoSlides, setPromoSlides] = useState<Promo[]>(FALLBACK_SLIDES);
   const [loading, setLoading] = useState(true);
   const [activeSlide, setActiveSlide] = useState(0);
 
@@ -56,6 +44,15 @@ export default function Home() {
       emblaApi.off('select', onSelect);
     };
   }, [emblaApi, onSelect]);
+
+  useEffect(() => {
+    adminService.getPromos()
+      .then((res) => {
+        const active = res.promos.filter((p) => p.active);
+        if (active.length > 0) setPromoSlides(active);
+      })
+      .catch(() => {}); // silently fall back to hardcoded slides
+  }, []);
 
   useEffect(() => {
     Promise.all([
@@ -136,7 +133,7 @@ export default function Home() {
         <div className="px-5 mb-6">
           <div className="overflow-hidden rounded-xl" ref={emblaRef}>
             <div className="flex">
-              {PROMO_SLIDES.map((slide, i) => (
+              {promoSlides.map((slide, i) => (
                 <div key={i} className="flex-[0_0_100%]">
                   <div className={`rounded-xl p-6 bg-gradient-to-br ${slide.bg}`}>
                     <p className="text-base font-semibold mb-1 text-gray-800">
@@ -150,7 +147,7 @@ export default function Home() {
           </div>
           {/* Dot indicators */}
           <div className="flex justify-center gap-1.5 mt-2">
-            {PROMO_SLIDES.map((_, i) => (
+            {promoSlides.map((_, i) => (
               <button
                 key={i}
                 type="button"

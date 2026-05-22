@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router';
-import { LayoutDashboard, ClipboardList, Users, DollarSign, Bell, User } from 'lucide-react';
+import { LayoutDashboard, ClipboardList, Users, DollarSign, Bell, User, Megaphone } from 'lucide-react';;
 import { adminService } from '../../services/admin';
 import { toast } from 'sonner';
 
@@ -105,6 +105,10 @@ export default function AdminFinance() {
               <Link to="/admin/finance" className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-100 text-indigo-500">
                 <DollarSign size={18} />
                 <span className="text-sm font-medium">Finance</span>
+              </Link>
+              <Link to="/admin/promotions" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
+                <Megaphone size={18} className="text-gray-500" />
+                <span className="text-sm text-gray-500">Promotions</span>
               </Link>
             </nav>
           </div>

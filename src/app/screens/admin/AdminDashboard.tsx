@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import { Bell, User, LayoutDashboard, ClipboardList, Users, DollarSign } from 'lucide-react';
+import { Bell, User, LayoutDashboard, ClipboardList, Users, DollarSign, Megaphone } from 'lucide-react';
 import { adminService } from '../../services/admin';
 import { toast } from 'sonner';
 
@@ -90,6 +90,10 @@ export default function AdminDashboard() {
               <Link to="/admin/finance" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
                 <DollarSign size={18} className="text-gray-500" />
                 <span className="text-sm text-gray-500">Finance</span>
+              </Link>
+              <Link to="/admin/promotions" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
+                <Megaphone size={18} className="text-gray-500" />
+                <span className="text-sm text-gray-500">Promotions</span>
               </Link>
             </nav>
           </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import { X, Plus, LayoutDashboard, ClipboardList, Users, DollarSign, Bell, User } from 'lucide-react';
+import { X, Plus, LayoutDashboard, ClipboardList, Users, DollarSign, Bell, User, Megaphone } from 'lucide-react';;
 import { adminService } from '../../services/admin';
 import { banks } from '../../data/riderMockData';
 import { toast } from 'sonner';
@@ -142,6 +142,10 @@ export default function AdminPeople() {
               <Link to="/admin/finance" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
                 <DollarSign size={18} className="text-gray-500" />
                 <span className="text-sm text-gray-500">Finance</span>
+              </Link>
+              <Link to="/admin/promotions" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
+                <Megaphone size={18} className="text-gray-500" />
+                <span className="text-sm text-gray-500">Promotions</span>
               </Link>
             </nav>
           </div>

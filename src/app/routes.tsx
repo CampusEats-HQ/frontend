@@ -40,6 +40,7 @@ import AdminOrders from "./screens/admin/AdminOrders";
 import AdminPeople from "./screens/admin/AdminPeople";
 import AdminAnalytics from "./screens/admin/AdminAnalytics";
 import AdminFinance from "./screens/admin/AdminFinance";
+import AdminPromotions from "./screens/admin/AdminPromotions";
 
 export const router = createBrowserRouter([
   {
@@ -204,6 +205,10 @@ export const router = createBrowserRouter([
   {
     path: "/admin/finance",
     Component: AdminFinance,
+  },
+  {
+    path: "/admin/promotions",
+    Component: AdminPromotions,
   },
   {
     path: "*",
