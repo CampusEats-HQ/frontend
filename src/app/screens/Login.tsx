@@ -78,6 +78,13 @@ export default function Login() {
       >
         Continue with Google
       </button>
+
+      <p className="text-center text-sm text-gray-500 mt-6">
+        Don't have an account?{' '}
+        <Link to="/signup" className="font-medium text-indigo-500">
+          Sign up
+        </Link>
+      </p>
     </div>
   );
 }

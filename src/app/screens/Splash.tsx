@@ -18,7 +18,7 @@ export default function Splash() {
 
       <div className="w-full pb-8">
         <Link
-          to="/home"
+          to="/signup"
           className="w-full h-[52px] rounded-lg flex items-center justify-center font-semibold mb-4 bg-indigo-500 text-white"
         >
           Get Started
