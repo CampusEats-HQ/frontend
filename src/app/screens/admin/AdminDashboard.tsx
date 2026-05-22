@@ -30,10 +30,10 @@ export default function AdminDashboard() {
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
-      pending: 'bg-amber-100 text-amber-500',
-      preparing: 'bg-blue-100 text-indigo-500',
-      'on-the-way': 'bg-emerald-100 text-emerald-500',
-      delivered: 'bg-gray-100 text-gray-500',
+      pending: 'bg-amber-100 text-amber-500 dark:bg-amber-900/30 dark:text-amber-400',
+      preparing: 'bg-blue-100 text-indigo-500 dark:bg-indigo-900',
+      'on-the-way': 'bg-emerald-100 text-emerald-500 dark:bg-emerald-900/30',
+      delivered: 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400',
     };
     const texts: Record<string, string> = {
       pending: 'Pending',
@@ -42,7 +42,7 @@ export default function AdminDashboard() {
       delivered: 'Delivered',
     };
     return (
-      <span className={`px-2 py-1 rounded text-xs font-medium ${styles[status] ?? 'bg-gray-100 text-gray-500'}`}>
+      <span className={`px-2 py-1 rounded text-xs font-medium ${styles[status] ?? 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'}`}>
         {texts[status] ?? status}
       </span>
     );
@@ -64,42 +64,42 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <div className="max-w-[1400px] mx-auto">
         <AdminNav />
 
         {/* Stats Row */}
         <div className="px-6 py-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div className="rounded-lg p-4 border border-gray-300">
-              <p className="text-xs mb-2 text-gray-500">
+            <div className="rounded-lg p-4 border border-gray-300 dark:border-gray-600">
+              <p className="text-xs mb-2 text-gray-500 dark:text-gray-400">
                 Live Orders
               </p>
-              <p className="text-2xl md:text-3xl font-bold text-gray-800">
+              <p className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">
                 {stats.liveOrders}
               </p>
             </div>
-            <div className="rounded-lg p-4 border border-gray-300">
-              <p className="text-xs mb-2 text-gray-500">
+            <div className="rounded-lg p-4 border border-gray-300 dark:border-gray-600">
+              <p className="text-xs mb-2 text-gray-500 dark:text-gray-400">
                 Online Riders
               </p>
               <p className="text-2xl md:text-3xl font-bold text-emerald-500">
                 {stats.onlineRiders}
               </p>
             </div>
-            <div className="rounded-lg p-4 border border-gray-300">
-              <p className="text-xs mb-2 text-gray-500">
+            <div className="rounded-lg p-4 border border-gray-300 dark:border-gray-600">
+              <p className="text-xs mb-2 text-gray-500 dark:text-gray-400">
                 Active Vendors
               </p>
               <p className="text-2xl md:text-3xl font-bold text-indigo-500">
                 {stats.activeVendors}
               </p>
             </div>
-            <div className="rounded-lg p-4 border border-gray-300">
-              <p className="text-xs mb-2 text-gray-500">
+            <div className="rounded-lg p-4 border border-gray-300 dark:border-gray-600">
+              <p className="text-xs mb-2 text-gray-500 dark:text-gray-400">
                 Revenue Today
               </p>
-              <p className="text-2xl md:text-3xl font-bold break-words text-gray-800">
+              <p className="text-2xl md:text-3xl font-bold break-words text-gray-800 dark:text-gray-100">
                 ₦{stats.revenueToday.toLocaleString()}
               </p>
             </div>
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
             {/* LEFT: Live Order Feed */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-800">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
                   Live Order Feed
                 </h2>
                 <Link to="/admin/orders" className="text-sm font-medium text-indigo-500">
@@ -118,27 +118,27 @@ export default function AdminDashboard() {
                 </Link>
               </div>
               {liveOrders.length === 0 ? (
-                <p className="text-sm text-gray-500">No live orders at the moment</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">No live orders at the moment</p>
               ) : (
                 <div className="space-y-3">
                   {liveOrders.map((order: any) => (
                     <div
                       key={order.id}
-                      className={`rounded-lg p-4 border ${order.needsRider ? 'border-amber-500 bg-amber-50' : 'border-gray-300 bg-white'}`}
+                      className={`rounded-lg p-4 border ${order.needsRider ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900'}`}
                     >
                       <div className="flex items-start justify-between gap-3 mb-2">
                         <div className="min-w-0 flex-1">
-                          <p className="font-semibold text-sm mb-1 text-gray-800">
+                          <p className="font-semibold text-sm mb-1 text-gray-800 dark:text-gray-100">
                             {order.id}
                           </p>
-                          <p className="text-xs break-words text-gray-500">
+                          <p className="text-xs break-words text-gray-500 dark:text-gray-400">
                             {order.customerName} · {order.restaurant}
                           </p>
                         </div>
                         <div className="text-right flex-shrink-0">
                           {getStatusBadge(order.status)}
                           {order.elapsedTime != null && (
-                            <p className="text-xs mt-1 text-gray-500">
+                            <p className="text-xs mt-1 text-gray-500 dark:text-gray-400">
                               {formatElapsedTime(order.elapsedTime)}
                             </p>
                           )}
@@ -160,30 +160,30 @@ export default function AdminDashboard() {
 
             {/* RIGHT: Platform Snapshot */}
             <div>
-              <h2 className="text-lg font-semibold mb-4 text-gray-800">
+              <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
                 Platform Snapshot
               </h2>
 
               {/* Online Riders */}
-              <div className="rounded-lg p-4 border border-gray-300 mb-4">
-                <h3 className="text-sm font-semibold mb-3 text-gray-800">
+              <div className="rounded-lg p-4 border border-gray-300 dark:border-gray-600 mb-4">
+                <h3 className="text-sm font-semibold mb-3 text-gray-800 dark:text-gray-100">
                   Online Riders ({onlineRiders.length})
                 </h3>
                 {onlineRiders.length === 0 ? (
-                  <p className="text-sm text-gray-500">No riders online</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">No riders online</p>
                 ) : (
                   <div className="space-y-2">
                     {onlineRiders.map((rider: any) => (
                       <div key={rider.id} className="flex items-center justify-between gap-3">
-                        <p className="text-sm truncate flex-1 min-w-0 text-gray-800">
+                        <p className="text-sm truncate flex-1 min-w-0 text-gray-800 dark:text-gray-100">
                           {rider.name}
                         </p>
                         <div className="flex items-center gap-2 flex-shrink-0">
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
                             ⭐ {rider.rating}
                           </span>
                           <span
-                            className={`px-2 py-0.5 rounded text-xs whitespace-nowrap ${rider.status === 'available' ? 'bg-emerald-100 text-emerald-500' : 'bg-amber-100 text-amber-500'}`}
+                            className={`px-2 py-0.5 rounded text-xs whitespace-nowrap ${rider.status === 'available' ? 'bg-emerald-100 text-emerald-500 dark:bg-emerald-900/30' : 'bg-amber-100 text-amber-500 dark:bg-amber-900/30 dark:text-amber-400'}`}
                           >
                             {rider.status}
                           </span>
@@ -195,12 +195,12 @@ export default function AdminDashboard() {
               </div>
 
               {/* Recent Notifications */}
-              <div className="rounded-lg p-4 border border-gray-300">
-                <h3 className="text-sm font-semibold mb-3 text-gray-800">
+              <div className="rounded-lg p-4 border border-gray-300 dark:border-gray-600">
+                <h3 className="text-sm font-semibold mb-3 text-gray-800 dark:text-gray-100">
                   Recent Notifications
                 </h3>
                 <div className="space-y-2">
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     Live data loaded successfully
                   </p>
                 </div>

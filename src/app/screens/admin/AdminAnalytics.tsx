@@ -42,14 +42,14 @@ export default function AdminAnalytics() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <div className="max-w-[1400px] mx-auto">
         <AdminNav />
 
         <div className="px-6 py-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
               Platform Analytics
             </h2>
 
@@ -60,7 +60,7 @@ export default function AdminAnalytics() {
                   type="button"
                   key={range}
                   onClick={() => setTimeRange(range)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize whitespace-nowrap ${timeRange === range ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-500'}`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize whitespace-nowrap ${timeRange === range ? 'bg-indigo-500 text-white' : 'bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400'}`}
                 >
                   This {range}
                 </button>
@@ -76,33 +76,33 @@ export default function AdminAnalytics() {
             <>
               {/* Key Metrics */}
               <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-                <div className="rounded-lg p-4 border border-gray-300">
-                  <p className="text-xs mb-2 text-gray-500">Total Revenue</p>
-                  <p className="text-2xl font-bold break-words text-gray-800">
+                <div className="rounded-lg p-4 border border-gray-300 dark:border-gray-600">
+                  <p className="text-xs mb-2 text-gray-500 dark:text-gray-400">Total Revenue</p>
+                  <p className="text-2xl font-bold break-words text-gray-800 dark:text-gray-100">
                     ₦{(metrics.totalRevenue ?? 0).toLocaleString()}
                   </p>
                 </div>
-                <div className="rounded-lg p-4 border border-gray-300">
-                  <p className="text-xs mb-2 text-gray-500">Total Orders</p>
-                  <p className="text-2xl font-bold text-gray-800">
+                <div className="rounded-lg p-4 border border-gray-300 dark:border-gray-600">
+                  <p className="text-xs mb-2 text-gray-500 dark:text-gray-400">Total Orders</p>
+                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
                     {(metrics.totalOrders ?? 0).toLocaleString()}
                   </p>
                 </div>
-                <div className="rounded-lg p-4 border border-gray-300">
-                  <p className="text-xs mb-2 text-gray-500">Active Users</p>
-                  <p className="text-2xl font-bold text-gray-800">
+                <div className="rounded-lg p-4 border border-gray-300 dark:border-gray-600">
+                  <p className="text-xs mb-2 text-gray-500 dark:text-gray-400">Active Users</p>
+                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
                     {(metrics.activeUsers ?? 0).toLocaleString()}
                   </p>
                 </div>
-                <div className="rounded-lg p-4 border border-gray-300">
-                  <p className="text-xs mb-2 text-gray-500">Avg Order Value</p>
-                  <p className="text-2xl font-bold text-gray-800">
+                <div className="rounded-lg p-4 border border-gray-300 dark:border-gray-600">
+                  <p className="text-xs mb-2 text-gray-500 dark:text-gray-400">Avg Order Value</p>
+                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
                     ₦{(metrics.avgOrderValue ?? 0).toLocaleString()}
                   </p>
                 </div>
-                <div className="rounded-lg p-4 border border-gray-300">
-                  <p className="text-xs mb-2 text-gray-500">Success Rate</p>
-                  <p className="text-2xl font-bold text-gray-800">
+                <div className="rounded-lg p-4 border border-gray-300 dark:border-gray-600">
+                  <p className="text-xs mb-2 text-gray-500 dark:text-gray-400">Success Rate</p>
+                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
                     {metrics.successRate ?? 0}%
                   </p>
                 </div>
@@ -113,8 +113,8 @@ export default function AdminAnalytics() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                   {/* Revenue Growth */}
                   {revenueData.length > 0 && (
-                    <div className="rounded-lg p-5 border border-gray-300">
-                      <h3 className="font-bold text-base mb-4 text-gray-800">
+                    <div className="rounded-lg p-5 border border-gray-300 dark:border-gray-600">
+                      <h3 className="font-bold text-base mb-4 text-gray-800 dark:text-gray-100">
                         Revenue Growth
                       </h3>
                       <ResponsiveContainer width="100%" height={250}>
@@ -137,8 +137,8 @@ export default function AdminAnalytics() {
 
                   {/* Orders by Time */}
                   {ordersByTimeData.length > 0 && (
-                    <div className="rounded-lg p-5 border border-gray-300">
-                      <h3 className="font-bold text-base mb-4 text-gray-800">
+                    <div className="rounded-lg p-5 border border-gray-300 dark:border-gray-600">
+                      <h3 className="font-bold text-base mb-4 text-gray-800 dark:text-gray-100">
                         Orders by Time of Day
                       </h3>
                       <ResponsiveContainer width="100%" height={250}>
@@ -160,8 +160,8 @@ export default function AdminAnalytics() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                   {/* Vendor Performance */}
                   {vendorPerformanceData.length > 0 && (
-                    <div className="rounded-lg p-5 border border-gray-300">
-                      <h3 className="font-bold text-base mb-4 text-gray-800">
+                    <div className="rounded-lg p-5 border border-gray-300 dark:border-gray-600">
+                      <h3 className="font-bold text-base mb-4 text-gray-800 dark:text-gray-100">
                         Top Vendors
                       </h3>
                       <ResponsiveContainer width="100%" height={250}>
@@ -178,8 +178,8 @@ export default function AdminAnalytics() {
 
                   {/* Order Status Distribution */}
                   {orderStatusData.length > 0 && (
-                    <div className="rounded-lg p-5 border border-gray-300">
-                      <h3 className="font-bold text-base mb-4 text-gray-800">
+                    <div className="rounded-lg p-5 border border-gray-300 dark:border-gray-600">
+                      <h3 className="font-bold text-base mb-4 text-gray-800 dark:text-gray-100">
                         Order Status Distribution
                       </h3>
                       <ResponsiveContainer width="100%" height={250}>
@@ -211,24 +211,24 @@ export default function AdminAnalytics() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Rider Performance */}
                   {riderPerformanceData.length > 0 && (
-                    <div className="rounded-lg border border-gray-300">
-                      <h3 className="font-bold text-base p-5 border-b border-gray-100 text-gray-800">
+                    <div className="rounded-lg border border-gray-300 dark:border-gray-600">
+                      <h3 className="font-bold text-base p-5 border-b border-gray-100 dark:border-gray-700 text-gray-800 dark:text-gray-100">
                         Top Riders
                       </h3>
-                      <div className="divide-y divide-gray-100">
+                      <div className="divide-y divide-gray-100 dark:divide-gray-700">
                         {riderPerformanceData.map((rider: any, index: number) => (
                           <div key={index} className="p-4 flex items-center justify-between">
                             <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-sm mb-1 truncate text-gray-800">
+                              <p className="font-semibold text-sm mb-1 truncate text-gray-800 dark:text-gray-100">
                                 {rider.name}
                               </p>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
                                 {rider.deliveries} deliveries · ⭐ {rider.rating}
                                 {rider.avgTime != null ? ` · ${rider.avgTime} min avg` : ''}
                               </p>
                             </div>
                             <div className="flex-shrink-0 ml-3">
-                              <div className="px-3 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-500">
+                              <div className="px-3 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-500 dark:bg-emerald-900/30">
                                 Top Performer
                               </div>
                             </div>
@@ -240,8 +240,8 @@ export default function AdminAnalytics() {
 
                   {/* Customer Growth */}
                   {customerGrowthData.length > 0 && (
-                    <div className="rounded-lg p-5 border border-gray-300">
-                      <h3 className="font-bold text-base mb-4 text-gray-800">
+                    <div className="rounded-lg p-5 border border-gray-300 dark:border-gray-600">
+                      <h3 className="font-bold text-base mb-4 text-gray-800 dark:text-gray-100">
                         Customer Growth
                       </h3>
                       <ResponsiveContainer width="100%" height={200}>
@@ -259,7 +259,7 @@ export default function AdminAnalytics() {
               )}
 
               {!analytics && (
-                <p className="text-center text-gray-500 py-12">No analytics data available</p>
+                <p className="text-center text-gray-500 dark:text-gray-400 py-12">No analytics data available</p>
               )}
             </>
           )}

@@ -84,7 +84,7 @@ export default function AdminPromotions() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-800">
       <div className="max-w-[1400px] mx-auto">
         <AdminNav />
 
@@ -92,8 +92,8 @@ export default function AdminPromotions() {
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-800">Promotions</h2>
-              <p className="text-sm text-gray-500 mt-1">Manage the banner slides shown on the customer home screen</p>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Promotions</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage the banner slides shown on the customer home screen</p>
             </div>
             <button
               type="button"
@@ -111,9 +111,9 @@ export default function AdminPromotions() {
             </div>
           ) : promos.length === 0 ? (
             <div className="text-center py-20">
-              <Megaphone size={48} className="text-gray-200 mx-auto mb-4" />
-              <p className="text-lg font-semibold text-gray-800 mb-1">No promotions yet</p>
-              <p className="text-sm text-gray-500 mb-6">Create your first banner slide to show on the home screen</p>
+              <Megaphone size={48} className="text-gray-200 dark:text-gray-600 mx-auto mb-4" />
+              <p className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-1">No promotions yet</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Create your first banner slide to show on the home screen</p>
               <button type="button" onClick={openCreate} className="px-4 py-2 rounded-lg bg-indigo-500 text-white text-sm font-medium">
                 Create Promo
               </button>
@@ -121,7 +121,7 @@ export default function AdminPromotions() {
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {promos.map((promo) => (
-                <div key={promo.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div key={promo.id} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                   {/* Preview */}
                   <div className={`p-5 bg-gradient-to-br ${promo.bg}`}>
                     <p className="text-base font-semibold text-gray-800">{promo.emoji} {promo.title}</p>
@@ -133,7 +133,7 @@ export default function AdminPromotions() {
                       type="button"
                       onClick={() => handleToggleActive(promo)}
                       className={`text-xs font-medium px-3 py-1 rounded-full ${
-                        promo.active ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-500'
+                        promo.active ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30' : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
                       }`}
                     >
                       {promo.active ? 'Active' : 'Paused'}
@@ -143,17 +143,17 @@ export default function AdminPromotions() {
                         type="button"
                         onClick={() => openEdit(promo)}
                         aria-label="Edit promo"
-                        className="p-2 rounded-lg hover:bg-gray-100"
+                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
                       >
-                        <Pencil size={15} className="text-gray-500" />
+                        <Pencil size={15} className="text-gray-500 dark:text-gray-400" />
                       </button>
                       <button
                         type="button"
                         onClick={() => handleDelete(promo)}
                         aria-label="Delete promo"
-                        className="p-2 rounded-lg hover:bg-red-50"
+                        className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900"
                       >
-                        <Trash2 size={15} className="text-red-400" />
+                        <Trash2 size={15} className="text-red-400 dark:text-gray-500" />
                       </button>
                     </div>
                   </div>
@@ -167,11 +167,11 @@ export default function AdminPromotions() {
       {/* Create / Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl w-full max-w-md p-6">
+          <div className="bg-white dark:bg-gray-900 rounded-xl w-full max-w-md p-6">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-gray-800">{editing ? 'Edit Promo' : 'New Promo'}</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{editing ? 'Edit Promo' : 'New Promo'}</h3>
               <button type="button" onClick={() => setShowModal(false)} aria-label="Close modal">
-                <X size={20} className="text-gray-500" />
+                <X size={20} className="text-gray-500 dark:text-gray-400" />
               </button>
             </div>
 
@@ -184,44 +184,44 @@ export default function AdminPromotions() {
             <form onSubmit={handleSave} className="space-y-4">
               <div className="flex gap-3">
                 <div className="w-20">
-                  <label className="text-xs font-medium text-gray-700 block mb-1">Emoji</label>
+                  <label className="text-xs font-medium text-gray-700 dark:text-gray-300 block mb-1">Emoji</label>
                   <input
                     type="text"
                     value={form.emoji}
                     onChange={(e) => setForm({ ...form, emoji: e.target.value })}
                     placeholder="🔥"
-                    className="w-full h-10 px-3 rounded-lg bg-gray-50 text-center text-lg"
+                    className="w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-100 text-center text-lg"
                     maxLength={2}
                     required
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="text-xs font-medium text-gray-700 block mb-1">Title</label>
+                  <label className="text-xs font-medium text-gray-700 dark:text-gray-300 block mb-1">Title</label>
                   <input
                     type="text"
                     value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
                     placeholder="Delivered in 20 mins"
-                    className="w-full h-10 px-3 rounded-lg bg-gray-50"
+                    className="w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-100"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-medium text-gray-700 block mb-1">Subtitle</label>
+                <label className="text-xs font-medium text-gray-700 dark:text-gray-300 block mb-1">Subtitle</label>
                 <input
                   type="text"
                   value={form.subtitle}
                   onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
                   placeholder="Hot & fresh to your hostel"
-                  className="w-full h-10 px-3 rounded-lg bg-gray-50"
+                  className="w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-100"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-xs font-medium text-gray-700 block mb-1">Background colour</label>
+                <label className="text-xs font-medium text-gray-700 dark:text-gray-300 block mb-1">Background colour</label>
                 <div className="flex gap-2">
                   {BG_OPTIONS.map((opt) => (
                     <button
@@ -244,7 +244,7 @@ export default function AdminPromotions() {
                   checked={form.active}
                   onChange={(e) => setForm({ ...form, active: e.target.checked })}
                 />
-                <label htmlFor="active" className="text-sm text-gray-700">Active (visible on home screen)</label>
+                <label htmlFor="active" className="text-sm text-gray-700 dark:text-gray-300">Active (visible on home screen)</label>
               </div>
 
               <button

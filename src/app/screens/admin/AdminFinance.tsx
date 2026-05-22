@@ -79,14 +79,14 @@ export default function AdminFinance() {
   }, [vendorPayouts, riderPayouts, settlements, financeStats]);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <div className="max-w-[1400px] mx-auto">
         <AdminNav />
 
         <div className="px-6 py-6">
           {/* Header */}
           <div className="mb-6">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">
               Finance &amp; Settlements
             </h2>
 
@@ -97,7 +97,7 @@ export default function AdminFinance() {
                   type="button"
                   key={filter}
                   onClick={() => setDateFilter(filter)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize whitespace-nowrap ${dateFilter === filter ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-500'}`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize whitespace-nowrap ${dateFilter === filter ? 'bg-indigo-500 text-white' : 'bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400'}`}
                 >
                   {filter === 'all' ? 'All Time' : filter}
                 </button>
@@ -113,24 +113,24 @@ export default function AdminFinance() {
             <>
               {/* Summary Stats */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div className="rounded-lg p-4 md:p-5 border border-gray-300">
-                  <p className="text-xs mb-2 text-gray-500">
+                <div className="rounded-lg p-4 md:p-5 border border-gray-300 dark:border-gray-600">
+                  <p className="text-xs mb-2 text-gray-500 dark:text-gray-400">
                     Platform Earnings {getPeriodLabel()}
                   </p>
-                  <p className="text-2xl md:text-3xl font-bold break-words text-gray-800">
+                  <p className="text-2xl md:text-3xl font-bold break-words text-gray-800 dark:text-gray-100">
                     ₦{calculatedStats.earnings.toLocaleString()}
                   </p>
                 </div>
                 <div className="rounded-lg p-4 md:p-5 border-2 border-amber-500">
-                  <p className="text-xs mb-2 text-gray-500">
+                  <p className="text-xs mb-2 text-gray-500 dark:text-gray-400">
                     Pending Payouts
                   </p>
                   <p className="text-2xl md:text-3xl font-bold break-words text-amber-500">
                     ₦{calculatedStats.pending.toLocaleString()}
                   </p>
                 </div>
-                <div className="rounded-lg p-4 md:p-5 border border-gray-300">
-                  <p className="text-xs mb-2 text-gray-500">
+                <div className="rounded-lg p-4 md:p-5 border border-gray-300 dark:border-gray-600">
+                  <p className="text-xs mb-2 text-gray-500 dark:text-gray-400">
                     Settled {getPeriodLabel()}
                   </p>
                   <p className="text-2xl md:text-3xl font-bold break-words text-emerald-500">
@@ -144,14 +144,14 @@ export default function AdminFinance() {
                 <button
                   type="button"
                   onClick={() => setActiveTab('vendors')}
-                  className={`flex-1 md:flex-none px-4 py-2 rounded-lg text-sm font-medium ${activeTab === 'vendors' ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-500'}`}
+                  className={`flex-1 md:flex-none px-4 py-2 rounded-lg text-sm font-medium ${activeTab === 'vendors' ? 'bg-indigo-500 text-white' : 'bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400'}`}
                 >
                   Vendors
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveTab('riders')}
-                  className={`flex-1 md:flex-none px-4 py-2 rounded-lg text-sm font-medium ${activeTab === 'riders' ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-500'}`}
+                  className={`flex-1 md:flex-none px-4 py-2 rounded-lg text-sm font-medium ${activeTab === 'riders' ? 'bg-indigo-500 text-white' : 'bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400'}`}
                 >
                   Riders
                 </button>
@@ -160,31 +160,31 @@ export default function AdminFinance() {
               {/* Vendors Tab */}
               {activeTab === 'vendors' && (
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                  <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
                     Vendor Payouts
                   </h3>
                   {vendorPayouts.length === 0 ? (
                     <div className="text-center py-12">
-                      <p className="text-gray-500">All vendors settled!</p>
+                      <p className="text-gray-500 dark:text-gray-400">All vendors settled!</p>
                     </div>
                   ) : (
                     <div className="space-y-3">
                       {vendorPayouts.map((vendor: any) => (
                         <div
                           key={vendor.id}
-                          className="rounded-lg p-4 md:p-5 border border-gray-300 flex flex-col md:flex-row md:items-center justify-between gap-4"
+                          className="rounded-lg p-4 md:p-5 border border-gray-300 dark:border-gray-600 flex flex-col md:flex-row md:items-center justify-between gap-4"
                         >
                           <div className="flex-1 min-w-0">
-                            <p className="font-bold text-base mb-1 truncate text-gray-800">
+                            <p className="font-bold text-base mb-1 truncate text-gray-800 dark:text-gray-100">
                               {vendor.vendorName}
                             </p>
                             {vendor.ordersSinceLastSettlement != null && (
-                              <p className="text-sm mb-1 text-gray-500">
+                              <p className="text-sm mb-1 text-gray-500 dark:text-gray-400">
                                 {vendor.ordersSinceLastSettlement} orders since last settlement
                               </p>
                             )}
                             {vendor.lastSettlementDate && (
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
                                 Last settled: {new Date(vendor.lastSettlementDate).toLocaleDateString('en-US', {
                                   month: 'short',
                                   day: 'numeric',
@@ -195,7 +195,7 @@ export default function AdminFinance() {
                           </div>
                           <div className="flex items-center gap-3 md:gap-4">
                             <div className="text-left md:text-right flex-1">
-                              <p className="text-xs mb-1 text-gray-500">
+                              <p className="text-xs mb-1 text-gray-500 dark:text-gray-400">
                                 Amount Owed
                               </p>
                               <p className="text-xl md:text-2xl font-bold truncate text-amber-500">
@@ -222,31 +222,31 @@ export default function AdminFinance() {
               {/* Riders Tab */}
               {activeTab === 'riders' && (
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                  <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
                     Rider Payouts
                   </h3>
                   {riderPayouts.length === 0 ? (
                     <div className="text-center py-12">
-                      <p className="text-gray-500">All riders settled!</p>
+                      <p className="text-gray-500 dark:text-gray-400">All riders settled!</p>
                     </div>
                   ) : (
                     <div className="space-y-3">
                       {riderPayouts.map((rider: any) => (
                         <div
                           key={rider.id}
-                          className="rounded-lg p-4 md:p-5 border border-gray-300 flex flex-col md:flex-row md:items-center justify-between gap-4"
+                          className="rounded-lg p-4 md:p-5 border border-gray-300 dark:border-gray-600 flex flex-col md:flex-row md:items-center justify-between gap-4"
                         >
                           <div className="flex-1 min-w-0">
-                            <p className="font-bold text-base mb-1 truncate text-gray-800">
+                            <p className="font-bold text-base mb-1 truncate text-gray-800 dark:text-gray-100">
                               {rider.riderName}
                             </p>
                             {rider.deliveriesSinceLastSettlement != null && (
-                              <p className="text-sm mb-1 text-gray-500">
+                              <p className="text-sm mb-1 text-gray-500 dark:text-gray-400">
                                 {rider.deliveriesSinceLastSettlement} deliveries × ₦300 = ₦{(rider.amountOwed ?? 0).toLocaleString()}
                               </p>
                             )}
                             {rider.lastSettlementDate && (
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
                                 Last settled: {new Date(rider.lastSettlementDate).toLocaleDateString('en-US', {
                                   month: 'short',
                                   day: 'numeric',
@@ -257,7 +257,7 @@ export default function AdminFinance() {
                           </div>
                           <div className="flex items-center gap-3 md:gap-4">
                             <div className="text-left md:text-right flex-1">
-                              <p className="text-xs mb-1 text-gray-500">
+                              <p className="text-xs mb-1 text-gray-500 dark:text-gray-400">
                                 Amount Owed
                               </p>
                               <p className="text-xl md:text-2xl font-bold truncate text-amber-500">
@@ -283,35 +283,35 @@ export default function AdminFinance() {
 
               {/* Settlement History */}
               <div>
-                <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
                   Settlement History
-                  <span className="text-sm font-normal ml-2 text-gray-500">
+                  <span className="text-sm font-normal ml-2 text-gray-500 dark:text-gray-400">
                     ({settlements.length} {settlements.length === 1 ? 'settlement' : 'settlements'})
                   </span>
                 </h3>
                 {settlements.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-gray-500">No settlements in this period</p>
+                    <p className="text-gray-500 dark:text-gray-400">No settlements in this period</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {settlements.map((settlement: any) => (
                     <div
                       key={settlement.id}
-                      className="rounded-lg p-4 border border-gray-300 bg-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-3"
+                      className="rounded-lg p-4 border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 flex flex-col md:flex-row md:items-center justify-between gap-3"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-sm mb-1 truncate text-gray-800">
+                        <p className="font-semibold text-sm mb-1 truncate text-gray-800 dark:text-gray-100">
                           {settlement.recipientName}
                         </p>
-                        <p className="text-xs mb-1 text-gray-500">
+                        <p className="text-xs mb-1 text-gray-500 dark:text-gray-400">
                           {settlement.recipientType} · {new Date(settlement.date).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric',
                           })}
                         </p>
-                        <p className="text-xs font-mono truncate text-gray-500">
+                        <p className="text-xs font-mono truncate text-gray-500 dark:text-gray-400">
                           Ref: {settlement.reference}
                         </p>
                       </div>
@@ -319,7 +319,7 @@ export default function AdminFinance() {
                         <p className="text-lg md:text-xl font-bold text-emerald-500">
                           ₦{(settlement.amount ?? 0).toLocaleString()}
                         </p>
-                        <span className="px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap bg-emerald-100 text-emerald-500">
+                        <span className="px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap bg-emerald-100 text-emerald-500 dark:bg-emerald-900/30">
                           Settled
                         </span>
                       </div>

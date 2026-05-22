@@ -116,29 +116,29 @@ export default function AdminPeople() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <div className="max-w-[1400px] mx-auto">
         <AdminNav />
 
         <div className="px-6 py-6">
           {/* Header */}
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">
+          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
             People Management
           </h2>
 
         {/* Main Tabs */}
-        <div className="flex gap-4 border-b border-gray-200 mb-6">
+        <div className="flex gap-4 border-b border-gray-200 dark:border-gray-700 mb-6">
           <button
             type="button"
             onClick={() => setMainTab('riders')}
-            className={`px-4 py-3 text-base font-medium ${mainTab === 'riders' ? 'text-indigo-500 border-b-2 border-indigo-500' : 'text-gray-500'}`}
+            className={`px-4 py-3 text-base font-medium ${mainTab === 'riders' ? 'text-indigo-500 border-b-2 border-indigo-500' : 'text-gray-500 dark:text-gray-400'}`}
           >
             Riders
           </button>
           <button
             type="button"
             onClick={() => setMainTab('vendors')}
-            className={`px-4 py-3 text-base font-medium ${mainTab === 'vendors' ? 'text-indigo-500 border-b-2 border-indigo-500' : 'text-gray-500'}`}
+            className={`px-4 py-3 text-base font-medium ${mainTab === 'vendors' ? 'text-indigo-500 border-b-2 border-indigo-500' : 'text-gray-500 dark:text-gray-400'}`}
           >
             Vendors
           </button>
@@ -154,7 +154,7 @@ export default function AdminPeople() {
                   type="button"
                   key={tab}
                   onClick={() => setRiderSubTab(tab)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium capitalize ${riderSubTab === tab ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-500'}`}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium capitalize ${riderSubTab === tab ? 'bg-indigo-500 text-white' : 'bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400'}`}
                 >
                   {tab}
                   {tab === 'pending' && pendingRiders.length > 0 && (
@@ -168,10 +168,10 @@ export default function AdminPeople() {
             {riderSubTab === 'pending' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {pendingRiders.length === 0 ? (
-                  <p className="text-gray-500">No pending applications</p>
+                  <p className="text-gray-500 dark:text-gray-400">No pending applications</p>
                 ) : (
                   pendingRiders.map((rider: any) => (
-                    <div key={rider.id} className="rounded-lg p-5 border border-gray-300">
+                    <div key={rider.id} className="rounded-lg p-5 border border-gray-300 dark:border-gray-600">
                       <div className="flex gap-4 mb-4">
                         {rider.photo ? (
                           <img
@@ -180,36 +180,36 @@ export default function AdminPeople() {
                             className="w-16 h-16 rounded-full object-cover flex-shrink-0"
                           />
                         ) : (
-                          <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                          <div className="w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center flex-shrink-0">
                             <span className="text-xl font-bold text-indigo-500">
                               {rider.name?.[0] ?? '?'}
                             </span>
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
-                          <p className="font-bold text-base mb-1 truncate text-gray-800">
+                          <p className="font-bold text-base mb-1 truncate text-gray-800 dark:text-gray-100">
                             {rider.name}
                           </p>
-                          <p className="text-sm mb-1 text-gray-500">
+                          <p className="text-sm mb-1 text-gray-500 dark:text-gray-400">
                             {rider.matricNumber}
                           </p>
-                          <p className="text-xs break-all text-gray-500">
+                          <p className="text-xs break-all text-gray-500 dark:text-gray-400">
                             {rider.email}
                           </p>
                         </div>
                       </div>
 
-                      <div className="mb-4 p-3 rounded-lg bg-gray-50">
-                        <p className="text-xs mb-1 text-gray-500">
+                      <div className="mb-4 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                        <p className="text-xs mb-1 text-gray-500 dark:text-gray-400">
                           Bank Details
                         </p>
-                        <p className="text-sm font-medium break-words text-gray-800">
+                        <p className="text-sm font-medium break-words text-gray-800 dark:text-gray-100">
                           {rider.bankName} · {rider.accountNumber}
                         </p>
                       </div>
 
                       {rider.submittedDate && (
-                        <p className="text-xs mb-4 text-gray-500">
+                        <p className="text-xs mb-4 text-gray-500 dark:text-gray-400">
                           Submitted {rider.submittedDate}
                         </p>
                       )}
@@ -225,7 +225,7 @@ export default function AdminPeople() {
                         <button
                           type="button"
                           onClick={() => handleRejectRider(rider.id, rider.name)}
-                          className="flex-1 h-10 rounded-lg font-semibold text-sm border border-gray-300 text-red-500"
+                          className="flex-1 h-10 rounded-lg font-semibold text-sm border border-gray-300 dark:border-gray-600 text-red-500"
                         >
                           Reject
                         </button>
@@ -240,29 +240,29 @@ export default function AdminPeople() {
             {riderSubTab === 'active' && (
               <div className="space-y-3">
                 {activeRiders.length === 0 ? (
-                  <p className="text-gray-500">No active riders</p>
+                  <p className="text-gray-500 dark:text-gray-400">No active riders</p>
                 ) : (
                   activeRiders.map((rider: any) => (
-                    <div key={rider.id} className="rounded-lg p-4 border border-gray-300 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div key={rider.id} className="rounded-lg p-4 border border-gray-300 dark:border-gray-600 flex flex-col md:flex-row md:items-center justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-base mb-1 truncate text-gray-800">
+                        <p className="font-semibold text-base mb-1 truncate text-gray-800 dark:text-gray-100">
                           {rider.name}
                         </p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                           ⭐ {rider.rating} · {rider.totalDeliveries} total deliveries
                           {rider.deliveriesToday != null ? ` · ${rider.deliveriesToday} today` : ''}
                         </p>
                       </div>
                       <div className="flex items-center gap-3">
                         {rider.lastActive && (
-                          <p className="text-sm whitespace-nowrap text-gray-500">
+                          <p className="text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
                             Last active: {rider.lastActive}
                           </p>
                         )}
                         <button
                           type="button"
                           onClick={() => handleSuspendRider(rider.id, rider.name)}
-                          className="px-4 py-2 rounded-lg text-sm whitespace-nowrap bg-gray-50 text-red-500"
+                          className="px-4 py-2 rounded-lg text-sm whitespace-nowrap bg-gray-50 dark:bg-gray-800 text-red-500 dark:hover:bg-red-900"
                         >
                           Suspend
                         </button>
@@ -278,14 +278,14 @@ export default function AdminPeople() {
               <div>
                 {suspendedRiders.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-gray-500">No suspended riders</p>
+                    <p className="text-gray-500 dark:text-gray-400">No suspended riders</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {suspendedRiders.map((rider: any) => (
-                      <div key={rider.id} className="rounded-lg p-4 border border-gray-300">
-                        <p className="font-semibold text-gray-800">{rider.name}</p>
-                        <p className="text-sm text-gray-500">{rider.email}</p>
+                      <div key={rider.id} className="rounded-lg p-4 border border-gray-300 dark:border-gray-600">
+                        <p className="font-semibold text-gray-800 dark:text-gray-100">{rider.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{rider.email}</p>
                       </div>
                     ))}
                   </div>
@@ -310,11 +310,11 @@ export default function AdminPeople() {
             </div>
 
             {allVendors.length === 0 ? (
-              <p className="text-gray-500">No vendors yet</p>
+              <p className="text-gray-500 dark:text-gray-400">No vendors yet</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {allVendors.map((vendor: any) => (
-                  <div key={vendor.id} className="rounded-lg p-4 border border-gray-300">
+                  <div key={vendor.id} className="rounded-lg p-4 border border-gray-300 dark:border-gray-600">
                     <div className="flex gap-3 mb-3">
                       {vendor.photo ? (
                         <img
@@ -323,28 +323,28 @@ export default function AdminPeople() {
                           className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
                         />
                       ) : (
-                        <div className="w-14 h-14 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                        <div className="w-14 h-14 rounded-lg bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center flex-shrink-0">
                           <span className="text-lg font-bold text-indigo-500">
                             {vendor.name?.[0] ?? '?'}
                           </span>
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-sm mb-1 truncate text-gray-800">
+                        <p className="font-bold text-sm mb-1 truncate text-gray-800 dark:text-gray-100">
                           {vendor.name}
                         </p>
-                        <p className="text-xs mb-1 truncate text-gray-500">
+                        <p className="text-xs mb-1 truncate text-gray-500 dark:text-gray-400">
                           {vendor.ownerName}
                         </p>
                         <span
-                          className={`px-2 py-0.5 rounded text-xs ${vendor.status === 'active' ? 'bg-emerald-100 text-emerald-500' : 'bg-gray-100 text-gray-500'}`}
+                          className={`px-2 py-0.5 rounded text-xs ${vendor.status === 'active' ? 'bg-emerald-100 text-emerald-500 dark:bg-emerald-900/30' : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'}`}
                         >
                           {vendor.status}
                         </span>
                       </div>
                     </div>
                     {vendor.ordersThisWeek != null && (
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
                         {vendor.ordersThisWeek} orders this week
                       </p>
                     )}
@@ -360,13 +360,13 @@ export default function AdminPeople() {
       {/* Add Vendor Modal */}
       {showAddVendorModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
-          <div className="bg-white rounded-xl max-w-lg w-full mx-5 my-8 p-6">
+          <div className="bg-white dark:bg-gray-900 rounded-xl max-w-lg w-full mx-5 my-8 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-800">
+              <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">
                 Add New Vendor
               </h2>
               <button type="button" onClick={() => setShowAddVendorModal(false)} aria-label="Close modal">
-                <X size={24} className="text-gray-500" />
+                <X size={24} className="text-gray-500 dark:text-gray-400" />
               </button>
             </div>
 
@@ -376,7 +376,7 @@ export default function AdminPeople() {
                 placeholder="Restaurant name"
                 value={vendorName}
                 onChange={(e) => setVendorName(e.target.value)}
-                className="w-full h-12 px-4 rounded-lg border border-gray-300"
+                className="w-full h-12 px-4 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                 required
               />
               <input
@@ -384,7 +384,7 @@ export default function AdminPeople() {
                 placeholder="Owner full name"
                 value={vendorOwnerName}
                 onChange={(e) => setVendorOwnerName(e.target.value)}
-                className="w-full h-12 px-4 rounded-lg border border-gray-300"
+                className="w-full h-12 px-4 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                 required
               />
               <input
@@ -392,7 +392,7 @@ export default function AdminPeople() {
                 placeholder="Owner email"
                 value={vendorEmail}
                 onChange={(e) => setVendorEmail(e.target.value)}
-                className="w-full h-12 px-4 rounded-lg border border-gray-300"
+                className="w-full h-12 px-4 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                 required
               />
               <input
@@ -400,7 +400,7 @@ export default function AdminPeople() {
                 placeholder="Owner phone number"
                 value={vendorPhone}
                 onChange={(e) => setVendorPhone(e.target.value)}
-                className="w-full h-12 px-4 rounded-lg border border-gray-300"
+                className="w-full h-12 px-4 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                 required
               />
               <input
@@ -408,11 +408,11 @@ export default function AdminPeople() {
                 placeholder="Campus location (e.g., Near Eni-Jokun Hostel)"
                 value={vendorLocation}
                 onChange={(e) => setVendorLocation(e.target.value)}
-                className="w-full h-12 px-4 rounded-lg border border-gray-300"
+                className="w-full h-12 px-4 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                 required
               />
               <select
-                className="w-full h-12 px-4 rounded-lg border border-gray-300"
+                className="w-full h-12 px-4 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                 aria-label="Select bank"
                 value={vendorBank}
                 onChange={(e) => setVendorBank(e.target.value)}
@@ -428,7 +428,7 @@ export default function AdminPeople() {
                 placeholder="Account number"
                 value={vendorAccount}
                 onChange={(e) => setVendorAccount(e.target.value)}
-                className="w-full h-12 px-4 rounded-lg border border-gray-300"
+                className="w-full h-12 px-4 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                 required
               />
 
@@ -440,7 +440,7 @@ export default function AdminPeople() {
               </button>
             </form>
 
-            <p className="text-xs mt-4 text-center text-gray-500">
+            <p className="text-xs mt-4 text-center text-gray-500 dark:text-gray-400">
               Login credentials will be automatically sent to the vendor's email
             </p>
           </div>
