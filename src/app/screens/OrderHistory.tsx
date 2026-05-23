@@ -30,6 +30,7 @@ export default function OrderHistory() {
               name: item.name,
               price: item.price,
               restaurant: res.restaurant,
+              restaurantId: res.restaurantId,
               image: 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=200&h=200&fit=crop',
             });
           }

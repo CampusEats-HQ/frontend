@@ -103,6 +103,7 @@ export default function Restaurant() {
                           name: item.name,
                           price: item.price,
                           restaurant: restaurant.name,
+                          restaurantId: restaurant.id,
                           image: item.image,
                         });
                         toast.success(`${item.name} added to cart!`);

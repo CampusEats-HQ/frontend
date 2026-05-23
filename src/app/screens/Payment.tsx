@@ -9,7 +9,7 @@ export default function Payment() {
   const navigate = useNavigate();
   const location = useLocation();
   const { getTotal, items, clearCart } = useCart(); // clearCart called on payment callback
-  const [selectedMethod, setSelectedMethod] = useState<'card' | 'bank' | 'wallet'>('card');
+  const [selectedMethod, setSelectedMethod] = useState<'card' | 'transfer' | 'wallet'>('card');
   const [promoCode, setPromoCode] = useState('');
   const [discount, setDiscount] = useState(0);
   const [placing, setPlacing] = useState(false);
@@ -45,7 +45,7 @@ export default function Payment() {
           name: item.name,
           price: item.price,
           quantity: item.quantity,
-          restaurantId: item.id.split('-')[0] || item.id,
+          restaurantId: item.restaurantId,
         })),
         deliveryLocation,
         paymentMethod: selectedMethod,
@@ -99,17 +99,17 @@ export default function Payment() {
 
           <button
             type="button"
-            onClick={() => setSelectedMethod('bank')}
+            onClick={() => setSelectedMethod('transfer')}
             className={`w-full p-4 rounded-lg border flex items-center gap-3 transition-all ${
-              selectedMethod === 'bank' ? 'border-2 border-indigo-500' : 'border-gray-200'
+              selectedMethod === 'transfer' ? 'border-2 border-indigo-500' : 'border-gray-200'
             }`}
           >
             <div
               className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                selectedMethod === 'bank' ? 'border-indigo-500' : 'border-gray-200'
+                selectedMethod === 'transfer' ? 'border-indigo-500' : 'border-gray-200'
               }`}
             >
-              {selectedMethod === 'bank' && (
+              {selectedMethod === 'transfer' && (
                 <div className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
               )}
             </div>
