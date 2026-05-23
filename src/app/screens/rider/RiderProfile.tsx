@@ -51,7 +51,7 @@ export default function RiderProfile() {
 
   const handleLogout = () => {
     if (confirm('Are you sure you want to logout?')) {
-      authService.logout();
+      authService.logout('rider');
       logout();
       navigate('/rider/login');
     }

@@ -40,13 +40,13 @@ export const authService = {
 
   loginCustomer: async (data: { email: string; password: string }) => {
     const res = await api.post<{ token: string; user: CustomerUser }>('/auth/customer/login', data)
-    setToken(res.token)
+    setToken(res.token, 'customer')
     return res
   },
 
   loginVendor: async (data: { email: string; password: string }) => {
     const res = await api.post<{ token: string; vendor: VendorUser }>('/auth/vendor/login', data)
-    setToken(res.token)
+    setToken(res.token, 'vendor')
     return res
   },
 
@@ -55,19 +55,19 @@ export const authService = {
 
   loginRider: async (data: { email: string; password: string }) => {
     const res = await api.post<{ token: string; rider: RiderUser }>('/auth/rider/login', data)
-    setToken(res.token)
+    setToken(res.token, 'rider')
     return res
   },
 
   loginAdmin: async (data: { email: string; password: string }) => {
     const res = await api.post<{ token: string; admin: AdminUser }>('/auth/admin/login', data)
-    setToken(res.token)
+    setToken(res.token, 'admin')
     return res
   },
 
   verifyOtp: async (data: { email: string; otp: string }) => {
     const res = await api.post<{ token: string; user: CustomerUser }>('/auth/verify-otp', data)
-    setToken(res.token)
+    setToken(res.token, 'customer')
     return res
   },
 
@@ -77,5 +77,6 @@ export const authService = {
   resetPassword: (data: { email: string; otp: string; newPassword: string }) =>
     api.post<{ message: string }>('/auth/reset-password', data),
 
-  logout: () => clearToken(),
+  logout: (portal: 'customer' | 'vendor' | 'rider' | 'admin' = 'customer') =>
+    clearToken(portal),
 }

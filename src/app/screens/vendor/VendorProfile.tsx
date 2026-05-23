@@ -28,7 +28,7 @@ export default function VendorProfile() {
   }, []);
 
   const handleLogout = () => {
-    authService.logout();
+    authService.logout('vendor');
     navigate('/vendor/login');
   };
 

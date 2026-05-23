@@ -2,16 +2,39 @@ const BASE_URL = (import.meta.env.VITE_API_URL as string) ?? 'https://staging-ap
 
 export const WS_URL = BASE_URL.replace(/^http/, 'ws').replace(/\/v1$/, '')
 
-export function setToken(token: string): void {
-  localStorage.setItem('ce_token', token)
+// Each portal stores its token independently so a customer session
+// never bleeds into vendor/rider/admin requests.
+const KEYS = {
+  customer: 'ce_token',
+  vendor:   'ce_vendor_token',
+  rider:    'ce_rider_token',
+  admin:    'ce_admin_token',
+} as const
+
+type Portal = keyof typeof KEYS
+
+function portalFromPath(): Portal {
+  const path = window.location.pathname
+  if (path.startsWith('/vendor')) return 'vendor'
+  if (path.startsWith('/rider'))  return 'rider'
+  if (path.startsWith('/admin'))  return 'admin'
+  return 'customer'
 }
 
-export function getToken(): string | null {
-  return localStorage.getItem('ce_token')
+function getToken(): string | null {
+  return localStorage.getItem(KEYS[portalFromPath()])
 }
 
-export function clearToken(): void {
-  localStorage.removeItem('ce_token')
+export function setToken(token: string, portal: Portal = 'customer'): void {
+  localStorage.setItem(KEYS[portal], token)
+}
+
+export function clearToken(portal: Portal = 'customer'): void {
+  localStorage.removeItem(KEYS[portal])
+}
+
+export function clearAllTokens(): void {
+  Object.values(KEYS).forEach((k) => localStorage.removeItem(k))
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
@@ -29,7 +52,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   if (!res.ok) {
     if (res.status === 401) {
-      clearToken()
+      clearToken(portalFromPath())
     }
     const err = await res.json().catch(() => ({}))
     const fallback: Record<number, string> = {
