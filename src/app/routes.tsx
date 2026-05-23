@@ -85,6 +85,10 @@ export const router = createBrowserRouter([
     Component: Cart,
   },
   {
+    path: "/order/confirm",
+    Component: PaymentCallback,
+  },
+  {
     path: "/payment/callback",
     Component: PaymentCallback,
   },

@@ -107,6 +107,9 @@ export const notificationService = {
 export const paymentService = {
   initialize: (orderId: string) =>
     api.post<{ authorizationUrl: string; reference: string }>('/payments/initialize', { orderId }),
+
+  verify: (reference: string) =>
+    api.get<{ orderId: string; paymentStatus: string }>(`/payments/verify/${reference}`),
 }
 
 export const profileService = {
