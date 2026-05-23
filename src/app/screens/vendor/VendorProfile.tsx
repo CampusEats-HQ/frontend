@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { ChevronRight, Camera, X, Clock, Phone, Landmark, Bell, Lock, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { authService } from '../../services/auth';
 import { vendorService } from '../../services/vendor';
+import { api } from '../../lib/api';
 
 interface ProfileData {
   id: string;
@@ -24,6 +25,23 @@ export default function VendorProfile() {
   const [isOpen, setIsOpen] = useState(false);
   const [togglingStatus, setTogglingStatus] = useState(false);
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('image', file);
+    setUploadingImage(true);
+    api.put<ProfileData>('/vendor/profile', formData)
+      .then((res) => {
+        setProfile(res);
+        toast.success('Photo updated');
+      })
+      .catch(() => toast.error('Failed to upload photo'))
+      .finally(() => setUploadingImage(false));
+  };
 
   // Contact edit state
   const [contactValue, setContactValue] = useState('');
@@ -106,10 +124,23 @@ export default function VendorProfile() {
             <button
               type="button"
               aria-label="Change restaurant photo"
-              className="absolute bottom-0 right-0 w-10 h-10 rounded-full flex items-center justify-center bg-indigo-500"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadingImage}
+              className="absolute bottom-0 right-0 w-10 h-10 rounded-full flex items-center justify-center bg-indigo-500 disabled:opacity-60"
             >
-              <Camera size={18} color="white" />
+              {uploadingImage
+                ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                : <Camera size={18} color="white" />
+              }
             </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              aria-label="Upload restaurant photo"
+              className="hidden"
+              onChange={handleImageChange}
+            />
           </div>
           <div className="text-center mb-6">
             <h2 className="text-lg font-bold mb-1 text-gray-800">{profile?.name ?? ''}</h2>
