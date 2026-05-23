@@ -9,7 +9,7 @@ export interface OrderItem {
 export interface PlaceOrderPayload {
   items: { itemId: string; name: string; price: number; quantity: number; restaurantId: string }[]
   deliveryLocation: string
-  paymentMethod: 'card' | 'bank' | 'wallet'
+  paymentMethod: 'card' | 'transfer' | 'wallet'
   promoCode?: string
 }
 
