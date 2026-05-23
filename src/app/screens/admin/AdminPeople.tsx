@@ -82,10 +82,10 @@ export default function AdminPeople() {
     e.preventDefault();
     try {
       await adminService.createVendor({
-        name: vendorName,
+        restaurantName: vendorName,
         ownerName: vendorOwnerName,
-        email: vendorEmail,
-        phone: vendorPhone,
+        ownerEmail: vendorEmail,
+        ownerPhone: vendorPhone,
         location: vendorLocation,
         bankName: vendorBank,
         accountNumber: vendorAccount,
