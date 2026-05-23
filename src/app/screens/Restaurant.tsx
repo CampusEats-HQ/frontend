@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { ArrowLeft, Share2, Plus } from 'lucide-react';
+import { ArrowLeft, Share2, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
 import { restaurantService } from '../services/restaurants';
@@ -9,7 +9,7 @@ import type { RestaurantDetail } from '../services/restaurants';
 export default function Restaurant() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addItem, getItemCount, getTotal } = useCart();
+  const { addItem, updateQuantity, items: cartItems, getItemCount, getTotal } = useCart();
   const [restaurant, setRestaurant] = useState<RestaurantDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -95,24 +95,49 @@ export default function Restaurant() {
                         ₦{item.price}
                       </p>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        addItem({
-                          id: item.id,
-                          name: item.name,
-                          price: item.price,
-                          restaurant: restaurant.name,
-                          restaurantId: restaurant.id,
-                          image: item.image,
-                        });
-                        toast.success(`${item.name} added to cart!`);
-                      }}
-                      className="w-8 h-8 rounded-full flex items-center justify-center self-center hover:opacity-80 transition-opacity bg-amber-500"
-                      aria-label={`Add ${item.name} to cart`}
-                    >
-                      <Plus size={16} color="white" />
-                    </button>
+                    {(() => {
+                      const inCart = cartItems.find((c) => c.id === item.id);
+                      return inCart ? (
+                        <div className="flex items-center gap-2 self-center">
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.id, inCart.quantity - 1)}
+                            className="w-8 h-8 rounded-full flex items-center justify-center border border-gray-300"
+                            aria-label={`Remove one ${item.name}`}
+                          >
+                            <Minus size={14} className="text-gray-600" />
+                          </button>
+                          <span className="w-5 text-center text-sm font-semibold text-gray-800">{inCart.quantity}</span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.id, inCart.quantity + 1)}
+                            className="w-8 h-8 rounded-full flex items-center justify-center bg-amber-500"
+                            aria-label={`Add one more ${item.name}`}
+                          >
+                            <Plus size={14} color="white" />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            addItem({
+                              id: item.id,
+                              name: item.name,
+                              price: item.price,
+                              restaurant: restaurant.name,
+                              restaurantId: id!,
+                              image: item.image,
+                            });
+                            toast.success(`${item.name} added to cart!`);
+                          }}
+                          className="w-8 h-8 rounded-full flex items-center justify-center self-center hover:opacity-80 transition-opacity bg-amber-500"
+                          aria-label={`Add ${item.name} to cart`}
+                        >
+                          <Plus size={16} color="white" />
+                        </button>
+                      );
+                    })()}
                   </div>
                 ))}
               </div>
