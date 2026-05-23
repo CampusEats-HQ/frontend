@@ -31,8 +31,16 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     if (res.status === 401) {
       clearToken()
     }
-    const err = await res.json().catch(() => ({ message: res.statusText }))
-    throw new Error(err.message ?? `Request failed with status ${res.status}`)
+    const err = await res.json().catch(() => ({}))
+    const fallback: Record<number, string> = {
+      401: 'Incorrect email or password.',
+      403: 'You do not have permission to do that.',
+      404: 'Not found.',
+      409: 'This account already exists.',
+      422: 'Please check your details and try again.',
+      500: 'Something went wrong on our end. Please try again.',
+    }
+    throw new Error(err.error ?? err.message ?? fallback[res.status] ?? 'Something went wrong. Please try again.')
   }
 
   const text = await res.text()
