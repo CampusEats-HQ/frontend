@@ -21,7 +21,7 @@ function portalFromPath(): Portal {
   return 'customer'
 }
 
-function getToken(): string | null {
+export function getToken(): string | null {
   return localStorage.getItem(KEYS[portalFromPath()])
 }
 
