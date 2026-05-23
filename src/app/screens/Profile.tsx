@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { ChevronRight, Edit } from 'lucide-react';
+import { ChevronRight, Edit, Package, MapPin, Bell, CreditCard, GraduationCap, Settings, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { profileService } from '../services/orders';
 import { authService } from '../services/auth';
@@ -13,7 +13,7 @@ export default function Profile() {
   useEffect(() => {
     profileService.get()
       .then((res) => setProfile(res))
-      .catch((err: any) => {
+      .catch((err: Error) => {
         if (err?.message?.includes('404') || err?.message?.toLowerCase().includes('not found')) {
           authService.logout();
           navigate('/login');
@@ -25,13 +25,13 @@ export default function Profile() {
   }, [navigate]);
 
   const menuItems = [
-    { icon: '📦', label: 'My Orders', path: '/orders' },
-    { icon: '📍', label: 'Saved Addresses', path: '/addresses' },
-    { icon: '🔔', label: 'Notifications', path: '/notifications' },
-    { icon: '💳', label: 'Payment Methods', path: '/profile' },
-    { icon: '🎓', label: 'Student Verification', path: '/profile' },
-    { icon: '⚙️', label: 'Settings', path: '/profile' },
-    { icon: '❓', label: 'Help & Support', path: '/help' },
+    { icon: Package,         label: 'My Orders',            path: '/orders' },
+    { icon: MapPin,          label: 'Saved Addresses',       path: '/addresses' },
+    { icon: Bell,            label: 'Notifications',         path: '/notifications' },
+    { icon: CreditCard,      label: 'Payment Methods',       path: '/profile' },
+    { icon: GraduationCap,   label: 'Student Verification',  path: '/profile' },
+    { icon: Settings,        label: 'Settings',              path: '/profile' },
+    { icon: HelpCircle,      label: 'Help & Support',        path: '/help' },
   ];
 
   const handleLogout = () => {
@@ -54,10 +54,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-[390px] mx-auto md:max-w-4xl px-5 py-6">
-        {/* Header */}
-        <h1 className="text-2xl font-bold mb-8 text-gray-800">
-          Profile
-        </h1>
+        <h1 className="text-2xl font-bold mb-8 text-gray-800">Profile</h1>
 
         {/* User Info */}
         <div className="flex items-center gap-4 mb-8">
@@ -66,47 +63,39 @@ export default function Profile() {
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <h2 className="font-bold text-gray-800">
-                {displayName}
-              </h2>
+              <h2 className="font-bold text-gray-800">{displayName}</h2>
               <button type="button" aria-label="Edit profile">
                 <Edit size={16} className="text-gray-500" />
               </button>
             </div>
-            <p className="text-sm text-gray-500">
-              {displayEmail}
-            </p>
+            <p className="text-sm text-gray-500">{displayEmail}</p>
           </div>
         </div>
 
         {/* Menu List */}
         <div className="space-y-1">
-          {menuItems.map((item, index) => (
+          {menuItems.map(({ icon: Icon, label, path }) => (
             <button
-              key={index}
+              key={label}
               type="button"
-              onClick={() => navigate(item.path)}
-              className="w-full flex items-center justify-between py-4 border-b border-gray-50"
+              onClick={() => navigate(path)}
+              className="w-full flex items-center justify-between py-4 border-b border-gray-100"
             >
               <div className="flex items-center gap-3">
-                <span className="text-xl">{item.icon}</span>
-                <span className="font-medium text-gray-800">
-                  {item.label}
-                </span>
+                <Icon size={20} className="text-gray-400" />
+                <span className="font-medium text-gray-800">{label}</span>
               </div>
-              <ChevronRight size={20} className="text-gray-500" />
+              <ChevronRight size={20} className="text-gray-400" />
             </button>
           ))}
         </div>
 
-        {/* Divider */}
         <div className="h-px my-6 bg-gray-200" />
 
-        {/* Logout */}
         <button
           type="button"
           onClick={handleLogout}
-          className="w-full py-4 text-left font-medium text-indigo-500"
+          className="w-full py-4 text-left font-medium text-red-500"
         >
           Log out
         </button>
