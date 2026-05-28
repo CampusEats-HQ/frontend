@@ -102,7 +102,7 @@ export default function SignUp() {
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">Password</label>
                 <PasswordInput
-                  placeholder="Min. 8 characters"
+                  placeholder="Choose a password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full h-[52px] px-4 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-indigo-400 transition-colors"
