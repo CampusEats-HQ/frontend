@@ -109,6 +109,21 @@ export default function Login() {
             Don't have an account?{' '}
             <Link to="/signup" className="font-semibold text-indigo-600">Sign up free</Link>
           </p>
+
+          <div className="mt-8 pt-6 border-t border-gray-100">
+            <p className="text-xs text-center text-gray-400 mb-3">Other portals</p>
+            <div className="grid grid-cols-3 gap-2">
+              <Link to="/vendor/login" className="text-center text-xs font-medium py-2 rounded-lg bg-gray-50 text-gray-500 hover:text-indigo-500 hover:bg-indigo-50 transition-colors">
+                Vendor
+              </Link>
+              <Link to="/rider/login" className="text-center text-xs font-medium py-2 rounded-lg bg-gray-50 text-gray-500 hover:text-indigo-500 hover:bg-indigo-50 transition-colors">
+                Rider
+              </Link>
+              <Link to="/admin/login" className="text-center text-xs font-medium py-2 rounded-lg bg-gray-50 text-gray-500 hover:text-indigo-500 hover:bg-indigo-50 transition-colors">
+                Admin
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>
