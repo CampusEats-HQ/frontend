@@ -40,13 +40,9 @@ export default function Splash() {
             Log in
           </Link>
 
-          <div className="h-px bg-white opacity-20 mb-3" />
-
-          <div className="grid grid-cols-3">
-            <Link to="/vendor/login" className="text-center text-xs font-medium py-2 text-white opacity-60 hover:opacity-100 transition-opacity">Vendor</Link>
-            <Link to="/rider/signup" className="text-center text-xs font-medium py-2 text-white opacity-60 hover:opacity-100 transition-opacity">Rider</Link>
-            <Link to="/admin/login" className="text-center text-xs font-medium py-2 text-white opacity-60 hover:opacity-100 transition-opacity">Admin</Link>
-          </div>
+          <Link to="/rider/login" className="text-center text-xs font-medium text-white opacity-60 hover:opacity-100 transition-opacity">
+            Are you a rider? <span className="underline">Log in here</span>
+          </Link>
         </div>
       </div>
 
@@ -73,13 +69,9 @@ export default function Splash() {
             Log in
           </Link>
 
-          <div className="h-px mb-4 bg-gray-100" />
-
-          <div className="grid grid-cols-3 gap-2">
-            <Link to="/vendor/login" className="text-center text-xs font-medium py-2 text-gray-400 hover:text-indigo-500 transition-colors">Vendor</Link>
-            <Link to="/rider/signup" className="text-center text-xs font-medium py-2 text-gray-400 hover:text-indigo-500 transition-colors">Rider</Link>
-            <Link to="/admin/login" className="text-center text-xs font-medium py-2 text-gray-400 hover:text-indigo-500 transition-colors">Admin</Link>
-          </div>
+          <Link to="/rider/login" className="text-center text-xs text-gray-400 hover:text-indigo-500 transition-colors">
+            Are you a rider? <span className="underline">Log in here</span>
+          </Link>
         </div>
       </div>
     </div>
