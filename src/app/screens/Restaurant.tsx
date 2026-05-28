@@ -4,14 +4,26 @@ import { ArrowLeft, Share2, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
 import { restaurantService } from '../services/restaurants';
-import type { RestaurantDetail } from '../services/restaurants';
+import type { RestaurantDetail, MenuItem } from '../services/restaurants';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+} from '../components/ui/drawer';
 
 export default function Restaurant() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addItem, updateQuantity, items: cartItems, getItemCount, getTotal } = useCart();
+  const { items: cartItems, setItemQuantity, getItemCount, getTotal } = useCart();
   const [restaurant, setRestaurant] = useState<RestaurantDetail | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [pickerItem, setPickerItem] = useState<MenuItem | null>(null);
+  const [portionCount, setPortionCount] = useState(1);
 
   useEffect(() => {
     if (!id) return;
@@ -20,6 +32,32 @@ export default function Restaurant() {
       .catch(() => toast.error('Failed to load restaurant'))
       .finally(() => setLoading(false));
   }, [id]);
+
+  const openPicker = (item: MenuItem) => {
+    const inCart = cartItems.find((c) => c.id === item.id);
+    setPickerItem(item);
+    setPortionCount(inCart?.quantity ?? 1);
+    setDrawerOpen(true);
+  };
+
+  const confirmPortions = () => {
+    if (!pickerItem || !restaurant) return;
+    setItemQuantity(
+      {
+        id: pickerItem.id,
+        name: pickerItem.name,
+        price: pickerItem.price,
+        restaurant: restaurant.name,
+        restaurantId: id!,
+        image: pickerItem.image,
+      },
+      portionCount,
+    );
+    setDrawerOpen(false);
+    if (portionCount > 0) {
+      toast.success(`${portionCount} portion${portionCount > 1 ? 's' : ''} added`);
+    }
+  };
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -36,9 +74,10 @@ export default function Restaurant() {
       <div className="max-w-[390px] mx-auto md:max-w-4xl">
         {/* Hero Image */}
         <div className="relative">
-          <div
-            className="w-full h-[220px] bg-cover bg-center"
-            style={{ backgroundImage: `url(${restaurant.image})` }}
+          <img
+            src={restaurant.image}
+            alt={restaurant.name}
+            className="w-full h-[220px] object-cover"
           />
           <button
             type="button"
@@ -78,68 +117,42 @@ export default function Restaurant() {
                 {section.category}
               </h2>
               <div className="space-y-4">
-                {section.items.map((item) => (
-                  <div key={item.id} className="flex gap-3">
+                {section.items.map((item) => {
+                  const inCart = cartItems.find((c) => c.id === item.id);
+                  return (
                     <div
-                      className="w-16 h-16 rounded-lg bg-cover bg-center flex-shrink-0"
-                      style={{ backgroundImage: `url(${item.image})` }}
-                    />
-                    <div className="flex-1">
-                      <h3 className="text-[15px] font-semibold mb-1 text-gray-800">
-                        {item.name}
-                      </h3>
-                      <p className="text-xs mb-2 text-gray-500">
-                        {item.description}
-                      </p>
-                      <p className="text-sm font-semibold text-amber-500">
-                        ₦{item.price}
-                      </p>
-                    </div>
-                    {(() => {
-                      const inCart = cartItems.find((c) => c.id === item.id);
-                      return inCart ? (
-                        <div className="flex items-center gap-2 self-center">
-                          <button
-                            type="button"
-                            onClick={() => updateQuantity(item.id, inCart.quantity - 1)}
-                            className="w-8 h-8 rounded-full flex items-center justify-center border border-gray-300"
-                            aria-label={`Remove one ${item.name}`}
-                          >
-                            <Minus size={14} className="text-gray-600" />
-                          </button>
-                          <span className="w-5 text-center text-sm font-semibold text-gray-800">{inCart.quantity}</span>
-                          <button
-                            type="button"
-                            onClick={() => updateQuantity(item.id, inCart.quantity + 1)}
-                            className="w-8 h-8 rounded-full flex items-center justify-center bg-amber-500"
-                            aria-label={`Add one more ${item.name}`}
-                          >
-                            <Plus size={14} color="white" />
-                          </button>
-                        </div>
+                      key={item.id}
+                      className="flex gap-3 cursor-pointer active:opacity-70 transition-opacity"
+                      onClick={() => openPicker(item)}
+                    >
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                      />
+                      <div className="flex-1">
+                        <h3 className="text-[15px] font-semibold mb-1 text-gray-800">
+                          {item.name}
+                        </h3>
+                        <p className="text-xs mb-2 text-gray-500">
+                          {item.description}
+                        </p>
+                        <p className="text-sm font-semibold text-amber-500">
+                          ₦{item.price} <span className="text-xs font-normal text-gray-400">per portion</span>
+                        </p>
+                      </div>
+                      {inCart ? (
+                        <span className="self-center w-7 h-7 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
+                          {inCart.quantity}
+                        </span>
                       ) : (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            addItem({
-                              id: item.id,
-                              name: item.name,
-                              price: item.price,
-                              restaurant: restaurant.name,
-                              restaurantId: id!,
-                              image: item.image,
-                            });
-                            toast.success(`${item.name} added to cart!`);
-                          }}
-                          className="w-8 h-8 rounded-full flex items-center justify-center self-center hover:opacity-80 transition-opacity bg-amber-500"
-                          aria-label={`Add ${item.name} to cart`}
-                        >
-                          <Plus size={16} color="white" />
-                        </button>
-                      );
-                    })()}
-                  </div>
-                ))}
+                        <div className="self-center w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0">
+                          <Plus size={14} color="white" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ))}
@@ -160,6 +173,66 @@ export default function Restaurant() {
           </div>
         </div>
       )}
+
+      {/* Portion Picker Drawer */}
+      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+        <DrawerContent>
+          {pickerItem && (
+            <>
+              <DrawerHeader className="flex gap-4 items-start text-left">
+                <img
+                  src={pickerItem.image}
+                  alt={pickerItem.name}
+                  className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                />
+                <div>
+                  <DrawerTitle>{pickerItem.name}</DrawerTitle>
+                  <DrawerDescription className="mt-1">{pickerItem.description}</DrawerDescription>
+                  <p className="text-sm font-semibold text-amber-500 mt-1">
+                    ₦{pickerItem.price} per portion
+                  </p>
+                </div>
+              </DrawerHeader>
+
+              <div className="flex items-center justify-center gap-8 py-6">
+                <button
+                  type="button"
+                  onClick={() => setPortionCount(Math.max(0, portionCount - 1))}
+                  className="w-11 h-11 rounded-full border-2 border-gray-300 flex items-center justify-center"
+                  aria-label="Decrease portions"
+                >
+                  <Minus size={18} className="text-gray-600" />
+                </button>
+                <span className="text-3xl font-bold w-10 text-center text-gray-800">
+                  {portionCount}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setPortionCount(portionCount + 1)}
+                  className="w-11 h-11 rounded-full bg-amber-500 flex items-center justify-center"
+                  aria-label="Increase portions"
+                >
+                  <Plus size={18} color="white" />
+                </button>
+              </div>
+
+              <DrawerFooter>
+                <button
+                  type="button"
+                  onClick={confirmPortions}
+                  className={`w-full h-12 rounded-lg font-semibold text-white transition-colors ${
+                    portionCount === 0 ? 'bg-red-500' : 'bg-indigo-500'
+                  }`}
+                >
+                  {portionCount === 0
+                    ? 'Remove from cart'
+                    : `Add ${portionCount} portion${portionCount > 1 ? 's' : ''} — ₦${pickerItem.price * portionCount}`}
+                </button>
+              </DrawerFooter>
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }

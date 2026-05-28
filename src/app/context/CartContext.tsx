@@ -15,6 +15,7 @@ interface CartContextType {
   addItem: (item: Omit<CartItem, 'quantity'>) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
+  setItemQuantity: (item: Omit<CartItem, 'quantity'>, quantity: number) => void;
   clearCart: () => void;
   getTotal: () => number;
   getItemCount: () => number;
@@ -64,6 +65,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const setItemQuantity = (item: Omit<CartItem, 'quantity'>, quantity: number) => {
+    if (quantity <= 0) {
+      removeItem(item.id);
+      return;
+    }
+    setItems((prev) => {
+      const existing = prev.find((i) => i.id === item.id);
+      if (existing) {
+        return prev.map((i) => i.id === item.id ? { ...i, quantity } : i);
+      }
+      return [...prev, { ...item, quantity }];
+    });
+  };
+
   const clearCart = () => {
     setItems([]);
   };
@@ -83,6 +98,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addItem,
         removeItem,
         updateQuantity,
+        setItemQuantity,
         clearCart,
         getTotal,
         getItemCount,
