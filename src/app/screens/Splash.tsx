@@ -13,11 +13,6 @@ export default function Splash() {
         <div className="absolute -bottom-10 -left-8 w-40 h-40 rounded-full bg-indigo-500 opacity-50" />
         <div className="absolute bottom-10 right-12 w-14 h-14 rounded-full bg-white opacity-10" />
 
-        {/* Floating food bubbles */}
-        <div className="absolute top-10 left-8 w-12 h-12 rounded-2xl bg-white bg-opacity-15 flex items-center justify-center text-xl shadow-lg">🍛</div>
-        <div className="absolute top-10 right-8 w-12 h-12 rounded-2xl bg-white bg-opacity-15 flex items-center justify-center text-xl shadow-lg">🌯</div>
-        <div className="absolute top-28 left-16 w-12 h-12 rounded-2xl bg-white bg-opacity-15 flex items-center justify-center text-xl shadow-lg">🍗</div>
-        <div className="absolute top-28 right-16 w-12 h-12 rounded-2xl bg-white bg-opacity-15 flex items-center justify-center text-xl shadow-lg">🥤</div>
 
         {/* Logo + tagline */}
         <div className="relative z-10 flex flex-col items-center text-center mb-12 md:mb-0">
