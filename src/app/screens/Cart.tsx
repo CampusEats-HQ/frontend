@@ -10,7 +10,7 @@ export default function Cart() {
   const { items, updateQuantity, removeItem, clearCart, getTotal } = useCart();
   const [locations, setLocations] = useState<string[]>([]);
   const [selectedHostel, setSelectedHostel] = useState('');
-  const [packagingFee, setPackagingFee] = useState(0);
+  const [packagingFee, setPackagingFee] = useState(200);
   const deliveryFee = 400;
 
   useEffect(() => {
@@ -138,7 +138,6 @@ export default function Cart() {
           <p className="text-xs font-medium mb-3 text-gray-500">Takeaway packaging</p>
           <div className="flex gap-2">
             {[
-              { label: 'No pack', value: 0 },
               { label: 'Small pack', value: 200 },
               { label: 'Large pack', value: 300 },
             ].map((opt) => (
@@ -153,7 +152,7 @@ export default function Cart() {
                 }`}
               >
                 {opt.label}
-                {opt.value > 0 && <span className="block text-xs font-normal">₦{opt.value}</span>}
+                <span className="block text-xs font-normal">₦{opt.value}</span>
               </button>
             ))}
           </div>
