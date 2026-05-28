@@ -50,7 +50,7 @@ export default function Payment() {
         })),
         deliveryLocation,
         paymentMethod: selectedMethod,
-        packagingFee: packagingFee || undefined,
+        packagingFee,
         promoCode: promoCode || undefined,
       });
 
