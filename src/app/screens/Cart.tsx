@@ -10,6 +10,7 @@ export default function Cart() {
   const { items, updateQuantity, removeItem, clearCart, getTotal } = useCart();
   const [locations, setLocations] = useState<string[]>([]);
   const [selectedHostel, setSelectedHostel] = useState('');
+  const [packagingFee, setPackagingFee] = useState(0);
   const deliveryFee = 400;
 
   useEffect(() => {
@@ -132,42 +133,62 @@ export default function Cart() {
           </div>
         </div>
 
+        {/* Packaging */}
+        <div className="rounded-lg p-4 mb-6 bg-gray-50">
+          <p className="text-xs font-medium mb-3 text-gray-500">Takeaway packaging</p>
+          <div className="flex gap-2">
+            {[
+              { label: 'No pack', value: 0 },
+              { label: 'Small pack', value: 200 },
+              { label: 'Large pack', value: 300 },
+            ].map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setPackagingFee(opt.value)}
+                className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-all ${
+                  packagingFee === opt.value
+                    ? 'border-indigo-500 bg-indigo-50 text-indigo-600'
+                    : 'border-gray-200 text-gray-600'
+                }`}
+              >
+                {opt.label}
+                {opt.value > 0 && <span className="block text-xs font-normal">₦{opt.value}</span>}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Order Summary */}
         <div className="rounded-lg p-4 mb-6 bg-gray-50">
           <div className="flex justify-between mb-2">
-            <span className="text-sm text-gray-500">
-              Subtotal
-            </span>
-            <span className="text-sm font-medium text-gray-800">
-              ₦{getTotal()}
-            </span>
+            <span className="text-sm text-gray-500">Subtotal</span>
+            <span className="text-sm font-medium text-gray-800">₦{getTotal()}</span>
           </div>
-          <div className="flex justify-between mb-3">
-            <span className="text-sm text-gray-500">
-              Delivery fee
-            </span>
-            <span className="text-sm font-medium text-gray-800">
-              ₦{deliveryFee}
-            </span>
+          <div className="flex justify-between mb-2">
+            <span className="text-sm text-gray-500">Delivery fee</span>
+            <span className="text-sm font-medium text-gray-800">₦{deliveryFee}</span>
           </div>
+          {packagingFee > 0 && (
+            <div className="flex justify-between mb-2">
+              <span className="text-sm text-gray-500">Packaging</span>
+              <span className="text-sm font-medium text-gray-800">₦{packagingFee}</span>
+            </div>
+          )}
           <div className="h-px mb-3 bg-gray-200" />
           <div className="flex justify-between">
-            <span className="text-base font-semibold text-gray-800">
-              Total
-            </span>
-            <span className="text-base font-bold text-indigo-500">
-              ₦{getTotal() + deliveryFee}
-            </span>
+            <span className="text-base font-semibold text-gray-800">Total</span>
+            <span className="text-base font-bold text-indigo-500">₦{getTotal() + deliveryFee + packagingFee}</span>
           </div>
         </div>
 
         {/* Proceed Button */}
         <button
           type="button"
-          onClick={() => navigate('/payment', { state: { deliveryLocation: selectedHostel } })}
+          onClick={() => navigate('/payment', { state: { deliveryLocation: selectedHostel, packagingFee } })}
           className="w-full h-[52px] rounded-lg font-semibold bg-indigo-500 text-white"
         >
-          Proceed to Pay — ₦{getTotal() + deliveryFee}
+          Proceed to Pay — ₦{getTotal() + deliveryFee + packagingFee}
         </button>
       </div>
     </div>

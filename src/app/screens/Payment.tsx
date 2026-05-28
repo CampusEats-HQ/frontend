@@ -16,7 +16,8 @@ export default function Payment() {
   const [applyingPromo, setApplyingPromo] = useState(false);
   const deliveryFee = 400;
   const subtotal = getTotal();
-  const total = subtotal + deliveryFee - discount;
+  const packagingFee: number = (location.state as any)?.packagingFee ?? 0;
+  const total = subtotal + deliveryFee + packagingFee - discount;
 
   const deliveryLocation = (location.state as any)?.deliveryLocation || '';
 
@@ -49,6 +50,7 @@ export default function Payment() {
         })),
         deliveryLocation,
         paymentMethod: selectedMethod,
+        packagingFee: packagingFee || undefined,
         promoCode: promoCode || undefined,
       });
 
@@ -172,6 +174,12 @@ export default function Payment() {
               <span className="text-gray-500">Delivery fee</span>
               <span className="text-gray-800">₦{deliveryFee}</span>
             </div>
+            {packagingFee > 0 && (
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">Packaging</span>
+                <span className="text-gray-800">₦{packagingFee}</span>
+              </div>
+            )}
             {discount > 0 && (
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">Discount</span>
