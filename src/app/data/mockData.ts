@@ -115,11 +115,16 @@ export const popularItems = [
 export const categories = [
   'All',
   'Rice',
-  'Shawarma',
-  'Snacks',
-  'Drinks',
   'Swallow',
+  'Soup',
+  'Proteins',
+  'Beans',
+  'Yam & Plantain',
+  'Shawarma',
+  'Burger',
+  'Snacks',
   'Pastries',
+  'Drinks',
 ];
 
 export const hostels = [

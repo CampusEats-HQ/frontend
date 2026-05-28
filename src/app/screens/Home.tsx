@@ -71,7 +71,7 @@ export default function Home() {
 
   const filteredRestaurants = activeCategory === 'All'
     ? restaurants
-    : restaurants.filter((r) => r.category?.toLowerCase() === activeCategory.toLowerCase());
+    : restaurants.filter((r) => r.category?.toLowerCase().includes(activeCategory.toLowerCase()));
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">

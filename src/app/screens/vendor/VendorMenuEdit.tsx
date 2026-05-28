@@ -198,11 +198,17 @@ export default function VendorMenuEdit() {
             >
               <option value="">Select category</option>
               <option value="Rice">Rice</option>
-              <option value="Proteins">Proteins</option>
-              <option value="Drinks">Drinks</option>
-              <option value="Snacks">Snacks</option>
               <option value="Swallow">Swallow</option>
+              <option value="Soup">Soup</option>
+              <option value="Proteins">Proteins (Meat / Fish / Chicken / Egg)</option>
+              <option value="Sides">Sides (Plantain / Coleslaw / Salad)</option>
+              <option value="Beans">Beans</option>
+              <option value="Yam & Plantain">Yam & Plantain</option>
+              <option value="Shawarma">Shawarma</option>
+              <option value="Burger">Burger</option>
+              <option value="Snacks">Snacks</option>
               <option value="Pastries">Pastries</option>
+              <option value="Drinks">Drinks</option>
             </select>
           </div>
 

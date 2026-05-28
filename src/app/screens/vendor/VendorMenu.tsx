@@ -10,7 +10,7 @@ export default function VendorMenu() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const categories = ['All', 'Rice', 'Proteins', 'Drinks', 'Snacks', 'Swallow', 'Pastries'];
+  const categories = ['All', 'Rice', 'Swallow', 'Soup', 'Proteins', 'Sides', 'Beans', 'Yam & Plantain', 'Shawarma', 'Burger', 'Snacks', 'Pastries', 'Drinks'];
 
   useEffect(() => {
     vendorService.getMenu()
