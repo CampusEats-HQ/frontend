@@ -9,6 +9,7 @@ import { restaurantService } from '../services/restaurants';
 import type { Restaurant, PopularItem } from '../services/restaurants';
 import { api } from '../lib/api';
 import type { Promo } from '../services/admin';
+import { profileService } from '../services/orders';
 
 const FALLBACK_SLIDES: Promo[] = [
   { id: '1', bg: 'from-amber-100 to-[#FDE68A]', emoji: '🔥', title: 'Delivered in 20 mins', subtitle: 'Hot & fresh to your hostel', active: true },
@@ -21,6 +22,13 @@ function formatHour(t: string) {
   return `${h % 12 || 12}:${m.toString().padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
 }
 
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return 'Good morning';
+  if (h >= 12 && h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('All');
   const { getItemCount, addItem } = useCart();
@@ -29,6 +37,7 @@ export default function Home() {
   const [promoSlides, setPromoSlides] = useState<Promo[]>(FALLBACK_SLIDES);
   const [loading, setLoading] = useState(true);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [firstName, setFirstName] = useState<string | null>(null);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const autoPlayRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -55,7 +64,13 @@ export default function Home() {
       .then((res) => {
         if (res.promos.length > 0) setPromoSlides(res.promos);
       })
-      .catch(() => {}); // silently fall back to hardcoded slides
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    profileService.get()
+      .then((res) => setFirstName(res.firstName))
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -103,6 +118,12 @@ export default function Home() {
           </Link>
         </div>
 
+        {/* Greeting */}
+        <div className="px-5 pt-4 pb-1">
+          <p className="text-xs text-gray-400 mb-0.5">{getGreeting()}</p>
+          <h1 className="text-xl font-bold text-gray-900">{firstName ?? 'there'} 👋</h1>
+        </div>
+
         {/* Search Bar */}
         <div className="px-5 py-4">
           <div className="flex items-center gap-3 px-4 h-12 rounded-full bg-gray-50">
@@ -137,15 +158,21 @@ export default function Home() {
 
         {/* Promo Banner Carousel */}
         <div className="px-5 mb-6">
-          <div className="overflow-hidden rounded-xl" ref={emblaRef}>
+          <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
             <div className="flex">
               {promoSlides.map((slide, i) => (
                 <div key={i} className="flex-[0_0_100%]">
-                  <div className={`rounded-xl p-6 bg-gradient-to-br ${slide.bg}`}>
-                    <p className="text-base font-semibold mb-1 text-gray-800">
-                      {slide.emoji} {slide.title}
-                    </p>
-                    <p className="text-xs text-gray-500">{slide.subtitle}</p>
+                  <div className={`rounded-2xl px-5 py-5 bg-gradient-to-br ${slide.bg} flex items-center justify-between min-h-[110px]`}>
+                    <div className="flex-1 pr-4">
+                      <p className="text-base font-bold mb-1 text-gray-800">{slide.title}</p>
+                      <p className="text-xs text-gray-500 mb-3">{slide.subtitle}</p>
+                      <span className="inline-block bg-white/70 text-gray-800 text-xs font-semibold px-3 py-1.5 rounded-full">
+                        Order now →
+                      </span>
+                    </div>
+                    <div className="w-16 h-16 rounded-full bg-white/40 flex items-center justify-center flex-shrink-0">
+                      <span className="text-3xl">{slide.emoji}</span>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -169,15 +196,18 @@ export default function Home() {
 
         {/* Restaurants Section */}
         <div className="mb-6">
-          <h2 className="px-5 text-base font-semibold mb-4 text-gray-800">Restaurants</h2>
+          <div className="px-5 flex items-center justify-between mb-4">
+            <h2 className="text-base font-semibold text-gray-800">Restaurants</h2>
+            <Link to="/search" className="text-xs text-indigo-500 font-medium">See all →</Link>
+          </div>
           <div className="flex gap-4 overflow-x-auto hide-scrollbar px-5">
             {filteredRestaurants.map((restaurant) => (
               <Link
                 key={restaurant.id}
                 to={`/restaurant/${restaurant.id}`}
-                className="flex-shrink-0 w-[200px]"
+                className="flex-shrink-0 w-[200px] shadow-sm hover:shadow-md transition-shadow rounded-xl"
               >
-                <div className="relative w-full h-[140px] rounded-xl mb-3 overflow-hidden">
+                <div className="relative w-full h-[160px] rounded-xl mb-3 overflow-hidden">
                   <img
                     src={restaurant.image}
                     alt={restaurant.name}
@@ -196,8 +226,8 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-                <h3 className="font-semibold text-sm mb-1 text-gray-800">{restaurant.name}</h3>
-                <p className="text-xs text-gray-500">
+                <h3 className="font-semibold text-sm mb-1 text-gray-800 px-1">{restaurant.name}</h3>
+                <p className="text-xs text-gray-500 px-1 pb-2">
                   ⭐ {restaurant.rating} · {restaurant.deliveryTime} · ₦{restaurant.deliveryFee} delivery
                 </p>
               </Link>
@@ -208,31 +238,31 @@ export default function Home() {
         {/* Popular Right Now */}
         <div className="px-5">
           <h2 className="text-base font-semibold mb-4 text-gray-800">Popular right now</h2>
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
             {popularItems.map((item) => (
-              <div key={item.id} className="flex items-center gap-3">
+              <div key={item.id} className="bg-gray-50 rounded-2xl overflow-hidden">
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                  className="w-full h-[110px] object-cover"
                 />
-                <div className="flex-1">
-                  <h3 className="font-semibold text-sm mb-0.5 text-gray-800">{item.name}</h3>
-                  <p className="text-xs text-gray-500">{item.restaurant}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <p className="font-semibold text-sm text-amber-500">₦{item.price}</p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      addItem({ ...item, restaurant: item.restaurant });
-                      toast.success(`${item.name} added to cart!`);
-                    }}
-                    className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity bg-amber-500"
-                    aria-label={`Add ${item.name} to cart`}
-                  >
-                    <Plus size={16} color="white" />
-                  </button>
+                <div className="p-3">
+                  <h3 className="font-semibold text-sm mb-0.5 text-gray-800 truncate">{item.name}</h3>
+                  <p className="text-xs text-gray-500 mb-2 truncate">{item.restaurant}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="font-bold text-sm text-amber-500">₦{item.price}</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        addItem({ ...item, restaurant: item.restaurant });
+                        toast.success(`${item.name} added to cart!`);
+                      }}
+                      className="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center hover:opacity-80 transition-opacity"
+                      aria-label={`Add ${item.name} to cart`}
+                    >
+                      <Plus size={14} color="white" />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
