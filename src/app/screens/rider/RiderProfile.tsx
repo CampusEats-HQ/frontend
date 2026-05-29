@@ -6,11 +6,13 @@ import { banks } from '../../data/riderMockData';
 import { riderService, RiderProfile as RiderProfileData } from '../../services/rider';
 import { authService } from '../../services/auth';
 import { toast } from 'sonner';
+import LogoutModal from '../../components/LogoutModal';
 
 export default function RiderProfile() {
   const navigate = useNavigate();
   const { rider, logout } = useRider();
   const [showEditBank, setShowEditBank] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
   const [profile, setProfile] = useState<RiderProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [bankDetails, setBankDetails] = useState({
@@ -50,11 +52,9 @@ export default function RiderProfile() {
   };
 
   const handleLogout = () => {
-    if (confirm('Are you sure you want to logout?')) {
-      authService.logout('rider');
-      logout();
-      navigate('/rider/login');
-    }
+    authService.logout('rider');
+    logout();
+    navigate('/rider/login');
   };
 
   if (loading) {
@@ -189,12 +189,19 @@ export default function RiderProfile() {
         {/* Logout */}
         <button
           type="button"
-          onClick={handleLogout}
+          onClick={() => setShowLogout(true)}
           className="w-full h-12 rounded-lg font-semibold bg-gray-50 text-red-500"
         >
           Log Out
         </button>
       </div>
+
+      {showLogout && (
+        <LogoutModal
+          onConfirm={handleLogout}
+          onCancel={() => setShowLogout(false)}
+        />
+      )}
 
       {/* Edit Bank Modal */}
       {showEditBank && (

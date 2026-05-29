@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { authService } from '../../services/auth';
 import { vendorService } from '../../services/vendor';
 import { api } from '../../lib/api';
+import LogoutModal from '../../components/LogoutModal';
 
 interface ProfileData {
   id: string;
@@ -25,6 +26,7 @@ export default function VendorProfile() {
   const [isOpen, setIsOpen] = useState(false);
   const [togglingStatus, setTogglingStatus] = useState(false);
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
+  const [showLogout, setShowLogout] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -174,11 +176,18 @@ export default function VendorProfile() {
 
         <button
           type="button"
-          onClick={handleLogout}
+          onClick={() => setShowLogout(true)}
           className="w-full py-4 text-center font-medium text-red-500"
         >
           Log Out
         </button>
+
+        {showLogout && (
+          <LogoutModal
+            onConfirm={handleLogout}
+            onCancel={() => setShowLogout(false)}
+          />
+        )}
       </div>
 
       {/* ── Modals ── */}

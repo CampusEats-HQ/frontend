@@ -4,11 +4,13 @@ import { ChevronRight, Edit, Package, MapPin, Bell, CreditCard, GraduationCap, S
 import { toast } from 'sonner';
 import { profileService } from '../services/orders';
 import { authService } from '../services/auth';
+import LogoutModal from '../components/LogoutModal';
 
 export default function Profile() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<{ id: string; firstName: string; lastName: string; email: string; phone: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showLogout, setShowLogout] = useState(false);
 
   useEffect(() => {
     profileService.get()
@@ -38,6 +40,7 @@ export default function Profile() {
     authService.logout();
     navigate('/');
   };
+
 
   const displayName = profile ? `${profile.firstName} ${profile.lastName}`.trim() : '';
   const displayEmail = profile?.email ?? '';
@@ -94,11 +97,18 @@ export default function Profile() {
 
         <button
           type="button"
-          onClick={handleLogout}
+          onClick={() => setShowLogout(true)}
           className="w-full py-4 text-left font-medium text-red-500"
         >
           Log out
         </button>
+
+        {showLogout && (
+          <LogoutModal
+            onConfirm={handleLogout}
+            onCancel={() => setShowLogout(false)}
+          />
+        )}
       </div>
     </div>
   );
