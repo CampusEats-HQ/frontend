@@ -53,7 +53,7 @@ export default function SignUp() {
             <ArrowLeft size={16} className="text-gray-600" />
           </button>
 
-          <h2 className="text-2xl font-bold text-gray-800 mb-1">Create account 🎉</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-1">Create account</h2>
           <p className="text-gray-500 text-sm mb-8">Quick and easy, takes less than a minute.</p>
 
           <form onSubmit={handleSubmit}>
