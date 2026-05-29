@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
-import { ChevronRight, Camera, X, Clock, Phone, Landmark, Bell, Lock, HelpCircle } from 'lucide-react';
+import { Link } from 'react-router';
+import { ChevronRight, Camera, X, Clock, Phone, Landmark, Bell, Lock, HelpCircle, LayoutDashboard, ClipboardList, UtensilsCrossed, DollarSign, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { authService } from '../../services/auth';
 import { vendorService } from '../../services/vendor';
@@ -132,7 +133,7 @@ export default function VendorProfile() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-[480px] mx-auto px-5 py-6">
+      <div className="max-w-[480px] mx-auto px-5 py-6 pb-24">
         <h1 className="text-2xl font-bold mb-8 text-gray-800">Profile & Settings</h1>
 
         {/* Restaurant Profile */}
@@ -364,6 +365,32 @@ export default function VendorProfile() {
           </div>
         </Modal>
       )}
+
+      {/* Bottom Nav */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100">
+        <div className="max-w-[1024px] mx-auto flex justify-around py-3">
+          <Link to="/vendor/dashboard" className="flex flex-col items-center gap-1">
+            <LayoutDashboard size={20} className="text-gray-400" />
+            <span className="text-xs text-gray-400">Dashboard</span>
+          </Link>
+          <Link to="/vendor/orders" className="flex flex-col items-center gap-1">
+            <ClipboardList size={20} className="text-gray-400" />
+            <span className="text-xs text-gray-400">Orders</span>
+          </Link>
+          <Link to="/vendor/menu" className="flex flex-col items-center gap-1">
+            <UtensilsCrossed size={20} className="text-gray-400" />
+            <span className="text-xs text-gray-400">Menu</span>
+          </Link>
+          <Link to="/vendor/earnings" className="flex flex-col items-center gap-1">
+            <DollarSign size={20} className="text-gray-400" />
+            <span className="text-xs text-gray-400">Earnings</span>
+          </Link>
+          <Link to="/vendor/profile" className="flex flex-col items-center gap-1">
+            <User size={20} className="text-indigo-500" />
+            <span className="text-xs font-medium text-indigo-500">Profile</span>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import { LayoutDashboard, ClipboardList, UtensilsCrossed, DollarSign } from 'lucide-react';
+import { LayoutDashboard, ClipboardList, UtensilsCrossed, DollarSign, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { vendorService } from '../../services/vendor';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, CartesianGrid } from 'recharts';
@@ -166,6 +166,10 @@ export default function VendorEarnings() {
               <span className="text-xs font-medium text-indigo-500">
                 Earnings
               </span>
+            </Link>
+            <Link to="/vendor/profile" className="flex flex-col items-center gap-1">
+              <User size={20} className="text-gray-500" />
+              <span className="text-xs text-gray-500">Profile</span>
             </Link>
           </div>
         </div>

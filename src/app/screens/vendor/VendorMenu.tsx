@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import { LayoutDashboard, ClipboardList, UtensilsCrossed, DollarSign, Plus, Edit, Search } from 'lucide-react';
+import { LayoutDashboard, ClipboardList, UtensilsCrossed, DollarSign, Plus, Edit, Search, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { vendorService, VendorMenuItem } from '../../services/vendor';
 
@@ -168,6 +168,10 @@ export default function VendorMenu() {
               <span className="text-xs text-gray-500">
                 Earnings
               </span>
+            </Link>
+            <Link to="/vendor/profile" className="flex flex-col items-center gap-1">
+              <User size={20} className="text-gray-500" />
+              <span className="text-xs text-gray-500">Profile</span>
             </Link>
           </div>
         </div>
