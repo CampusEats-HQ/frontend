@@ -16,6 +16,11 @@ const FALLBACK_SLIDES: Promo[] = [
   { id: '3', bg: 'from-emerald-100 to-[#A7F3D0]', emoji: '🎁', title: 'Refer a friend', subtitle: 'You both get ₦200 off your next order', active: true },
 ];
 
+function formatHour(t: string) {
+  const [h, m] = t.split(':').map(Number);
+  return `${h % 12 || 12}:${m.toString().padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
+}
+
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('All');
   const { getItemCount, addItem } = useCart();
@@ -180,6 +185,13 @@ export default function Home() {
                     <span className="absolute top-2 left-2 bg-amber-500 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
                       Sponsored
                     </span>
+                  )}
+                  {!restaurant.isOpen && (
+                    <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-xl">
+                      <span className="text-white text-xs font-semibold bg-black bg-opacity-50 px-2 py-1 rounded-full">
+                        {restaurant.openingTime ? `Opens ${formatHour(restaurant.openingTime)}` : 'Closed'}
+                      </span>
+                    </div>
                   )}
                 </div>
                 <h3 className="font-semibold text-sm mb-1 text-gray-800">{restaurant.name}</h3>

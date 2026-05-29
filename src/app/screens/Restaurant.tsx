@@ -33,6 +33,12 @@ export default function Restaurant() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  const formatHour = (t: string) => {
+    const [h, m] = t.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    return `${h % 12 || 12}:${m.toString().padStart(2, '0')} ${period}`;
+  };
+
   const openPicker = (item: MenuItem) => {
     const inCart = cartItems.find((c) => c.id === item.id);
     setPickerItem(item);
@@ -98,13 +104,27 @@ export default function Restaurant() {
 
         {/* Restaurant Info */}
         <div className="px-5 py-6 bg-white">
-          <h1 className="text-[22px] font-bold mb-2 text-gray-800">
-            {restaurant.name}
-          </h1>
-          <p className="text-[13px] text-gray-500">
-            ⭐ {restaurant.rating} ({restaurant.reviewsCount} reviews) · Open now · {restaurant.deliveryTime} · ₦
-            {restaurant.deliveryFee} delivery
+          <div className="flex items-center gap-2 mb-1">
+            <h1 className="text-[22px] font-bold text-gray-800">{restaurant.name}</h1>
+            {restaurant.isOpen
+              ? <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-600">Open</span>
+              : <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-500">Closed</span>
+            }
+          </div>
+          <p className="text-[13px] text-gray-500 mb-1">
+            ⭐ {restaurant.rating} ({restaurant.reviewsCount} reviews) · {restaurant.deliveryTime} · ₦{restaurant.deliveryFee} delivery
           </p>
+          {(restaurant.openingTime || restaurant.closingTime) && (
+            <p className="text-[12px] text-gray-400">
+              Hours: {restaurant.openingTime ? formatHour(restaurant.openingTime) : '?'} – {restaurant.closingTime ? formatHour(restaurant.closingTime) : '?'}
+            </p>
+          )}
+          {!restaurant.isOpen && (
+            <div className="mt-3 px-3 py-2 rounded-lg bg-red-50 text-sm text-red-500 font-medium">
+              Restaurant is currently closed
+              {restaurant.openingTime && ` · Opens at ${formatHour(restaurant.openingTime)}`}
+            </div>
+          )}
         </div>
 
         <div className="h-px mx-5 bg-gray-200" />
@@ -122,8 +142,8 @@ export default function Restaurant() {
                   return (
                     <div
                       key={item.id}
-                      className="flex gap-3 cursor-pointer active:opacity-70 transition-opacity"
-                      onClick={() => openPicker(item)}
+                      className={`flex gap-3 transition-opacity ${restaurant.isOpen ? 'cursor-pointer active:opacity-70' : 'opacity-50 cursor-not-allowed'}`}
+                      onClick={() => restaurant.isOpen && openPicker(item)}
                     >
                       <img
                         src={item.image}

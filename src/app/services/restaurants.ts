@@ -9,6 +9,8 @@ export interface Restaurant {
   deliveryFee: number
   image: string
   isOpen: boolean
+  openingTime: string | null
+  closingTime: string | null
   sponsored?: boolean
 }
 

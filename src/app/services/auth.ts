@@ -14,6 +14,7 @@ export interface VendorUser {
   category: string
   location: string
   isOpen: boolean
+  profileComplete?: boolean
 }
 
 export interface RiderUser {

@@ -49,11 +49,18 @@ export default function VendorProfile() {
   const [contactValue, setContactValue] = useState('');
   const [savingContact, setSavingContact] = useState(false);
 
+  // Hours edit state
+  const [openingTime, setOpeningTime] = useState('');
+  const [closingTime, setClosingTime] = useState('');
+  const [savingHours, setSavingHours] = useState(false);
+
   useEffect(() => {
     vendorService.getProfile()
       .then((res) => {
         setProfile(res);
         setContactValue(res.contact ?? '');
+        setOpeningTime(res.openingTime ?? '');
+        setClosingTime(res.closingTime ?? '');
       })
       .catch(() => toast.error('Failed to load profile'))
       .finally(() => setLoading(false));
@@ -62,6 +69,19 @@ export default function VendorProfile() {
       .then((res) => setIsOpen(res.isOpen))
       .catch(() => {});
   }, []);
+
+  const handleSaveHours = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingHours(true);
+    vendorService.updateProfile({ openingTime, closingTime })
+      .then(() => {
+        setProfile((prev) => prev ? { ...prev, openingTime, closingTime } : prev);
+        toast.success('Opening hours updated');
+        setActiveModal(null);
+      })
+      .catch(() => toast.error('Failed to update hours'))
+      .finally(() => setSavingHours(false));
+  };
 
   const handleToggleHours = () => {
     setTogglingStatus(true);
@@ -195,10 +215,8 @@ export default function VendorProfile() {
       {/* Opening Hours */}
       {activeModal === 'hours' && (
         <Modal title="Opening Hours" onClose={() => setActiveModal(null)}>
-          <p className="text-sm text-gray-500 mb-6">
-            Toggle your store status. Customers can only order from open stores.
-          </p>
-          <div className={`flex items-center justify-between p-4 rounded-lg mb-6 ${isOpen ? 'bg-emerald-50' : 'bg-gray-50'}`}>
+          {/* Store toggle */}
+          <div className={`flex items-center justify-between p-4 rounded-lg mb-5 ${isOpen ? 'bg-emerald-50' : 'bg-gray-50'}`}>
             <div>
               <p className="font-semibold text-gray-800">{isOpen ? 'Store is Open' : 'Store is Closed'}</p>
               <p className="text-xs text-gray-500 mt-0.5">{isOpen ? 'Accepting orders' : 'Not accepting orders'}</p>
@@ -211,10 +229,44 @@ export default function VendorProfile() {
             type="button"
             onClick={handleToggleHours}
             disabled={togglingStatus}
-            className={`w-full h-12 rounded-lg font-semibold disabled:opacity-60 ${isOpen ? 'bg-red-500 text-white' : 'bg-emerald-500 text-white'}`}
+            className={`w-full h-10 rounded-lg font-semibold text-sm disabled:opacity-60 mb-6 ${isOpen ? 'bg-red-500 text-white' : 'bg-emerald-500 text-white'}`}
           >
             {togglingStatus ? 'Updating...' : isOpen ? 'Close Store' : 'Open Store'}
           </button>
+
+          {/* Time range */}
+          <p className="text-sm font-medium text-gray-700 mb-3">Set your hours</p>
+          <form onSubmit={handleSaveHours}>
+            <div className="flex gap-3 mb-4">
+              <div className="flex-1">
+                <label htmlFor="opening-time" className="text-xs text-gray-500 mb-1 block">Opening time</label>
+                <input
+                  id="opening-time"
+                  type="time"
+                  value={openingTime}
+                  onChange={(e) => setOpeningTime(e.target.value)}
+                  className="w-full h-11 px-3 rounded-lg border border-gray-300 text-sm"
+                />
+              </div>
+              <div className="flex-1">
+                <label htmlFor="closing-time" className="text-xs text-gray-500 mb-1 block">Closing time</label>
+                <input
+                  id="closing-time"
+                  type="time"
+                  value={closingTime}
+                  onChange={(e) => setClosingTime(e.target.value)}
+                  className="w-full h-11 px-3 rounded-lg border border-gray-300 text-sm"
+                />
+              </div>
+            </div>
+            <button
+              type="submit"
+              disabled={savingHours}
+              className="w-full h-12 rounded-lg font-semibold bg-indigo-500 text-white disabled:opacity-60"
+            >
+              {savingHours ? 'Saving...' : 'Save Hours'}
+            </button>
+          </form>
         </Modal>
       )}
 

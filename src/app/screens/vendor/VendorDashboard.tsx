@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import { LayoutDashboard, ClipboardList, UtensilsCrossed, DollarSign, Clock, Settings } from 'lucide-react';
+import { LayoutDashboard, ClipboardList, UtensilsCrossed, DollarSign, Clock, Settings, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { vendorService, VendorOrder } from '../../services/vendor';
 
@@ -16,15 +16,19 @@ export default function VendorDashboard() {
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [pendingOrders, setPendingOrders] = useState<VendorOrder[]>([]);
   const [loading, setLoading] = useState(true);
+  const [profileComplete, setProfileComplete] = useState(true);
 
   useEffect(() => {
     Promise.all([
       vendorService.getDashboard(),
       vendorService.getOrders('pending'),
+      vendorService.getProfile(),
     ])
-      .then(([dashRes, ordersRes]) => {
+      .then(([dashRes, ordersRes, profileRes]) => {
         setDashboard(dashRes);
         setPendingOrders(ordersRes.orders);
+        const complete = !!(profileRes.image && profileRes.contact && profileRes.openingTime && profileRes.closingTime && profileRes.bankAccount);
+        setProfileComplete(complete);
       })
       .catch(() => toast.error('Failed to load dashboard'))
       .finally(() => setLoading(false));
@@ -94,6 +98,18 @@ export default function VendorDashboard() {
             </Link>
           </div>
         </div>
+
+        {/* Incomplete profile banner */}
+        {!profileComplete && (
+          <Link to="/vendor/profile" className="flex items-center gap-3 px-5 py-3 bg-amber-50 border-b border-amber-100">
+            <AlertCircle size={18} className="text-amber-500 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-amber-700">Complete your profile</p>
+              <p className="text-xs text-amber-600">Add your opening hours, contact, and bank details to start receiving orders.</p>
+            </div>
+            <span className="text-xs font-medium text-amber-600 flex-shrink-0">Set up →</span>
+          </Link>
+        )}
 
         <div className="px-5 py-6">
           {/* Stats Grid */}

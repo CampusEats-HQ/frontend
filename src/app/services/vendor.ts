@@ -58,8 +58,8 @@ export const vendorService = {
     api.get<{ thisMonth: number; thisWeek: number; pendingSettlement: number; dailyEarnings: object[]; transactions: object[] }>('/vendor/earnings'),
 
   getProfile: () =>
-    api.get<{ id: string; name: string; category: string; location: string; image: string; contact: string; bankAccount: string }>('/vendor/profile'),
+    api.get<{ id: string; name: string; category: string; location: string; image: string; contact: string; bankAccount: string; openingTime: string | null; closingTime: string | null }>('/vendor/profile'),
 
-  updateProfile: (data: { name?: string; category?: string; location?: string; contact?: string }) =>
-    api.put<{ name: string; category: string; location: string; contact: string }>('/vendor/profile', data),
+  updateProfile: (data: { name?: string; category?: string; location?: string; contact?: string; openingTime?: string; closingTime?: string } | FormData) =>
+    api.put<{ name: string; category: string; location: string; contact: string; openingTime: string | null; closingTime: string | null }>('/vendor/profile', data),
 }
