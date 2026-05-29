@@ -99,16 +99,26 @@ export default function VendorDashboard() {
           </div>
         </div>
 
-        {/* Incomplete profile banner */}
+        {/* Incomplete profile — full-screen block */}
         {!profileComplete && (
-          <Link to="/vendor/profile" className="flex items-center gap-3 px-5 py-3 bg-amber-50 border-b border-amber-100">
-            <AlertCircle size={18} className="text-amber-500 flex-shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-amber-700">Complete your profile</p>
-              <p className="text-xs text-amber-600">Add your opening hours, contact, and bank details to start receiving orders.</p>
+          <div className="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center px-6 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-amber-100 flex items-center justify-center mb-6">
+              <AlertCircle size={32} className="text-amber-500" />
             </div>
-            <span className="text-xs font-medium text-amber-600 flex-shrink-0">Set up →</span>
-          </Link>
+            <h2 className="text-xl font-bold text-gray-800 mb-2">Your store isn't live yet</h2>
+            <p className="text-sm text-gray-500 mb-2 max-w-xs">
+              You must set your <strong>opening hours</strong>, <strong>contact number</strong>, and <strong>bank details</strong> before students can find or order from your restaurant.
+            </p>
+            <p className="text-xs text-amber-600 font-medium mb-8 max-w-xs">
+              Until your profile is complete, your store will always appear as closed to students.
+            </p>
+            <Link
+              to="/vendor/profile"
+              className="w-full max-w-xs h-12 rounded-xl font-semibold bg-indigo-600 text-white flex items-center justify-center"
+            >
+              Complete My Profile
+            </Link>
+          </div>
         )}
 
         <div className="px-5 py-6">

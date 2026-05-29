@@ -74,9 +74,11 @@ export default function Home() {
       .finally(() => setLoading(false));
   }, []);
 
+  const visibleRestaurants = restaurants.filter((r) => r.openingTime !== null || r.closingTime !== null);
+
   const filteredRestaurants = activeCategory === 'All'
-    ? restaurants
-    : restaurants.filter((r) => r.category?.toLowerCase().includes(activeCategory.toLowerCase()));
+    ? visibleRestaurants
+    : visibleRestaurants.filter((r) => r.category?.toLowerCase().includes(activeCategory.toLowerCase()));
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -188,8 +190,8 @@ export default function Home() {
                   )}
                   {!restaurant.isOpen && (
                     <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-xl">
-                      <span className="text-white text-xs font-semibold bg-black bg-opacity-50 px-2 py-1 rounded-full">
-                        {restaurant.openingTime ? `Opens ${formatHour(restaurant.openingTime)}` : 'Closed'}
+                      <span className="text-white text-xs font-semibold bg-black bg-opacity-50 px-2 py-1 rounded-full text-center">
+                        {restaurant.openingTime ? `Closed · Opens ${formatHour(restaurant.openingTime)}` : 'Closed'}
                       </span>
                     </div>
                   )}
