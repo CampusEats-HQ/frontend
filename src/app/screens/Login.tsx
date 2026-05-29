@@ -91,7 +91,7 @@ export default function Login() {
       <div className="hidden md:flex flex-col justify-center bg-white rounded-l-3xl
                       w-[420px] px-12 py-16 min-h-screen shadow-2xl">
         <div className="max-w-xs mx-auto w-full">
-          <h2 className="text-2xl font-bold text-gray-800 mb-1">Welcome back 👋</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-1">Welcome back</h2>
           <p className="text-gray-500 text-sm mb-8">Log in to your account to continue.</p>
 
           <form onSubmit={handleSubmit} className="mb-6">
