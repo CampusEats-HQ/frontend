@@ -30,6 +30,8 @@ import VendorEarnings from "./screens/vendor/VendorEarnings";
 import VendorProfile from "./screens/vendor/VendorProfile";
 import RiderLogin from "./screens/rider/RiderLogin";
 import RiderSignup from "./screens/rider/RiderSignup";
+import RiderForgotPassword from "./screens/rider/RiderForgotPassword";
+import RiderResetPassword from "./screens/rider/RiderResetPassword";
 import RiderHome from "./screens/rider/RiderHome";
 import RiderOrderAlert from "./screens/rider/RiderOrderAlert";
 import RiderActiveDelivery from "./screens/rider/RiderActiveDelivery";
@@ -165,6 +167,14 @@ export const router = createBrowserRouter([
   {
     path: "/rider/login",
     Component: RiderLogin,
+  },
+  {
+    path: "/rider/forgot-password",
+    Component: RiderForgotPassword,
+  },
+  {
+    path: "/rider/reset-password",
+    Component: RiderResetPassword,
   },
   {
     path: "/rider/signup",

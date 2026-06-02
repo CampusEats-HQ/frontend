@@ -78,6 +78,12 @@ export const authService = {
   resetPassword: (data: { email: string; otp: string; newPassword: string }) =>
     api.post<{ message: string }>('/auth/reset-password', data),
 
+  forgotPasswordRider: (data: { email: string }) =>
+    api.post<{ message: string }>('/auth/rider/forgot-password', data),
+
+  resetPasswordRider: (data: { email: string; otp: string; newPassword: string }) =>
+    api.post<{ message: string }>('/auth/rider/reset-password', data),
+
   logout: (portal: 'customer' | 'vendor' | 'rider' | 'admin' = 'customer') =>
     clearToken(portal),
 }

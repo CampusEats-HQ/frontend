@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, Link } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { PasswordInput } from '../../components/ui/PasswordInput';
 import { useRider } from '../../context/RiderContext';
@@ -87,6 +87,12 @@ export default function RiderLogin() {
                 className="w-full h-12 px-4 rounded-lg border border-gray-300"
                 required
               />
+            </div>
+
+            <div className="text-right">
+              <Link to="/rider/forgot-password" className="text-sm text-indigo-500">
+                Forgot password?
+              </Link>
             </div>
 
             <button
