@@ -51,14 +51,14 @@ export default function Login() {
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-[52px] px-4 rounded-xl bg-white bg-opacity-15 text-white placeholder-indigo-300 focus:outline-none focus:bg-opacity-20 transition-all"
+                className="w-full h-[52px] px-4 rounded-xl bg-white text-gray-800 placeholder-gray-400 focus:outline-none transition-all"
                 required
               />
               <PasswordInput
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-[52px] px-4 rounded-xl bg-white bg-opacity-15 text-white placeholder-indigo-300 focus:outline-none focus:bg-opacity-20 transition-all"
+                className="w-full h-[52px] px-4 rounded-xl bg-white text-gray-800 placeholder-gray-400 focus:outline-none transition-all"
                 required
               />
             </div>

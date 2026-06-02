@@ -48,7 +48,9 @@ export default function AdminPeople() {
     try {
       await adminService.approveRider(riderId);
       toast.success(`${name} approved and activated!`);
+      const rider = pendingRiders.find((r) => r.id === riderId);
       setPendingRiders((prev) => prev.filter((r) => r.id !== riderId));
+      if (rider) setActiveRiders((prev) => [...prev, { ...rider, status: 'active' }]);
     } catch (err: any) {
       toast.error(err?.message || 'Failed to approve rider');
     }
